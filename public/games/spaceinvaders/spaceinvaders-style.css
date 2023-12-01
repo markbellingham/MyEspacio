@@ -1,0 +1,82 @@
+body {
+    font-family: "Fira Code", "DejaVu Sans", sans-serif;
+}
+
+.left {
+    margin-left: 35%;
+    margin-top: 30px;
+    position: relative;
+    float: left;
+}
+
+.right {
+    position: relative;
+    float: left;
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    border: solid 1px;
+    width: 302px;
+    height: 302px;
+}
+
+.grid div {
+    width: 20px;
+    height: 20px;
+}
+
+.shooter {
+    background-color: blue;
+}
+
+.invader {
+    background-color: purple;
+    border-radius: 10px;
+}
+
+.boom {
+    background-color: red;
+}
+
+.laser {
+    background-color: orange;
+}
+
+.modal {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    background-color: white;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 20px;
+    border: 5px solid black;
+    text-align: center;
+    display: none;
+}
+
+#start-button {
+    background-color: blue;
+    color: white;
+}
+
+#instructions-button {
+    margin-top: 10px;
+    background-color: blue;
+    color: white;
+}
+
+#defeat-message {
+    color: red;
+}
+
+.scores {
+    width: 100px;
+    text-align: right;
+    font-size: 0.9em;
+}

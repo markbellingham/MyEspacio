@@ -1,0 +1,39 @@
+<!-- Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-light" id="exampleModalLongTitle">Log In</h5>
+                <button type="button" class="close btn btn-sm btn-default" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-start p-lg-5">
+                <form id="login-form">
+                    <div class="row">
+                        <div class="col-12">
+                            <p>Registration is by invitation only.</p>
+{#                            <p>Please enter one of:</p>#}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="login-email">Email Address:</label>
+                            <input type="email" name="email" id="login-email" class="form-control">
+                        </div>
+                    </div>
+                    <div id="phone-code-row" class="row" hidden>
+                        <div class="col-12">
+                            <label for="phone-code">Enter Code:</label>
+                            <input type="text" name="phone_code" id="phone-code" class="form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" form="login-form" onclick="this.form.reset()">Close</button>
+                <button type="submit" class="btn btn-primary" form="login-form" id="login-submit-btn">Login</button>
+            </div>
+        </div>
+    </div>
+</div>

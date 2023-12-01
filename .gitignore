@@ -1,0 +1,14 @@
+# Dependency directories
+node_modules/
+vendor
+
+# PHPStorm directory
+.idea
+
+# Config directory
+/config
+
+composer.lock
+package-lock.json
+
+/public/phpinfo.php

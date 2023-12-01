@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <link href="games/tetris/tetris-style.css" rel="stylesheet"/>
+    <script crossorigin="anonymous" src="https://kit.fontawesome.com/0825dd3daf.js"></script>
+    <title>Tetris</title>
+</head>
+<body>
+
+<div class="left">
+    <div class="grid">
+        <script>
+            for (let i = 0; i < 200; i++) {
+                document.write('<div class="main-board"></div>');
+            }
+            for (let i = 0; i < 10; i++) {
+                document.write('<div class="taken"></div>');
+            }
+        </script>
+    </div>
+</div>
+<div class="right">
+    <h5>Next Piece</h5>
+    <div class="mini-grid">
+        <script>
+            for (let i = 0; i < 16; i++) {
+                document.write('<div></div>');
+            }
+        </script>
+    </div>
+
+    <div class="controls">
+        <h6>Score: <span id="score">0</span></h6>
+        <h6>Level: <span id="level">1</span></h6>
+        <button class="btn btn-default" id="start-button">Start/Pause</button>
+        <button class="btn" id="instructions-button">Instructions</button>
+    </div>
+    <div class="controls mt-3">
+        <h5>Top Scores</h5>
+        <div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Level</th>
+                    <th>Score</th>
+                </tr>
+                </thead>
+                <tbody id="top-scores">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="game-over-div">
+    <h3 id="congrats-message"></h3>
+    <h3>Game Over</h3>
+    <button class="close-btn" id="game-over-close">Close</button>
+</div>
+<div class="modal" id="instructions-div">
+    <h3>Instructions</h3>
+    <p>Position the falling blocks so that they form complete lines without gaps.</p>
+    <p>If the stack reaches the top of the board the game is over.</p>
+    <h5>Controls</h5>
+    <p>
+        <i class="fas fa-caret-up"></i> - Rotate
+    </p>
+    <p>
+        <i class="fas fa-caret-right"></i> - Move Right
+    </p>
+    <p>
+        <i class="fas fa-caret-left"></i> - Move Left
+    </p>
+    <p>
+        <i class="fas fa-caret-down"></i> - Move Down
+    </p>
+    <h5>Scoring</h5>
+    <p>1 line - 10 points</p>
+    <p>2 lines - 25 points</p>
+    <p>3 lines - 40 points</p>
+    <p>4 lines - 60 points</p>
+    <h5>Levels</h5>
+    <p>Level increases every 20 complete lines</p>
+    <button class="close-btn">Close</button>
+</div>
+
+<script charset="utf-8" src="games/tetris/app.js?t=123123" type="module"></script>
+</body>
+</html>

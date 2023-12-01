@@ -1,0 +1,56 @@
+{{ include('common/headers.html.twig') }}
+<body>
+    <ul class="notifications"></ul>
+    <div class="col-md-4 offset-md-1 mb-5 mt-2">
+        {{ include('common/login-button.html.twig') }}
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-5 offset-1 text-center">
+            <form id="upload-files-form" action="/upload" method="POST" enctype="multipart/form-data">
+                <div class="text-start">
+                    <label for="photo-upload-input" class="label text-primary">Select photos to upload</label>
+                </div>
+                <div class="input-group">
+                    <input class="form-control form-control-lg" id="photo-upload-input" name="files[]" type="file" multiple>
+                    <button type="button" class="btn btn-lg btn-success btn-block" id="photo-upload-submit">Upload</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-5 text-center">
+            <form action="/photo/upload-photo-metadata" method="POST">
+                <div id="file-upload-list" class="col-md-12">
+                    <div class="text-start">
+                        <label for="directory-list-select" class="label text-primary">Choose Directory</label>
+                    </div>
+                    <div class="input-group">
+                        <select name="directory" id="directory-list-select" class="form-control form-control-lg" required>
+                            <option value=""> --- </option>
+                            {% for directory in directories %}
+                                <option value="{{ directory }}">{{ directory }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-lg btn-success btn-block" id="select-directory-submit">Select</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row mt-5">
+        <div class="col-md-5 offset-1 text-center">
+            <form action="/photo/upload-flickr-data" method="POST">
+                <div class="text-start">
+                    <label for="upload-flickr-data-btn" class="label text-primary">Upload Flickr Data</label>
+                </div>
+                <div class="d-grid">
+                    <button id="upload-flickr-data-btn" class="btn btn-primary">Upload Flickr Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/dist/upload.js"></script>
+</body>

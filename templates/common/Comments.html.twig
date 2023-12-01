@@ -1,0 +1,21 @@
+<div class="row">
+    <div id="{{ section }}-comments" class="col-12 text-start">
+        <h5 class="text-primary">Comments:</h5>
+        <div class="col-md-12">
+            {% if comments|length > 0 %}
+                {% for comment in comments %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <small class="text-start"><span class="text-primary">{{ comment.username }}</span> - {{ comment.created }}</small>
+                            <p class="text-start">{{ comment.comment|e('html_attr') }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-md-12 text-center">
+                    <p>No Comments Yet</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

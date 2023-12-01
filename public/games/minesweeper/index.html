@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Minesweeper</title>
+    <link href="games/minesweeper/minesweeper-style.css" rel="stylesheet"/>
+    <script crossorigin="anonymous" src="https://kit.fontawesome.com/0825dd3daf.js"></script>
+</head>
+<body>
+<div class="game">
+    <div class="grid"></div>
+</div>
+<div class="controls">
+    <div>Time: <span id="timer-display">00:00</span></div>
+    <button id="new-game">New Game</button>
+    <label for="number-of-bombs">Number of Bombs:</label>
+    <input id="number-of-bombs" type="number" value="20"/>
+    <div>Flags: <span id="no-of-flags">0</span></div>
+    <h4>Top Times</h4>
+    <table>
+        <thead>
+        <tr>
+            <th class="scores">Date</th>
+            <th class="scores">Bombs</th>
+            <th class="scores">Time</th>
+        </tr>
+        </thead>
+        <tbody id="top-times-tbl">
+
+        </tbody>
+    </table>
+</div>
+
+<div class="modal" id="game-over-div">
+    <h4>Game Over</h4>
+    <h3 id="congrats-message"></h3>
+    <button class="close-btn">Close</button>
+</div>
+
+
+<script charset="utf-8" src="games/minesweeper/app.js" type="module"></script>
+</body>
+</html>

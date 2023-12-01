@@ -1,0 +1,30 @@
+{% if user.isLoggedIn %}
+    <div class="row">
+        <div class="">
+            <form id="{{ section }}-comment-form">
+                <div class="text-start mt-2">
+                    <input type="hidden" name="id" value="{{ item.id }}">
+                    <label for="{{ section }}-title" class="d-none">Title</label>
+                    <input type="text" name="title" id="{{ section }}-title" class="d-none" value=""/>
+                    <label for="{{ section }}-comment" class="text-start mt-2 text-primary">Add Comment:</label>
+                    <textarea id="{{ section }}-comment" name="comment" class="form-control comment-input" required></textarea>
+                    <input type="hidden" name="secret" id="server-secret" value="{{ get_token('photo') }}"/>
+                    <input type="hidden" name="uuid" value=""/>
+                </div>
+                <div id="{{ section }}-error-message" class="text-danger"></div>
+                <div class="row">
+                    <div class="captcha-icons-container col-8">
+                        <div class="row">
+                            {{ captcha_icons(section, 5)|raw }}
+                        </div>
+                    </div>
+                    <div class="captcha-icons-container col-4 text-end mt-5">
+                        <button type="button" id="{{ section }}-comment-submit" class="btn btn-primary btn-block">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+{{ include('common/Comments.html.twig', { comments, section }, with_context = false) }}

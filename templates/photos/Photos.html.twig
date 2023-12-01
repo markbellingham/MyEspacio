@@ -1,0 +1,23 @@
+{% block photos_page %}
+    <div id="photos">
+        {% for key, photo in photos %}
+            {% set marginTop = (key == 0) ? '' : 'mt-2' %}
+            <div class="grid-item {{ marginTop }}">
+                <img loading="lazy" width="{{ photo.width }}" height="{{ photo.height }}" src="/resources/pictures/{{ photo.directory }}/thumbs_md/{{ photo.filename }}" alt="{{ photo.title }}" data-id="{{ photo.id }}"/>
+                <div class="img-overlay">
+                    <h5 class="ml-2">{{ photo.title }}</h5>
+                    <p class="ml-2" style="float: left;">{{ photo.town }}, {{ photo.country }}</p>
+                    <p class="mr-2" style="float: right;">
+                    <span id="pcounts-{{ photo.id }}">
+                    {% if photo.faveCount > 0 %}
+                        <i class="fas fa-heart"></i> {{ photo.faveCount }}
+                    {% endif %}
+                    {% if photo.commentCount > 0 %}
+                        <i class="fas fa-comment-alt"></i> {{ photo.commentCount }}
+                    {% endif %}
+                    </span></p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

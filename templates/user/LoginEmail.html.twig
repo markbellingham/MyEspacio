@@ -1,0 +1,36 @@
+<table>
+    <thead>
+
+    </thead>
+    <tbody>
+    <tr>
+        <td>Click the link below to log in to Personly @ {{ website_owner }}</td>
+    </tr>
+    <tr>
+        <td>
+            <a href="{{ domain_root }}/login/{{ user.magicLink }}">{{ domain_root }}/login/{{ user.magicLink }}</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    <tr>
+        <td>Alternatively enter the code below into the login modal</td>
+    </tr>
+    <tr>
+        <td>
+            <strong>{{ user.phoneCode }}</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    <tr>
+        <td>If you did not request a login, it's fine to ignore this message.</td>
+    </tr>
+    </tbody>
+</table>

@@ -1,0 +1,12 @@
+<div class="row">
+    <div class="col-12 mb-0 pb-0 text-start">Choose the <span id="{{ section }}-selected-icon-name">{{ captcha1.name }}</span> icon:</div>
+    <input type="hidden" id="{{ section }}-captcha2" name="captcha2" value="{{ captcha2 }}">
+</div>
+<div class="row">
+    <div id="{{ section }}-icons" class="btn-group mt-2">
+        {% for icon in icons %}
+            <input type="radio" class="btn-check" name="captcha1" value="{{ icon.iconId }}" id="{{ section }}-captcha-{{ icon.iconId }}" required>
+            <label class="btn btn-outline-warning text-dark" for="{{ section }}-captcha-{{ icon.iconId }}">{{ icon.icon|raw }}</label>
+        {% endfor %}
+    </div>
+</div>

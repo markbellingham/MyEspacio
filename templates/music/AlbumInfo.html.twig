@@ -1,0 +1,29 @@
+<div class="slider">
+    <div class="row">
+        <div class="col-md-12">
+            Artist/Album Top 50 Rankings
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <img alt="cover" src="/resources/music/{{ attribute(album, 0).image }}.jpg" width="100%"/>
+        </div>
+        <div class="col-md-auto">
+            <table id="tracks" class="table-condensed" style="width: 100%;">
+                {% for track in album %}
+                    <tr>
+                        <td class="tracks align-text-top">{{ track.trackNo }}</td>
+                        <td class="tracks align-middle">{{ track.trackName }}</td>
+                        <td class="tracks align-text-top">{{ track.duration }}</td>
+                        <td class="align-middle">
+                            <button class="btn btn-outline-secondary btn-sm add-track" data-id="{{ track.trackId }}">Add Track</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div id="wikipedia-info" class="col-md-4">
+
+        </div>
+    </div>
+</div>

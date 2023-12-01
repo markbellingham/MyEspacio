@@ -1,0 +1,57 @@
+<div class="row">
+    <div id="player-container" class="col-md-12">
+        <div class="row">
+            <div id="player-controls" class="col-md-3">
+                <audio id="music-player"></audio>
+                <div class="btn-group">
+                    <button id="music-player-back" class="btn btn-outline-secondary"><i class="bi bi-skip-backward-fill"></i></button>
+                    <button id="music-player-playpause" class="btn btn-outline-secondary"><i class="bi bi-play-fill"></i><i class="bi bi-pause-fill"></i></button>
+                    <button id="music-player-stop" class="btn btn-outline-secondary"><i class="bi bi-stop-fill"></i></button>
+                    <button id="music-player-forward" class="btn btn-outline-secondary"><i class="bi bi-skip-forward-fill"></i></button>
+                </div>
+                <button id="music-volume-off" class="btn btn-outline-secondary ms-1"><i class="bi bi-volume-mute-fill"></i></button>
+                <button id="music-volume-on" class="btn btn-outline-secondary ms-1" hidden><i class="bi bi-volume-up-fill"></i></button>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div id="track-info">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="">
+                        <input type="range" value="0" min="0" max="100" id="music-seek-bar">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <i id=playlist-toggle class="bi bi-chevron-down text-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="font-size: 2rem;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="collapse show" id="tracklistContainer" style="position: relative; z-index: 10000;">
+        <div class="row">
+            <div class="card card-body border-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>
+                            <span class="text-primary">Playlist</span><span id="playlist-length" class="fs-6"></span>
+                            <button id="clear-playlist" class="btn btn-sm btn-outline-secondary" style="float: right;">Clear Playlist</button>
+                        </h5>
+                        <div id="track-list" style="width: 100%;">
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Lyrics</h5>
+                        <div id="lyrics">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

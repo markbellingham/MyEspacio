@@ -1,0 +1,98 @@
+body {
+    font-family: "Fira Code", "DejaVu Sans", sans-serif;
+}
+
+.left {
+    margin-left: 35%;
+    margin-top: 30px;
+    position: relative;
+    float: left;
+}
+
+.right {
+    position: relative;
+    float: left;
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+.scores {
+    width: 100px;
+    text-align: right;
+    font-size: 0.9em;
+}
+
+.grid {
+    width: 200px;
+    height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: lightgoldenrodyellow;
+}
+
+.grid div {
+    height: 20px;
+    width: 20px;
+}
+
+.main-board {
+    border: 1px solid lightgray;
+}
+
+.tetromino {
+    background-color: blue;
+}
+
+.mini-grid {
+    width: 88px;
+    height: 80px;
+    display: flex;
+    flex-wrap: wrap;
+    /*background-color: lightgoldenrodyellow;*/
+}
+
+.mini-grid div {
+    border: 1px solid white;
+    margin-top: -10px;
+    height: 20px;
+    width: 20px;
+}
+
+.controls {
+    width: 128px;
+}
+
+.modal {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    width: 500px;
+    height: 150px;
+    transform: translate(-50%, -20%);
+    background-color: white;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 20px;
+    border: 5px solid black;
+    text-align: center;
+    display: none;
+}
+
+#start-button {
+    background-color: blue;
+    color: white;
+}
+
+#instructions-button {
+    margin-top: 10px;
+    background-color: blue;
+    color: white;
+}
+
+#congrats-message {
+    color: red;
+}
+
+h5 {
+    margin-top: -10px;
+}

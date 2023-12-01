@@ -1,0 +1,75 @@
+body {
+    font-family: "Fira Code", "DejaVu Sans", sans-serif;
+}
+
+.game {
+    margin-left: 35%;
+    position: relative;
+    float: left;
+    margin-top: 30px;
+}
+
+.grid {
+    height: 400px;
+    width: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: lightgray;
+}
+
+.controls {
+    position: relative;
+    float: left;
+    top: 30px;
+    left: 30px;
+}
+
+.controls > * {
+    position: relative;
+    float: left;
+    clear: both;
+    margin-top: 10px;
+}
+
+.grid div {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+}
+
+.checked {
+    background-color: white;
+}
+
+.flag {
+    color: red;
+}
+
+.scores {
+    width: 100px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.modal {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    width: 500px;
+    height: 150px;
+    transform: translate(-50%, -20%);
+    background-color: white;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 20px;
+    border: 5px solid black;
+    text-align: center;
+    display: none;
+}
+
+#congrats-message {
+    color: red;
+}
