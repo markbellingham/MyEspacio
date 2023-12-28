@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Personly" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
-    <description>The coding standard for Personly.</description>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="MyEspacio" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <description>The coding standard for MyEspacio.</description>
 
     <arg name="basepath" value="."/>
     <arg name="extensions" value="php" />
@@ -12,10 +12,10 @@
         <exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses" />
     </rule>
 
-    <file>/home/mark/Sites/Personly</file>
+    <file>/home/mark/Sites/MyEspacio</file>
     <arg name="extensions" value="php"/>
     <exclude-pattern>*.*</exclude-pattern>
-    <exclude-pattern>vendor/*</exclude-pattern>
-    <exclude-pattern>node_modules/*</exclude-pattern>
+    <exclude-pattern>vendor/**</exclude-pattern>
+    <exclude-pattern>node_modules/**</exclude-pattern>
 
 </ruleset>

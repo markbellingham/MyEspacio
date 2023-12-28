@@ -1,10 +1,10 @@
 {
-  "name": "bellm/personly",
+  "name": "bellm/myespacio",
   "description": "An application for showing music and photographs, with advanced search features and enhancement from relevant third party APIs",
   "type": "project",
   "autoload": {
     "psr-4": {
-      "Personly\\": "src",
+      "MyEspacio\\": "src",
       "Tests\\": "tests"
     }
   },
@@ -27,7 +27,8 @@
     "ext-curl": "*",
     "phpmailer/phpmailer": "^6.7",
     "messagebird/php-rest-api": "^3.1",
-    "ext-exif": "*"
+    "ext-exif": "*",
+    "doctrine/collections": "^2.1"
   },
   "require-dev": {
     "tracy/tracy": "^2.8",
