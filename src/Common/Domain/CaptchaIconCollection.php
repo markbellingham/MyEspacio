@@ -7,7 +7,7 @@ namespace MyEspacio\Common\Domain;
 use Doctrine\Common\Collections\ArrayCollection;
 use InvalidArgumentException;
 
-final class CaptchaIconCollection extends ArrayCollection
+class CaptchaIconCollection extends ArrayCollection
 {
     public function __construct(array $elements)
     {
