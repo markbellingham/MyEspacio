@@ -1,23 +1,21 @@
 <?php
 
-namespace Personly\Common\Domain;
+namespace MyEspacio\Common\Domain;
 
 use DateTimeImmutable;
 use Exception;
-use Personly\Common\Application\CommentValidator;
+use JsonSerializable;
 
-class Comment
+class Comment implements JsonSerializable
 {
-    protected string $comment;
-    protected ?DateTimeImmutable $created;
-    protected string $title;
-    protected int $user_id;
-    protected string $username;
-    protected bool $verified = false;
-
-    protected array $dateProperties = [
-        'created'
-    ];
+    public function __construct(
+        private string $comment = '',
+        private ?DateTimeImmutable $created = null,
+        private ?string $title = '',
+        private int $user_id = 0,
+        private string $username = ''
+    ) {
+    }
 
     public function getUserId(): int
     {
@@ -39,12 +37,17 @@ class Comment
         $this->comment = $comment;
     }
 
-    public function getCreated(string $format = 'Y-m-d H:i:s'): string
+    public function getCreated(): ?DateTimeImmutable
     {
-        return $this->created->format($format);
+        return $this->created;
     }
 
-    public function getTitle(): string
+    public function getCreatedString(string $format = 'Y-m-d H:i:s'): string
+    {
+        return $this->created ? $this->created->format($format) : '';
+    }
+
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -52,12 +55,6 @@ class Comment
     public function setTitle(string $title): void
     {
         $this->title = $title;
-    }
-
-    public function isVerified(): bool
-    {
-        $this->verified = (new CommentValidator($this))->validate();
-        return $this->verified;
     }
 
     public function getUsername(): string
@@ -77,5 +74,10 @@ class Comment
         } catch (Exception $e) {
             $this->created = null;
         }
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 }

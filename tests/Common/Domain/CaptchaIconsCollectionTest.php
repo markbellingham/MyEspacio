@@ -33,7 +33,15 @@ final class CaptchaIconsCollectionTest extends TestCase
             $this->assertEquals($element['icon_id'], $icon->getIconId());
             $this->assertEquals($element['icon'], $icon->getIcon());
             $this->assertEquals($element['name'], $icon->getName());
-            $this->assertEquals($element['colour'] ?? '', $icon->getColour());
+            $this->assertEquals('', $icon->getColour());
         }
+    }
+
+    public function testEmpty()
+    {
+        $collection = new CaptchaIconCollection([]);
+
+        $this->assertInstanceOf(CaptchaIconCollection::class, $collection);
+        $this->assertCount(0, $collection);
     }
 }

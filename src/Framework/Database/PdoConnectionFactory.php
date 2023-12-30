@@ -19,9 +19,12 @@ final class PdoConnectionFactory implements Connection
         $options = array_replace($defaultOptions, $options);
         $dsn = 'mysql:host=' . $dbConfig['db_host'] . ';dbname=' . $dbConfig['db_name'] . ';charset=' . $dbConfig['db_char'];
         $pdo = new PDO(
-            $dsn, $dbConfig['db_user'], $dbConfig['db_pass'], $options
+            $dsn,
+            $dbConfig['db_user'],
+            $dbConfig['db_pass'],
+            $options
         );
-        return new PdoConnection (
+        return new PdoConnection(
             $pdo
         );
     }

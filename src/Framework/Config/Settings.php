@@ -13,7 +13,7 @@ final class Settings
 
     public function __construct()
     {
-        self::$dbConfig = require ROOT_DIR . '/config/config.php';
+        self::$dbConfig = include ROOT_DIR . '/config/config.php';
     }
 
     public static function getDbConfig(string $key): ?array
@@ -26,16 +26,16 @@ final class Settings
         return CONFIG['server_secret'];
     }
 
-//    public function getLastFmRefreshDate(MusicRepository $musicRepository): string
-//    {
-//        if (self::$lastFmRefreshDate == '') {
-//            $this->setLastFmRefreshDate($musicRepository);
-//        }
-//        return self::$lastFmRefreshDate;
-//    }
-//
-//    private function setLastFmRefreshDate(MusicRepository $musicRepository): void
-//    {
-//        self::$lastFmRefreshDate = $musicRepository->getSupplementaryValue('LastFM refresh');
-//    }
+    //    public function getLastFmRefreshDate(MusicRepository $musicRepository): string
+    //    {
+    //        if (self::$lastFmRefreshDate == '') {
+    //            $this->setLastFmRefreshDate($musicRepository);
+    //        }
+    //        return self::$lastFmRefreshDate;
+    //    }
+    //
+    //    private function setLastFmRefreshDate(MusicRepository $musicRepository): void
+    //    {
+    //        self::$lastFmRefreshDate = $musicRepository->getSupplementaryValue('LastFM refresh');
+    //    }
 }

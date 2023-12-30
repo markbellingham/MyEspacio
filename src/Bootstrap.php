@@ -7,12 +7,14 @@ define('CONFIG', require ROOT_DIR . '/config/config.php');
 require ROOT_DIR . '/vendor/autoload.php';
 \Tracy\Debugger::enable();
 $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-$dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r) {
-    $routes = include(ROOT_DIR . '/src/Routes.php');
-    foreach ($routes as $route) {
-        $r->addRoute(...$route);
+$dispatcher = \FastRoute\simpleDispatcher(
+    function (\FastRoute\RouteCollector $r) {
+        $routes = include ROOT_DIR . '/src/Routes.php';
+        foreach ($routes as $route) {
+            $r->addRoute(...$route);
+        }
     }
-});
+);
 $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getPathInfo());
 switch ($routeInfo[0]) {
     case \FastRoute\Dispatcher::NOT_FOUND:
@@ -24,7 +26,7 @@ switch ($routeInfo[0]) {
     case \FastRoute\Dispatcher::FOUND:
         [$controllerName, $method] = explode('#', $routeInfo[1]);
         $vars = $routeInfo[2];
-        $injector = include('Dependencies.php');
+        $injector = include 'Dependencies.php';
         $controller = $injector->make($controllerName);
         $response = $controller->$method($request, $vars);
         break;
