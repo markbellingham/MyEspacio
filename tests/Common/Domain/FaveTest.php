@@ -23,4 +23,17 @@ final class FaveTest extends TestCase
             $fave->jsonSerialize()
         );
     }
+
+    public function testFaveSetters()
+    {
+        $fave = new Fave(2, 1);
+        $this->assertEquals(2, $fave->getUserId());
+        $this->assertEquals(1, $fave->getItemId());
+
+        $fave->setUserId(3);
+        $fave->setItemId(5);
+
+        $this->assertEquals(3, $fave->getUserId());
+        $this->assertEquals(5, $fave->getItemId());
+    }
 }

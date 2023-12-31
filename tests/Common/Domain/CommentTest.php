@@ -81,4 +81,31 @@ final class CommentTest extends TestCase
             $comment->jsonSerialize()
         );
     }
+
+    public function testCommentSetters()
+    {
+        $comment = new Comment(
+            comment: 'Hello',
+            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
+            title: null,
+            user_id: 2,
+            username: 'Mark Bellingham'
+        );
+        $this->assertEquals('Hello', $comment->getComment());
+        $this->assertInstanceOf(DateTimeImmutable::class, $comment->getCreated());
+        $this->assertEquals('30-12-2023 @ 12:13', $comment->getCreatedString('d-m-Y @ H:i'));
+        $this->assertEquals(2, $comment->getUserId());
+        $this->assertEquals('Mark Bellingham', $comment->getUsername());
+
+        $comment->setComment('Hello World');
+        $comment->setCreated('2023-12-31 23:59');
+        $comment->setUserId(5);
+        $comment->setUsername('Joe Bloggs');
+
+        $this->assertEquals('Hello World', $comment->getComment());
+        $this->assertInstanceOf(DateTimeImmutable::class, $comment->getCreated());
+        $this->assertEquals('31-12-2023 @ 23:59', $comment->getCreatedString('d-m-Y @ H:i'));
+        $this->assertEquals(5, $comment->getUserId());
+        $this->assertEquals('Joe Bloggs', $comment->getUsername());
+    }
 }

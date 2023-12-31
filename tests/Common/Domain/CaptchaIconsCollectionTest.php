@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Common\Domain;
 
+use InvalidArgumentException;
 use MyEspacio\Common\Domain\CaptchaIcon;
 use MyEspacio\Common\Domain\CaptchaIconCollection;
 use PHPUnit\Framework\TestCase;
@@ -43,5 +44,14 @@ final class CaptchaIconsCollectionTest extends TestCase
 
         $this->assertInstanceOf(CaptchaIconCollection::class, $collection);
         $this->assertCount(0, $collection);
+    }
+
+    public function testInvalidCollection()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $collection = new CaptchaIconCollection([
+            'Hello',
+            'World'
+        ]);
     }
 }
