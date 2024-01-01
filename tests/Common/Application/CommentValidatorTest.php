@@ -59,7 +59,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: 'Title',
-            user_id: 1,
+            user_id: 2,
             username: 'Mark Bellingham'
         );
 

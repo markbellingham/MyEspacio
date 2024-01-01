@@ -66,9 +66,6 @@ final class Captcha implements JsonSerializable
 
     public function jsonSerialize(): array
     {
-        $this->icons = $this->session->get('contactIcons');
-        $this->chooseSelectedIcon();
-        $this->encryptIcon();
         return [
             'encryptedIcon' => $this->encryptedIcon,
             'selectedIcon' => $this->selectedIcon

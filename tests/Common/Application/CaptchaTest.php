@@ -78,4 +78,13 @@ final class CaptchaTest extends TestCase
         $this->captcha->getIcons(5);
         $this->assertEquals(60, strlen($this->captcha->getEncryptedIcon()));
     }
+
+    public function testJsonSerialize()
+    {
+        $this->captcha->getIcons(5);
+        $array = $this->captcha->jsonSerialize();
+        $this->assertArrayHasKey('encryptedIcon', $array);
+        $this->assertArrayHasKey('selectedIcon', $array);
+        $this->assertInstanceOf(CaptchaIcon::class, $array['selectedIcon']);
+    }
 }

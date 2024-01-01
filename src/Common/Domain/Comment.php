@@ -11,7 +11,7 @@ class Comment implements JsonSerializable
     public function __construct(
         private string $comment = '',
         private ?DateTimeImmutable $created = null,
-        private ?string $title = '',
+        private readonly ?string $title = '',
         private int $user_id = 0,
         private string $username = ''
     ) {
@@ -52,11 +52,6 @@ class Comment implements JsonSerializable
         return $this->title;
     }
 
-    public function setTitle(string $title): void
-    {
-        $this->title = $title;
-    }
-
     public function getUsername(): string
     {
         return $this->username;
@@ -67,13 +62,12 @@ class Comment implements JsonSerializable
         $this->username = $username;
     }
 
+    /**
+     * @throws Exception
+     */
     public function setCreated(string $datetime): void
     {
-        try {
-            $this->created = new DateTimeImmutable($datetime);
-        } catch (Exception $e) {
-            $this->created = null;
-        }
+        $this->created = new DateTimeImmutable($datetime);
     }
 
     public function jsonSerialize(): array

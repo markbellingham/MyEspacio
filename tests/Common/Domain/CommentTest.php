@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Common\Domain;
 
 use DateTimeImmutable;
+use Exception;
 use MyEspacio\Common\Domain\Comment;
 use PHPUnit\Framework\TestCase;
 
@@ -107,5 +108,12 @@ final class CommentTest extends TestCase
         $this->assertEquals('31-12-2023 @ 23:59', $comment->getCreatedString('d-m-Y @ H:i'));
         $this->assertEquals(5, $comment->getUserId());
         $this->assertEquals('Joe Bloggs', $comment->getUsername());
+    }
+
+    public function testCreatedException()
+    {
+        $comment = new Comment();
+        $this->expectException(Exception::class);
+        $comment->setCreated('invalid_date');
     }
 }
