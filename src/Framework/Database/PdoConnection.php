@@ -31,6 +31,9 @@ class PdoConnection
     {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
+        if ($this->statementHasErrors($stmt)) {
+            return [];
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -46,7 +49,6 @@ class PdoConnection
         $errorInfo = $stmt->errorInfo();
         return $errorInfo[0] !== $this::STATEMENT_SUCCESS_CODE;
     }
-
 
     public function lastInsertId(): ?int
     {
