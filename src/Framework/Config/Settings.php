@@ -8,17 +8,11 @@ namespace MyEspacio\Framework\Config;
 
 final class Settings
 {
-    private static array $dbConfig = [];
     private static string $lastFmRefreshDate = '';
 
-    public function __construct()
+    public static function getConfig(string $key): string|array
     {
-        self::$dbConfig = include ROOT_DIR . '/config/config.php';
-    }
-
-    public static function getDbConfig(string $key): ?array
-    {
-        return CONFIG[$key] ?? null;
+        return CONFIG[$key] ?? '';
     }
 
     public static function getServerSecret(): string

@@ -11,7 +11,7 @@ final class PdoConnectionFactory implements Connection
 {
     public function create(string $dbName = 'project', array $options = []): PdoConnection
     {
-        $dbConfig = Settings::getDbConfig($dbName);
+        $dbConfig = Settings::getConfig($dbName);
         $defaultOptions = [
             PDO::ATTR_EMULATE_PREPARES => false,
             PDO:: ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
