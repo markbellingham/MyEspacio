@@ -8,18 +8,15 @@
     <arg name="parallel" value="8"/>
     <arg value="np"/>
 
-    <rule ref="PSR12">
-        <exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses" />
-    </rule>
+    <rule ref="PSR12"/>
 
     <!-- Specify the files or directories to be analyzed -->
     <file>src</file>
     <file>tests</file>
-    <arg name="extensions" value="php"/>
 
     <!-- Exclude files and directories from analysis -->
     <exclude-pattern>vendor/**</exclude-pattern>
     <exclude-pattern>node_modules/**</exclude-pattern>
 
-    <arg name="report" value="full"/>
+    <arg name="report" value="summary"/>
 </ruleset>
