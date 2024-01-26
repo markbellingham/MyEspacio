@@ -11,8 +11,9 @@ class DirectoryExceptionTest extends TestCase
 {
     public function testDirectoryDoesNotExist()
     {
-        $exception = DirectoryException::directoryDoesNotExist();
+        $noneExistantDirectory = 'nonexistent/directory';
+        $exception = DirectoryException::directoryDoesNotExist($noneExistantDirectory);
         $this->assertInstanceOf(DirectoryException::class, $exception);
-        $this->assertEquals('Directory does not exist', $exception->getMessage());
+        $this->assertEquals('Directory does not exist: ' . $noneExistantDirectory, $exception->getMessage());
     }
 }
