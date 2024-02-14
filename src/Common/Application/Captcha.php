@@ -18,8 +18,7 @@ final class Captcha implements JsonSerializable
     private CaptchaIcon $selectedIcon;
 
     public function __construct(
-        private readonly IconsRepository $iconsRepository,
-        private readonly Session $session
+        private readonly IconsRepository $iconsRepository
     ) {
     }
 

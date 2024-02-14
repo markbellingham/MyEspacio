@@ -8,6 +8,7 @@ use MyEspacio\Framework\Csrf\StoredTokenReader;
 use MyEspacio\Framework\Csrf\Token;
 use MyEspacio\Framework\Csrf\TokenStorage;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 class StoredTokenReaderTest extends TestCase
 {
@@ -46,6 +47,24 @@ class StoredTokenReaderTest extends TestCase
 
         $tokenStorageMock->expects($this->once())
             ->method('store');
+
+        $result = $reader->read($key);
+
+        $this->assertInstanceOf(Token::class, $result);
+    }
+
+    public function readFail()
+    {
+        $tokenStorageMock = $this->createMock(TokenStorage::class);
+
+        $key = 'new_token_key';
+
+        $reader = new StoredTokenReader($tokenStorageMock);
+
+        $tokenStorageMock->expects($this->once())
+            ->method('retrieve')
+            ->with($key)
+            ->willReturn(null);
 
         $result = $reader->read($key);
 
