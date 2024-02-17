@@ -25,6 +25,8 @@ use MyEspacio\Framework\Database\PdoConnectionFactory;
 //use MyEspacio\Project\Infrastructure\MysqlProjectRepository;
 //use MyEspacio\User\Domain\UserRepository;
 //use MyEspacio\User\Infrastructure\MysqlUserRepository;
+use MyEspacio\Framework\Messages\PhpMailerEmail;
+use MyEspacio\Framework\Messages\Email;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -43,6 +45,8 @@ $injector = new Injector();
 //$injector->alias(TokenStorage::class, SymfonySessionTokenStorage::class);
 
 $injector->alias(SessionInterface::class, Session::class);
+
+$injector->alias(Email::class, PhpMailerEmail::class);
 
 //$injector->alias(Connection::class, PdoConnectionFactory::class);
 

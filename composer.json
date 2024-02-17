@@ -28,7 +28,8 @@
     "phpmailer/phpmailer": "^6.7",
     "messagebird/php-rest-api": "^3.1",
     "ext-exif": "*",
-    "doctrine/collections": "^2.1"
+    "doctrine/collections": "^2.1",
+    "ext-imap": "*"
   },
   "require-dev": {
     "tracy/tracy": "^2.8",
