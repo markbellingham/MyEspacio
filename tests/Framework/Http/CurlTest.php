@@ -4,40 +4,60 @@ declare(strict_types=1);
 
 namespace Tests\Framework\Http;
 
+use MyEspacio\Framework\Http\Curl;
 use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Client;
 
 class CurlTest extends TestCase
 {
-    public function testDummy()
+    private const EXPECTED_RESPONSE = '';
+
+    public function testGetRequestWithHttpBin()
     {
-        $this->assertTrue(true);
+        $url = 'https://httpbin.org/get';
+
+        $curlHandler = curl_init();
+        curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlHandler, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($curlHandler, CURLOPT_URL, $url);
+        curl_setopt($curlHandler, CURLOPT_TIMEOUT, 30);
+        curl_setopt($curlHandler, CURLOPT_HTTPHEADER, []);
+        curl_setopt($curlHandler, CURLOPT_POSTFIELDS, null);
+
+        $expectedResponse = self::EXPECTED_RESPONSE;
+
+        curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, $expectedResponse);
+
+        $curl = new Curl($curlHandler);
+        $response = $curl->getRequest($url);
+        $json = json_decode($response);
+
+        $this->assertObjectHasProperty('url', $json);
+        $this->assertEquals($json->url, $url);
     }
-//    private $client;
-//
-//    protected function setUp(): void
-//    {
-//        $this->client = new Client();
-//    }
-//
-//    public function testGetRequest()
-//    {
-//        $url = 'https://jsonplaceholder.typicode.com/posts/1';
-//        $response = $this->client->request('GET', $url);
-//        $data = json_decode($response->getBody()->getContents());
-//
-//        $this->assertObjectHasProperty('id', $data);
-//        $this->assertEquals(1, $data->id);
-//    }
-//
-//    public function testPostRequest()
-//    {
-//        $url = 'https://jsonplaceholder.typicode.com/posts';
-//        $data = ['title' => 'foo', 'body' => 'bar', 'userId' => 1];
-//        $response = $this->client->request('POST', $url, ['form_params' => $data]);
-//        $data = json_decode($response->getBody()->getContents());
-//
-//        $this->assertObjectHasProperty('id', $data);
-//        $this->assertEquals(101, $data->id);
-//    }
+
+    public function testPostRequestWithHttpBin()
+    {
+        $url = 'https://httpbin.org/post';
+
+        $curlHandler = curl_init();
+        curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlHandler, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($curlHandler, CURLOPT_URL, $url);
+        curl_setopt($curlHandler, CURLOPT_TIMEOUT, 30);
+        curl_setopt($curlHandler, CURLOPT_HTTPHEADER, []);
+        curl_setopt($curlHandler, CURLOPT_POSTFIELDS, null);
+
+        $expectedResponse = self::EXPECTED_RESPONSE;
+
+        curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, $expectedResponse);
+
+        $curl = new Curl($curlHandler);
+        $response = $curl->postRequest($url);
+        $json = json_decode($response);
+
+        $this->assertObjectHasProperty('url', $json);
+        $this->assertEquals($json->url, $url);
+    }
 }
