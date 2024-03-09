@@ -181,7 +181,7 @@ final class User implements JsonSerializable
     }
     private function emailIsValid(string $email): bool
     {
-        if (filter_var($email, FILTER_VALIDATE_BOOL)) {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
             throw new InvalidArgumentException('Invalid email address');
         }
         return true;

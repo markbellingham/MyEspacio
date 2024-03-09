@@ -53,7 +53,7 @@ class StoredTokenReaderTest extends TestCase
         $this->assertInstanceOf(Token::class, $result);
     }
 
-    public function readFail()
+    public function testReadFail()
     {
         $tokenStorageMock = $this->createMock(TokenStorage::class);
 

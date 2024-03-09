@@ -4,7 +4,11 @@
   "type": "project",
   "autoload": {
     "psr-4": {
-      "MyEspacio\\": "src",
+      "MyEspacio\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "Tests\\": "tests"
     }
   },
@@ -37,5 +41,20 @@
     "phpunit/phpunit": "^10.4",
     "dg/bypass-finals": "dev-master",
     "guzzlehttp/guzzle": "^7.8"
+  },
+  "scripts": {
+    "lint": "@phpcs",
+    "phpcs": "phpcs",
+    "pre-commit": [
+      "@lint",
+      "@test"
+    ],
+    "test": "phpunit tests"
+  },
+  "scripts-descriptions": {
+    "lint": "Run linting programs on the code base.",
+    "phpcs": "Check PHP code conforms to the PSR-12 coding standard.",
+    "pre-commit": "Run linting and testing programs as part of the pre-commit process.",
+    "test": "Run PHPUnit tests."
   }
 }

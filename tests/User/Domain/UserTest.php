@@ -39,6 +39,14 @@ final class UserTest extends TestCase
         $this->assertEquals('email', $user->getPasscodeRoute());
         $this->assertEquals('01234567890', $user->getPhone());
         $this->assertSame(1, $user->getId());
+
+        $this->assertEquals(
+            [
+                'name' => 'Mark',
+                'uuid' => 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+            ],
+            $user->jsonSerialize()
+        );
     }
 
     public function testDefaultValues()
@@ -127,7 +135,29 @@ final class UserTest extends TestCase
         $this->assertNull($user->getPhoneCode());
     }
 
-    public function testExceptions()
+    public function testUuidException()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid UUID');
+
+        new User(
+            email: 'mail@example.com',
+            uuid: 'Invalid UUID'
+        );
+    }
+
+    public function testEmailException()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid email address');
+
+        $user = new User(
+            email: 'Invalid email',
+            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+        );
+    }
+
+    public function testPasscodeRouteException()
     {
         $user = new User(
             email: 'mail@example.com',
@@ -135,16 +165,16 @@ final class UserTest extends TestCase
         );
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid UUID');
-        $user->setUuid('Invalid UUID');
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid email address');
-        $user->setEmail('Invalid email address');
-
-        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Passcode route must be one of email, phone');
         $user->setPasscodeRoute('Careless whispers');
+    }
+
+    public function testLoginDateException()
+    {
+        $user = new User(
+            email: 'mail@example.com',
+            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+        );
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Could not create date instance');

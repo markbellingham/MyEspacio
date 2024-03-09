@@ -29,7 +29,7 @@ class CurlTest extends TestCase
         curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, $expectedResponse);
 
         $curl = new Curl($curlHandler);
-        $response = $curl->getRequest($url);
+        $response = $curl->get($url);
         $json = json_decode($response);
 
         $this->assertObjectHasProperty('url', $json);
@@ -54,7 +54,7 @@ class CurlTest extends TestCase
         curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, $expectedResponse);
 
         $curl = new Curl($curlHandler);
-        $response = $curl->postRequest($url);
+        $response = $curl->post($url);
         $json = json_decode($response);
 
         $this->assertObjectHasProperty('url', $json);

@@ -6,7 +6,7 @@ namespace MyEspacio\Framework\Http;
 
 use RuntimeException;
 
-class Curl
+class Curl implements ExternalHttpRequestInterface
 {
     private mixed $curlHandler;
 
@@ -21,12 +21,12 @@ class Curl
         $this->curlHandler = $curlHandler;
     }
 
-    public function getRequest(string $url, array $headers = [], int $timeout = 30): mixed
+    public function get(string $url, array $headers = [], int $timeout = 30): mixed
     {
         return $this->sendRequest('GET', $url, null, $headers, $timeout);
     }
 
-    public function postRequest(string $url, ?array $data = null, array $headers = [], int $timeout = 30): mixed
+    public function post(string $url, ?array $data = null, array $headers = [], int $timeout = 30): mixed
     {
         return $this->sendRequest('POST', $url, $data, $headers, $timeout);
     }
