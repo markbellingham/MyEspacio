@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyEspacio\User\Infrastructure;
+namespace MyEspacio\User\Domain;
 
-use MyEspacio\User\Domain\User;
-
-interface UserRepository
+interface UserRepositoryInterface
 {
     public function getUserByLoginValues(string $field, string $value): ?User;
+
+    public function getUserFromMagicLink(string $magicLink): ?User;
 
     public function saveLoginDetails(User $user): bool;
 }

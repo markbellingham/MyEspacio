@@ -23,8 +23,8 @@ use MyEspacio\Framework\Database\PdoConnectionFactory;
 //use MyEspacio\Photos\Infrastructure\PhotoRepository;
 //use MyEspacio\Project\Domain\ProjectRepository;
 //use MyEspacio\Project\Infrastructure\MysqlProjectRepository;
-//use MyEspacio\User\Domain\UserRepository;
-//use MyEspacio\User\Infrastructure\MysqlUserRepository;
+use MyEspacio\User\Domain\UserRepositoryInterface;
+use MyEspacio\User\Infrastructure\MysqlUserRepository;
 use MyEspacio\Framework\Messages\PhpMailerEmail;
 use MyEspacio\Framework\Messages\Email;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -48,8 +48,6 @@ $injector->alias(SessionInterface::class, Session::class);
 
 $injector->alias(Email::class, PhpMailerEmail::class);
 
-//$injector->alias(Connection::class, PdoConnectionFactory::class);
-
 $injector->delegate(
     Connection::class,
     function () use ($injector): PdoConnection {
@@ -68,7 +66,7 @@ $injector->delegate(
 //
 $injector->alias(IconsRepository::class, MysqlIconsRepository::class);
 //
-//$injector->alias(UserRepository::class, MysqlUserRepository::class);
+$injector->alias(UserRepositoryInterface::class, MysqlUserRepository::class);
 //
 //$injector->alias(ProjectRepository::class, MysqlProjectRepository::class);
 

@@ -4,7 +4,7 @@ namespace Tests\Common\Infrastructure;
 
 use MyEspacio\Common\Domain\CaptchaIconCollection;
 use MyEspacio\Common\Infrastructure\MysqlIconsRepository;
-use MyEspacio\Framework\Database\PdoConnection;
+use MyEspacio\Framework\Database\Connection;
 use PHPUnit\Framework\TestCase;
 
 final class IconsRepositoryTest extends TestCase
@@ -12,7 +12,7 @@ final class IconsRepositoryTest extends TestCase
     public function testGetIcons()
     {
         $qty = 2;
-        $db = $this->createMock(PdoConnection::class);
+        $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchAll')
             ->with(

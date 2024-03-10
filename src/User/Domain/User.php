@@ -27,10 +27,10 @@ final class User implements JsonSerializable
         private string $uuid,
         private string $name = 'Anonymous',
         private ?string $phone = null,
-        private ?int $login_attempts = null,
-        private ?DateTimeImmutable $login_date = null,
-        private ?string $magic_link = null,
-        private ?string $phone_code = null,
+        private ?int $loginAttempts = null,
+        private ?DateTimeImmutable $loginDate = null,
+        private ?string $magicLink = null,
+        private ?string $phoneCode = null,
         private string $passcodeRoute = 'email',
         private ?int $id = null
     ) {
@@ -113,28 +113,28 @@ final class User implements JsonSerializable
 
     public function getLoginAttempts(): ?int
     {
-        return $this->login_attempts;
+        return $this->loginAttempts;
     }
 
-    public function setLoginAttempts(int $login_attempts): void
+    public function setLoginAttempts(int $loginAttempts): void
     {
-        $this->login_attempts = $login_attempts;
+        $this->loginAttempts = $loginAttempts;
     }
 
     public function getLoginDate(): ?DateTimeImmutable
     {
-        return $this->login_date;
+        return $this->loginDate;
     }
 
     public function getLoginDateString(string $format = 'Y-m-d H:i:s'): ?string
     {
-        return $this->login_date?->format($format);
+        return $this->loginDate?->format($format);
     }
 
-    public function setLoginDate(string $login_date): void
+    public function setLoginDate(string $loginDate): void
     {
         try {
-            $this->login_date = new DateTimeImmutable($login_date);
+            $this->loginDate = new DateTimeImmutable($loginDate);
         } catch (Exception) {
             throw new InvalidArgumentException('Could not create date instance');
         }
@@ -142,22 +142,22 @@ final class User implements JsonSerializable
 
     public function getMagicLink(): ?string
     {
-        return $this->magic_link;
+        return $this->magicLink;
     }
 
-    public function setMagicLink(?string $magic_link): void
+    public function setMagicLink(?string $magicLink): void
     {
-        $this->magic_link = $magic_link;
+        $this->magicLink = $magicLink;
     }
 
     public function getPhoneCode(): ?string
     {
-        return $this->phone_code;
+        return $this->phoneCode;
     }
 
-    public function setPhoneCode(?string $phone_code): void
+    public function setPhoneCode(?string $phoneCode): void
     {
-        $this->phone_code = $phone_code;
+        $this->phoneCode = $phoneCode;
     }
 
     public function getPasscodeRoute(): string

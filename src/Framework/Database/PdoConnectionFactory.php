@@ -7,7 +7,7 @@ namespace MyEspacio\Framework\Database;
 use MyEspacio\Framework\Config\Settings;
 use PDO;
 
-final class PdoConnectionFactory implements Connection
+final class PdoConnectionFactory
 {
     public function create(string $dbName = 'project', array $options = []): PdoConnection
     {

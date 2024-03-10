@@ -7,7 +7,7 @@ namespace MyEspacio\Framework\Database;
 use PDO;
 use PDOStatement;
 
-class PdoConnection
+class PdoConnection implements Connection
 {
     private const STATEMENT_SUCCESS_CODE = '00000';
 

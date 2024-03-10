@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace MyEspacio\Common\Infrastructure;
 
-use MyEspacio\Common\Domain\CaptchaIcon;
 use MyEspacio\Common\Domain\CaptchaIconCollection;
-use MyEspacio\Framework\Database\PdoConnection;
+use MyEspacio\Framework\Database\Connection;
 
 final class MysqlIconsRepository implements IconsRepository
 {
     public function __construct(
-        private readonly PdoConnection $db
+        private readonly Connection $db
     ) {
     }
 

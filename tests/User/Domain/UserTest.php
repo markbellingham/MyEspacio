@@ -19,10 +19,10 @@ final class UserTest extends TestCase
             uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
             name: 'Mark',
             phone: '01234567890',
-            login_attempts: 1,
-            login_date: new DateTimeImmutable('2024-03-02 15:26:00'),
-            magic_link: '550e8400-e29b-41d4-a716-446655440000',
-            phone_code: '9bR3xZ',
+            loginAttempts: 1,
+            loginDate: new DateTimeImmutable('2024-03-02 15:26:00'),
+            magicLink: '550e8400-e29b-41d4-a716-446655440000',
+            phoneCode: '9bR3xZ',
             passcodeRoute: 'email',
             id: 1
         );
@@ -117,10 +117,10 @@ final class UserTest extends TestCase
             uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
             name: 'Mark',
             phone: '01234567890',
-            login_attempts: 1,
-            login_date: new DateTimeImmutable('2024-03-02 15:26:00'),
-            magic_link: '550e8400-e29b-41d4-a716-446655440000',
-            phone_code: '9bR3xZ',
+            loginAttempts: 1,
+            loginDate: new DateTimeImmutable('2024-03-02 15:26:00'),
+            magicLink: '550e8400-e29b-41d4-a716-446655440000',
+            phoneCode: '9bR3xZ',
             passcodeRoute: 'email',
             id: 1
         );
