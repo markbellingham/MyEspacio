@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
-final class PhpMailerEmail implements Email
+final class PhpMailerEmail implements EmailInterface
 {
     public array $errors;
 

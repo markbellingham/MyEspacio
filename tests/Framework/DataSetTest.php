@@ -189,6 +189,40 @@ final class DataSetTest extends TestCase
         $this->assertNull($dataset->floatNull('six'));
     }
 
+    public function testBoolNull()
+    {
+        $dataset = new DataSet([
+            'one' => 'true',
+            'two' => true,
+            'three' => '1',
+            'four' => 1,
+            'five' => 'yes',
+            'six' => 'false',
+            'seven' => false,
+            'eight' => '0',
+            'nine' => 0,
+            'ten' => 'no',
+            'eleven' => null,
+            'twelve' => [
+                'abc' => 123
+            ]
+        ]);
+
+        $this->assertTrue($dataset->boolNull('one'));
+        $this->assertTrue($dataset->boolNull('two'));
+        $this->assertTrue($dataset->boolNull('three'));
+        $this->assertTrue($dataset->boolNull('four'));
+        $this->assertTrue($dataset->boolNull('five'));
+        $this->assertFalse($dataset->boolNull('six'));
+        $this->assertFalse($dataset->boolNull('seven'));
+        $this->assertFalse($dataset->boolNull('eight'));
+        $this->assertFalse($dataset->boolNull('nine'));
+        $this->assertFalse($dataset->boolNull('ten'));
+        $this->assertNull($dataset->boolNull('eleven'));
+        $this->assertNull($dataset->boolNull('twelve'));
+        $this->assertNull($dataset->boolNull('thirteen'));
+    }
+
     public function testToArray()
     {
         $data = [

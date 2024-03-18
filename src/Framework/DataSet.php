@@ -16,7 +16,7 @@ final class DataSet
 
     public function string(string $key): string
     {
-        $value = $this->data[$key] ?? '';
+        $value = $this->data[$key] ?? null;
         if (
             is_scalar($value)
         ) {
@@ -27,16 +27,17 @@ final class DataSet
         ) {
             return json_encode($value);
         }
-        return $value;
+        return '';
     }
 
     public function int(string $key): int
     {
-        if (is_scalar($this->data[$key] ?? '') === false) {
+        $value = $this->data[$key] ?? null;
+        if (is_scalar($value) === false) {
             return 0;
         }
         return filter_var(
-            value: $this->data[$key] ?? '',
+            value: $value,
             filter: FILTER_VALIDATE_INT,
             options: ['options' => ['default' => 0]]
         );
@@ -44,11 +45,12 @@ final class DataSet
 
     public function float(string $key): float
     {
-        if (is_scalar($this->data[$key] ?? '') === false) {
+        $value = $this->data[$key] ?? null;
+        if (is_scalar($value) === false) {
             return 0.0;
         }
         return filter_var(
-            value: $this->data[$key] ?? '',
+            value: $value,
             filter: FILTER_VALIDATE_FLOAT,
             options: ['options' => ['default' => 0.0]]
         );
@@ -56,11 +58,12 @@ final class DataSet
 
     public function bool(string $key): bool
     {
-        if (is_scalar($this->data[$key] ?? '') === false) {
+        $value = $this->data[$key] ?? null;
+        if (is_scalar($value) === false) {
             return false;
         }
         return filter_var(
-            value: $this->data[$key] ?? '',
+            value: $value,
             filter: FILTER_VALIDATE_BOOLEAN,
             options: ['options' => ['default' => false]]
         );
@@ -93,11 +96,12 @@ final class DataSet
 
     public function intNull(string $key): ?int
     {
-        if (is_scalar($this->data[$key] ?? '') === false) {
+        $value = $this->data[$key] ?? null;
+        if (is_scalar($value) === false) {
             return null;
         }
         return filter_var(
-            value: $this->data[$key] ?? '',
+            value: $value,
             filter: FILTER_VALIDATE_INT,
             options: FILTER_NULL_ON_FAILURE
         );
@@ -105,11 +109,12 @@ final class DataSet
 
     public function floatNull(string $key): ?float
     {
-        if (is_scalar($this->data[$key] ?? '') === false) {
+        $value = $this->data[$key] ?? null;
+        if (is_scalar($value) === false) {
             return null;
         }
         return filter_var(
-            value: $this->data[$key] ?? '',
+            value: $value,
             filter: FILTER_VALIDATE_FLOAT,
             options:FILTER_NULL_ON_FAILURE
         );
@@ -117,11 +122,12 @@ final class DataSet
 
     public function boolNull(string $key): ?bool
     {
-        if (is_scalar($this->data[$key] ?? '') === false) {
+        $value = $this->data[$key] ?? null;
+        if (is_scalar($value) === false) {
             return null;
         }
         return filter_var(
-            value: $this->data[$key] ?? '',
+            value: $value,
             filter: FILTER_VALIDATE_BOOLEAN,
             options:FILTER_NULL_ON_FAILURE
         );

@@ -23,10 +23,12 @@ use MyEspacio\Framework\Database\PdoConnectionFactory;
 //use MyEspacio\Photos\Infrastructure\PhotoRepository;
 //use MyEspacio\Project\Domain\ProjectRepository;
 //use MyEspacio\Project\Infrastructure\MysqlProjectRepository;
+use MyEspacio\Framework\Logger\LoggerInterface;
+use MyEspacio\Framework\Logger\MonologAdapter;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Infrastructure\MysqlUserRepository;
 use MyEspacio\Framework\Messages\PhpMailerEmail;
-use MyEspacio\Framework\Messages\Email;
+use MyEspacio\Framework\Messages\EmailInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -46,7 +48,7 @@ $injector = new Injector();
 
 $injector->alias(SessionInterface::class, Session::class);
 
-$injector->alias(Email::class, PhpMailerEmail::class);
+$injector->alias(EmailInterface::class, PhpMailerEmail::class);
 
 $injector->delegate(
     Connection::class,
@@ -55,6 +57,8 @@ $injector->delegate(
         return $factory->create();
     }
 );
+
+$injector->alias(LoggerInterface::class, MonologAdapter::class);
 
 //$injector->alias(MusicRepository::class, MysqlMusicRepository::class);
 //
