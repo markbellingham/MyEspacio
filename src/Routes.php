@@ -5,107 +5,107 @@ declare(strict_types=1);
 return [
     [
         'GET',
-        '/',
-        'Personly\FrontPage\Presentation\RootPageController#show'
+        '/[{language:[a-zA-Z]{2}}/]',
+        'MyEspacio\FrontPage\Presentation\RootPageController#show'
     ],
     [
         'GET',
-        '/home',
-        'Personly\FrontPage\Presentation\FrontPageController#show'
+        '/[{language:[a-zA-Z]{2}}/]home',
+        'MyEspacio\FrontPage\Presentation\FrontPageController#show'
     ],
     [
         'GET',
-        '/music/{albumId: \d+}',
-        'Personly\Music\Presentation\MusicController#getAlbumInfo'
+        '/[{language:[a-zA-Z]{2}}/]music/{albumId: \d+}',
+        'MyEspacio\Music\Presentation\MusicController#getAlbumInfo'
     ],
     [
         'GET',
-        '/music[/[{searchMusic:.+}]]',
-        'Personly\Music\Presentation\MusicController#listMusic'
+        '/[{language:[a-zA-Z]{2}}/]music[/[{searchMusic:.+}]]',
+        'MyEspacio\Music\Presentation\MusicController#listMusic'
     ],
     [
         'GET',
-        '/track/{trackId}',
-        'Personly\Music\Presentation\MusicController#getTrackInfo'
+        '/[{language:[a-zA-Z]{2}}/]track/{trackId}',
+        'MyEspacio\Music\Presentation\MusicController#getTrackInfo'
     ],
     [
         'GET',
-        '/photos[/[{searchPhotos:.+}]]',
-        'Personly\Photos\Presentation\PhotosController#photoGrid'
+        '/[{language:[a-zA-Z]{2}}/]photos[/[{searchPhotos:.+}]]',
+        'MyEspacio\Photos\Presentation\PhotosController#photoGrid'
     ],
     [
         'GET',
-        '/photo/{id:\d+}',
-        'Personly\Photos\Presentation\PhotosController#photoModal'
+        '/[{language:[a-zA-Z]{2}}/]photo/{id:\d+}',
+        'MyEspacio\Photos\Presentation\PhotosController#photoModal'
     ],
     [
         'GET',
-        '/photo/{photoId:\d+}/comments',
-        'Personly\Photos\Presentation\PhotosController#getComments'
+        '/[{language:[a-zA-Z]{2}}/]photo/{photoId:\d+}/comments',
+        'MyEspacio\Photos\Presentation\PhotosController#getComments'
     ],
     [
         'POST',
-        '/photo/{id:\d+}/fave',
-        'Personly\Photos\Presentation\PhotosController#addFave'
+        '/[{language:[a-zA-Z]{2}}/]photo/{id:\d+}/fave',
+        'MyEspacio\Photos\Presentation\PhotosController#addFave'
     ],
     [
         'POST',
-        '/photo/{id:\d+}/comment',
-        'Personly\Photos\Presentation\PhotosController#addComment'
+        '/[{language:[a-zA-Z]{2}}/]photo/{id:\d+}/comment',
+        'MyEspacio\Photos\Presentation\PhotosController#addComment'
     ],
     [
         'GET',
-        '/lastfm',
-        'Personly\Music\Presentation\LastFmController#show'
+        '/[{language:[a-zA-Z]{2}}/]lastfm',
+        'MyEspacio\Music\Presentation\LastFmController#show'
     ],
     [
         'GET',
-        '/games[/[{selectedGame:[a-z]{6,}}]]',
-        'Personly\Games\Presentation\GamesController#show',
+        '/[{language:[a-zA-Z]{2}}/]games[/[{selectedGame:[a-z]{6,}}]]',
+        'MyEspacio\Games\Presentation\GamesController#show',
     ],
     [
         'GET',
-        '/contact',
-        'Personly\Contact\Presentation\ContactController#show'
+        '/[{language:[a-zA-Z]{2}}/]contact',
+        'MyEspacio\Contact\Presentation\ContactController#show'
     ],
     [
         'POST',
-        '/contact/send',
-        'Personly\Contact\Presentation\ContactController#sendMessage'
+        '/[{language:[a-zA-Z]{2}}/]contact/send',
+        'MyEspacio\Contact\Presentation\ContactController#sendMessage'
     ],
     [
         'POST',
-        '/login',
-        'Personly\User\Presentation\LoginController#processLoginForm'
+        '/[{language:[a-zA-Z]{2}}/]login',
+        'MyEspacio\User\Presentation\LoginController#processLoginForm'
     ],
     [
         'GET',
-        '/login/{magicLink: [a-zA-Z0-9]{40}}',
-        'Personly\User\Presentation\LoginController#LoginWithMagicLink'
+        '/[{language:[a-zA-Z]{2}}/]login/{magicLink: [a-zA-Z0-9]{40}}',
+        'MyEspacio\User\Presentation\LoginController#LoginWithMagicLink'
     ],
     [
         'POST',
-        '/logout',
-        'Personly\User\Presentation\LoginController#logout'
+        '/[{language:[a-zA-Z]{2}}/]logout',
+        'MyEspacio\User\Presentation\LoginController#logout'
     ],
     [
         'GET',
-        '/upload',
-        'Personly\Photos\Presentation\UploadController#show'
+        '/[{language:[a-zA-Z]{2}}/]upload',
+        'MyEspacio\Photos\Presentation\UploadController#show'
     ],
     [
         'POST',
-        '/upload',
-        'Personly\Photos\Presentation\UploadController#upload'
+        '/[{language:[a-zA-Z]{2}}/]upload',
+        'MyEspacio\Photos\Presentation\UploadController#upload'
     ],
     [
         'POST',
-        '/photo/upload-photo-metadata',
-        'Personly\Photos\Presentation\UploadController#savePhotoMetadata'
+        '/[{language:[a-zA-Z]{2}}/]photo/upload-photo-metadata',
+        'MyEspacio\Photos\Presentation\UploadController#savePhotoMetadata'
     ],
     [
         'POST',
-        '/photo/upload-flickr-data',
-        'Personly\Photos\Presentation\UploadController#uploadFlickrData'
+        '/[{language:[a-zA-Z]{2}}/]photo/upload-flickr-data',
+        'MyEspacio\Photos\Presentation\UploadController#uploadFlickrData'
     ]
 ];

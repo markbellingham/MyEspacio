@@ -6,6 +6,7 @@ namespace MyEspacio\Framework\Rendering;
 
 use MyEspacio\Common\Application\Captcha;
 use MyEspacio\Framework\Csrf\StoredTokenReader;
+use Symfony\Component\Translation\Translator;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
@@ -13,11 +14,13 @@ use Twig\TwigFunction;
 final class TwigTemplateRendererFactory
 {
     private readonly TemplateRenderer $templateRenderer;
+    private readonly Translator $translator;
 
     public function __construct(
         private readonly Captcha $captcha,
         private readonly StoredTokenReader $storedTokenReader,
-        private readonly TemplateDirectory $templateDirectory
+        private readonly TemplateDirectory $templateDirectory,
+        private readonly TranslatorFactory $translatorFactory
     ) {
     }
 
@@ -36,10 +39,18 @@ final class TwigTemplateRendererFactory
             })
         );
 
-
         $twigEnvironment->addFunction(
             new TwigFunction('captcha_icons', function (string $section, int $qty = 5): string {
                 return $this->createCaptchaIcons($section, $qty);
+            })
+        );
+
+
+        $locale = 'en';
+        $this->translator = $this->translatorFactory->createTranslator($locale);
+        $twigEnvironment->addFunction(
+            new TwigFunction('trans', function (string $message, array $parameters = []): string {
+                return $this->translator->trans($message, $parameters);
             })
         );
 

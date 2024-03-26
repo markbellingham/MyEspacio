@@ -21,8 +21,13 @@ final class RequestHandler
     ) {
     }
 
-    public function validateRequest(Request $request): bool
+    public function validate(Request $request): bool
     {
+        $request->attributes->set(
+            'language',
+            $this->extractLanguage($request->getPathInfo())
+        );
+
         /**
          * If the response type is text/html and does not contain the token, send a full application response
          * with a destination parameter set as the requested tab
@@ -64,5 +69,13 @@ final class RequestHandler
     public function getResponseType(): ?string
     {
         return $this->responseType;
+    }
+
+    private function extractLanguage(string $pathInfo): string
+    {
+        // Extract language from pathInfo
+        // For example, if the path is '/en/home', extract 'en' as the language
+        $parts = explode('/', trim($pathInfo, '/'));
+        return isset($parts[0]) && preg_match('/^[a-zA-Z]{2}$/', $parts[0]) ? $parts[0] : 'en';
     }
 }

@@ -36,7 +36,7 @@ class RequestHandlerTest extends TestCase
     {
         $request = Request::createFromGlobals();
         $request->headers->set('Accept', 'application/json');
-        $this->assertFalse($this->requestHandler->validateRequest($request));
+        $this->assertFalse($this->requestHandler->validate($request));
     }
 
     public function testValidateRequestHtmlResponseNoToken()
@@ -47,7 +47,7 @@ class RequestHandlerTest extends TestCase
             ->method('validate')
             ->willreturn(false);
         $requestHandler = new RequestHandler($storedTokenValidator, $this->templateRenderer);
-        $this->assertTrue($requestHandler->validateRequest($request));
+        $this->assertTrue($requestHandler->validate($request));
     }
 
     public function testValidateRequestHtmlResponseWithToken()
@@ -58,7 +58,7 @@ class RequestHandlerTest extends TestCase
             ->method('validate')
             ->willreturn(true);
         $requestHandler = new RequestHandler($storedTokenValidator, $this->templateRenderer);
-        $this->assertFalse($requestHandler->validateRequest($request));
+        $this->assertFalse($requestHandler->validate($request));
     }
 
 //    public function testShowRoot()
