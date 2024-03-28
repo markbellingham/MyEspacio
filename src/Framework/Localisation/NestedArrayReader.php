@@ -7,25 +7,37 @@ namespace MyEspacio\Framework\Localisation;
 final class NestedArrayReader
 {
     public function __construct(
-        private readonly array $data = []
+        private array $data = []
     ) {
     }
 
-    public function getValue($keys)
+    public function getValue(array $keys): ?string
     {
-        if (is_array($keys) === false) {
-            $keys = [$keys];
-        }
-
         $value = $this->data;
         foreach ($keys as $key) {
             if (is_array($value) && array_key_exists($key, $value)) {
                 $value = $value[$key];
-            } else {
-                return null;
+            }
+            if (is_string($value)) {
+                break;
             }
         }
 
-        return $value;
+        return is_string($value) ? $value : null;
+    }
+
+    public function setData(array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function hasData(): bool
+    {
+        return count($this->data) > 0;
     }
 }

@@ -4,64 +4,41 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Localisation;
 
+use RuntimeException;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
-class LanguageLoader
+final class LanguageLoader
 {
-    private const PLACEHOLDER_PATTERN = '/%\{(\w+)}/';
-
     private string $languageDirectory;
-    private ?array $translations = null;
 
     public function __construct(
-        LocalisationDirectory $localisationDirectory,
-        private readonly NestedArrayReader $reader
+        LanguagesDirectory $localisationDirectory,
     ) {
         $this->languageDirectory = $localisationDirectory->toString();
     }
 
-    private function loadTranslations(string $language, string $filename): void
+    public function loadTranslations(string $language, string $filename): array
     {
         $languageFilePath = $this->languageDirectory . "/$language/$filename.php";
         if (file_exists($languageFilePath)) {
-            $this->translations = include $languageFilePath;
-            return;
+            $translations = include $languageFilePath;
+            if (is_array($translations)) {
+                return $translations;
+            } else {
+                throw new RuntimeException("/$language/$filename does not return an array");
+            }
         }
 
         $languageFilePath = $this->languageDirectory . "/en/$filename.php";
         if (file_exists($languageFilePath)) {
-            $this->translations = include $languageFilePath;
-            return;
+            $translations = include $languageFilePath;
+            if (is_array($translations)) {
+                return $translations;
+            } else {
+                throw new RuntimeException("/en/$filename does not return an array");
+            }
         }
 
-        throw new FileNotFoundException("$language/$filename");
-    }
-
-    public function getTranslationText(
-        TranslationIdentifier $identifier,
-        string $key,
-        array $variables = []
-    ): ?string {
-
-        if ($this->translations === null) {
-            $this->loadTranslations($identifier->getLanguage(), $identifier->getFilename());
-        }
-
-        $keys = explode('.', $key);
-        $value = $this->reader->getValue($keys);
-
-        if ($value && count($variables) > 0) {
-            $value = $this->replaceVariables($value, $variables);
-        }
-        return $value !== null ? $value : '';
-    }
-
-    private function replaceVariables(string $text, array $variables): string
-    {
-        return preg_replace_callback(
-            pattern: self::PLACEHOLDER_PATTERN,
-            callback: fn($matches) => $variables[$matches[1]] ?: $matches[0],
-            subject: $text
-        );
+        throw new FileNotFoundException("/$language/$filename does not exist");
     }
 }

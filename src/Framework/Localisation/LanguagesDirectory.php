@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Localisation;
 
-final class LocalisationDirectory
+final class LanguagesDirectory
 {
-    private string $localisationDirectory;
+    private string $languagesDirectory;
 
     public function __construct(
         string $rootDirectory
     ) {
-        $this->localisationDirectory = $rootDirectory . '/src/Locale';
+        $this->languagesDirectory = $rootDirectory . '/src/Locale';
     }
 
     public function toString(): string
     {
-        return $this->localisationDirectory;
+        return $this->languagesDirectory;
     }
 }
