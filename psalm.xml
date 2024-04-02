@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<psalm
+        errorLevel="2"
+        xmlns="https://getpsalm.org/schema/config"
+>
+    <!-- Add any additional configuration here -->
+    <projectFiles>
+        <directory name="src" />
+    </projectFiles>
+</psalm>

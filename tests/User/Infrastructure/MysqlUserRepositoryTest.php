@@ -32,7 +32,7 @@ final class MysqlUserRepositoryTest extends TestCase
         );
     }
 
-    public function testGetUserByLoginValues()
+    public function testGetUserByEmailAddress()
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -40,9 +40,9 @@ final class MysqlUserRepositoryTest extends TestCase
             ->with(
                 "SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
                 FROM project.users
-                WHERE email = :field",
+                WHERE email = :email",
                 [
-                    'field' => $this->user->getEmail()
+                    'email' => $this->user->getEmail()
                 ]
             )
             ->willReturn(
@@ -61,12 +61,12 @@ final class MysqlUserRepositoryTest extends TestCase
             );
 
         $repository = new MysqlUserRepository($db);
-        $result = $repository->getUserByLoginValues('email', $this->user->getEmail());
+        $result = $repository->getUserByEmailAddress($this->user->getEmail());
 
         $this->assertInstanceOf(User::class, $result);
     }
 
-    public function testGetUserByLoginValuesNotFound()
+    public function testGetUserByEmailAddressNotFound()
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -74,25 +74,70 @@ final class MysqlUserRepositoryTest extends TestCase
             ->with(
                 "SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
                 FROM project.users
-                WHERE email = :field",
+                WHERE email = :email",
                 [
-                    'field' => $this->user->getEmail()
+                    'email' => $this->user->getEmail()
                 ]
             )
             ->willReturn(null);
 
         $repository = new MysqlUserRepository($db);
-        $result = $repository->getUserByLoginValues('email', $this->user->getEmail());
+        $result = $repository->getUserByEmailAddress($this->user->getEmail());
 
         $this->assertNull($result);
     }
 
-    public function testGetUserByLoginValuesWrongLoginType()
+    public function testGetUserByPhoneNumber()
     {
         $db = $this->createMock(Connection::class);
+        $db->expects($this->once())
+            ->method('fetchOne')
+            ->with(
+                "SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
+                FROM project.users
+                WHERE phone = :phoneNumber",
+                [
+                    'phoneNumber' => $this->user->getPhone()
+                ]
+            )
+            ->willReturn(
+                [
+                    'email' => 'mail@example.com',
+                    'uuid' => 'ed459e09-0b90-4d57-b6b2-f5d70d0ff60c',
+                    'name' => 'Mark',
+                    'phone' => '01234567890',
+                    'login_attempts' => '0',
+                    'login_date' => null,
+                    'magic_link' => null,
+                    'phone_code' => null,
+                    'passcode_route' => 'email',
+                    'id' => '1'
+                ]
+            );
 
         $repository = new MysqlUserRepository($db);
-        $result = $repository->getUserByLoginValues('wrong value', $this->user->getEmail());
+        $result = $repository->getUserByPhoneNumber($this->user->getPhone());
+
+        $this->assertInstanceOf(User::class, $result);
+    }
+
+    public function testGetUserByPhoneNumberNotFound()
+    {
+        $db = $this->createMock(Connection::class);
+        $db->expects($this->once())
+            ->method('fetchOne')
+            ->with(
+                "SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
+                FROM project.users
+                WHERE phone = :phoneNumber",
+                [
+                    'phoneNumber' => $this->user->getPhone()
+                ]
+            )
+            ->willReturn(null);
+
+        $repository = new MysqlUserRepository($db);
+        $result = $repository->getUserByPhoneNumber($this->user->getPhone());
 
         $this->assertNull($result);
     }

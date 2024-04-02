@@ -16,20 +16,35 @@ final class MysqlUserRepository implements UserRepositoryInterface
     ) {
     }
 
-    public function getUserByLoginValues(string $field, string $value): ?User
+    public function getUserByEmailAddress(string $email): ?User
     {
-        if (in_array($field, ['email', 'phone']) === false) {
-            return null;
-        }
-
         $result = $this->db->fetchOne(
-            "SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
+            'SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
                 FROM project.users
-                WHERE $field = :field",
+                WHERE email = :email',
             [
-                'field' => $value
+                'email' => $email
             ]
         );
+
+        if ($result) {
+            $result = new DataSet($result);
+            return $this->createUserInstance($result);
+        }
+        return null;
+    }
+
+    public function getUserByPhoneNumber(string $phone): ?User
+    {
+        $result = $this->db->fetchOne(
+            'SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
+                FROM project.users
+                WHERE phone = :phoneNumber',
+            [
+                'phoneNumber' => $phone
+            ]
+        );
+
         if ($result) {
             $result = new DataSet($result);
             return $this->createUserInstance($result);

@@ -6,7 +6,9 @@ namespace MyEspacio\User\Domain;
 
 interface UserRepositoryInterface
 {
-    public function getUserByLoginValues(string $field, string $value): ?User;
+    public function getUserByEmailAddress(string $email): ?User;
+
+    public function getUserByPhoneNumber(string $phone): ?User;
 
     public function getUserFromMagicLink(string $magicLink): ?User;
 
