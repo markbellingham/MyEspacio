@@ -16,6 +16,7 @@ use MyEspacio\User\Presentation\LoginController;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class LoginControllerTest extends TestCase
@@ -27,7 +28,7 @@ final class LoginControllerTest extends TestCase
     private LanguageReader $languageReader;
     private TranslationIdentifierFactory $translatorIdentifierFactory;
 
-    private const LOGIN_CODE_EXPIRY_TIME = 5;
+    private const LOGIN_CODE_EXPIRY_TIME = 15;
 
     protected function setUp(): void
     {
@@ -228,6 +229,7 @@ final class LoginControllerTest extends TestCase
             'message' => 'Please check your email for the login code'
         ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertFalse($user->isLoggedIn());
     }
 
     public function testProcessLoginFormCodeSentByPhone()
@@ -296,6 +298,7 @@ final class LoginControllerTest extends TestCase
             'message' => 'Please check your phone for the login code'
         ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertFalse($user->isLoggedIn());
     }
 
     public function testProcessLoginFormLoginCodeThrewException()
@@ -359,6 +362,7 @@ final class LoginControllerTest extends TestCase
             'message' => 'Something went wrong, please contact the website administrator'
         ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertFalse($user->isLoggedIn());
     }
 
     public function testProcessLoginFormLoginDetailsNotSaved()
@@ -423,6 +427,7 @@ final class LoginControllerTest extends TestCase
             'message' => 'Something went wrong, please contact the website administrator'
         ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertFalse($user->isLoggedIn());
     }
 
     public function testProcessLoginFormEmailCodeNotSent()
@@ -491,6 +496,7 @@ final class LoginControllerTest extends TestCase
             'message' => 'Something went wrong, please contact the website administrator'
         ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertFalse($user->isLoggedIn());
     }
 
     public function testProcessLoginFormLogUserInOutOfTime()
@@ -554,6 +560,7 @@ final class LoginControllerTest extends TestCase
             'message' => 'Could not log you in.'
         ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertFalse($user->isLoggedIn());
     }
 
     public function testProcessLoginFormLogUserInWrongCode()
@@ -617,6 +624,7 @@ final class LoginControllerTest extends TestCase
             'message' => 'Could not log you in.'
         ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertFalse($user->isLoggedIn());
     }
 
     public function testProcessLoginFormLogUserIn()
@@ -679,6 +687,39 @@ final class LoginControllerTest extends TestCase
             'success' => true,
             'message' => 'You are now logged in',
             'username' => $user->getName()
+        ];
+        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertTrue($user->isLoggedIn());
+    }
+
+    public function testLogOut()
+    {
+        $request = Request::create('/logout');
+        $request->attributes->set('language', 'en');
+        $request->headers->set('Accept', 'application/json');
+
+        $this->languageReader->expects($this->once())
+            ->method('getTranslationText')
+            ->willReturn('You are now logged out');
+
+        $this->session->expects($this->once())
+            ->method('remove')
+            ->with('user');
+
+        $loginController = new LoginController(
+            $this->requestHandler,
+            $this->loginCode,
+            $this->session,
+            $this->userRepository,
+            $this->languageReader,
+            $this->translatorIdentifierFactory
+        );
+
+        $response = $loginController->logout($request, []);
+
+        $expectedResponse = [
+            'success' => true,
+            'message' => 'You are now logged out'
         ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
     }

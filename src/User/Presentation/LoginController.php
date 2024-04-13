@@ -21,7 +21,7 @@ final class LoginController
 {
     private ?User $user;
 
-    private const LOGIN_CODE_EXPIRY_TIME = 5;
+    private const LOGIN_CODE_EXPIRY_TIME = 15;
 
     public function __construct(
         private readonly RequestHandler $requestHandler,
@@ -154,10 +154,6 @@ final class LoginController
 
         if (isset($vars['phone_code'])) {
             return trim($vars['phone_code']) === $this->user->getPhoneCode();
-        }
-
-        if (isset($vars['magicLink'])) {
-            return trim($vars['magicLink']) === $this->user->getMagicLink();
         }
 
         return false;

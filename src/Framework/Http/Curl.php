@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Http;
 
+use CurlHandle;
 use RuntimeException;
+
+use function PHPUnit\Framework\isInstanceOf;
 
 class Curl implements ExternalHttpRequestInterface
 {
@@ -69,7 +72,7 @@ class Curl implements ExternalHttpRequestInterface
 
     public function __destruct()
     {
-        if ($this->curlHandler !== null) {
+        if ($this->curlHandler instanceof CurlHandle) {
             curl_close($this->curlHandler);
         }
     }
