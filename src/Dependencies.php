@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Auryn\Injector;
-use MyEspacio\Common\Infrastructure\IconsRepository;
+use MyEspacio\Common\Infrastructure\IconsRepositoryInterface;
 use MyEspacio\Common\Infrastructure\MysqlIconsRepository;
 //use MyEspacio\Framework\Csrf\SymfonySessionTokenStorage;
 //use MyEspacio\Framework\Csrf\TokenStorage;
@@ -23,6 +23,8 @@ use MyEspacio\Framework\Database\PdoConnectionFactory;
 //use MyEspacio\Photos\Infrastructure\PhotoRepository;
 //use MyEspacio\Project\Domain\ProjectRepository;
 //use MyEspacio\Project\Infrastructure\MysqlProjectRepository;
+use MyEspacio\Framework\Http\ExternalHttpRequestInterface;
+use MyEspacio\Framework\Http\GuzzleHttpClient;
 use MyEspacio\Framework\Logger\LoggerInterface;
 use MyEspacio\Framework\Logger\MonologAdapter;
 use MyEspacio\User\Domain\UserRepositoryInterface;
@@ -60,6 +62,8 @@ $injector->delegate(
 
 $injector->alias(LoggerInterface::class, MonologAdapter::class);
 
+$injector->alias(ExternalHttpRequestInterface::class, GuzzleHttpClient::class);
+
 //$injector->alias(MusicRepository::class, MysqlMusicRepository::class);
 //
 //$injector->alias(PhotoRepository::class, MySqlPhotoRepository::class);
@@ -68,7 +72,7 @@ $injector->alias(LoggerInterface::class, MonologAdapter::class);
 //
 //$injector->alias(GamesRepository::class, MysqlGamesRepository::class);
 //
-$injector->alias(IconsRepository::class, MysqlIconsRepository::class);
+$injector->alias(IconsRepositoryInterface::class, MysqlIconsRepository::class);
 //
 $injector->alias(UserRepositoryInterface::class, MysqlUserRepository::class);
 //
