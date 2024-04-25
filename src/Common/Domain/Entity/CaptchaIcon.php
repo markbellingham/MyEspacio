@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyEspacio\Common\Domain;
+namespace MyEspacio\Common\Domain\Entity;
 
 use JsonSerializable;
 

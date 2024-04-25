@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace MyEspacio\Common\Application;
 
 use JsonSerializable;
-use MyEspacio\Common\Domain\CaptchaIcon;
-use MyEspacio\Common\Domain\CaptchaIconCollection;
-use MyEspacio\Common\Infrastructure\IconsRepository;
+use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
+use MyEspacio\Common\Domain\Entity\CaptchaIcon;
+use MyEspacio\Common\Domain\Repository\IconRepositoryInterface;
 use MyEspacio\Framework\Config\Settings;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 final class Captcha implements JsonSerializable
 {
@@ -18,7 +17,7 @@ final class Captcha implements JsonSerializable
     private CaptchaIcon $selectedIcon;
 
     public function __construct(
-        private readonly IconsRepository $iconsRepository
+        private readonly IconRepositoryInterface $iconsRepository
     ) {
     }
 

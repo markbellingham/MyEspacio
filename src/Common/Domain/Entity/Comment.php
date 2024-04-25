@@ -1,6 +1,6 @@
 <?php
 
-namespace MyEspacio\Common\Domain;
+namespace MyEspacio\Common\Domain\Entity;
 
 use DateTimeImmutable;
 use Exception;

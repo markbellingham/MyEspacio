@@ -6,7 +6,7 @@ namespace Tests\Common\Domain;
 
 use DateTimeImmutable;
 use Exception;
-use MyEspacio\Common\Domain\Comment;
+use MyEspacio\Common\Domain\Entity\Comment;
 use PHPUnit\Framework\TestCase;
 
 final class CommentTest extends TestCase

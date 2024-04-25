@@ -6,7 +6,7 @@ namespace Tests\Common\Application;
 
 use DateTimeImmutable;
 use MyEspacio\Common\Application\CommentValidator;
-use MyEspacio\Common\Domain\Comment;
+use MyEspacio\Common\Domain\Entity\Comment;
 use PHPUnit\Framework\TestCase;
 
 final class CommentValidatorTest extends TestCase

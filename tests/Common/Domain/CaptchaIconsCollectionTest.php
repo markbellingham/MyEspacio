@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Tests\Common\Domain;
 
 use InvalidArgumentException;
-use MyEspacio\Common\Domain\CaptchaIcon;
-use MyEspacio\Common\Domain\CaptchaIconCollection;
+use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use PHPUnit\Framework\TestCase;
 
 final class CaptchaIconsCollectionTest extends TestCase
@@ -30,7 +29,7 @@ final class CaptchaIconsCollectionTest extends TestCase
         $this->assertCount(2, $collection);
         foreach ($collection as $icon) {
             $element = array_shift($elements);
-            $this->assertInstanceOf(CaptchaIcon::class, $icon);
+            $this->assertInstanceOf(\MyEspacio\Common\Domain\Entity\CaptchaIcon::class, $icon);
             $this->assertEquals($element['icon_id'], $icon->getIconId());
             $this->assertEquals($element['icon'], $icon->getIcon());
             $this->assertEquals($element['name'], $icon->getName());

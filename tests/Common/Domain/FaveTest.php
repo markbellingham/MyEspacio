@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Common\Domain;
 
-use MyEspacio\Common\Domain\Fave;
+use MyEspacio\Common\Domain\Entity\Fave;
 use PHPUnit\Framework\TestCase;
 
 final class FaveTest extends TestCase

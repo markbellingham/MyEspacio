@@ -2,7 +2,7 @@
 
 namespace MyEspacio\Common\Application;
 
-use MyEspacio\Common\Domain\Comment;
+use MyEspacio\Common\Domain\Entity\Comment;
 
 class CommentValidator
 {

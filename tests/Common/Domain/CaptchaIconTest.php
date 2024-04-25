@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Common\Domain;
 
-use MyEspacio\Common\Domain\CaptchaIcon;
+use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 use PHPUnit\Framework\TestCase;
 
 final class CaptchaIconTest extends TestCase
 {
     public function testCaptchaIcon()
     {
-        $icon = new CaptchaIcon(
+        $icon = new \MyEspacio\Common\Domain\Entity\CaptchaIcon(
             icon_id: 1,
             icon: '<i class="bi bi-phone-vibrate"></i>',
             name: 'Mobile',
@@ -42,7 +42,7 @@ final class CaptchaIconTest extends TestCase
 
     public function testCaptchaIconNull()
     {
-        $icon = new CaptchaIcon(
+        $icon = new \MyEspacio\Common\Domain\Entity\CaptchaIcon(
             icon_id: null,
             icon: null,
             name: null,
@@ -57,7 +57,7 @@ final class CaptchaIconTest extends TestCase
 
     public function testCaptchaIconSetters()
     {
-        $icon = new CaptchaIcon(
+        $icon = new \MyEspacio\Common\Domain\Entity\CaptchaIcon(
             icon_id: null,
             icon: null,
             name: null,

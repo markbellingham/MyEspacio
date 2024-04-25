@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MyEspacio\Common\Domain;
+namespace MyEspacio\Common\Domain\Collection;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use InvalidArgumentException;
+use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 
 class CaptchaIconCollection extends ArrayCollection
 {

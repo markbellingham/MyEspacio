@@ -2,8 +2,8 @@
 
 namespace Tests\Common\Infrastructure;
 
-use MyEspacio\Common\Domain\CaptchaIconCollection;
-use MyEspacio\Common\Infrastructure\MysqlIconsRepository;
+use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
+use MyEspacio\Common\Infrastructure\MySqlIconRepository;
 use MyEspacio\Framework\Database\Connection;
 use PHPUnit\Framework\TestCase;
 
@@ -39,7 +39,7 @@ final class IconsRepositoryTest extends TestCase
                 ]
             );
 
-        $repository = new MysqlIconsRepository($db);
+        $repository = new MySqlIconRepository($db);
         $results = $repository->getIcons($qty);
         $this->assertInstanceOf(CaptchaIconCollection::class, $results);
 

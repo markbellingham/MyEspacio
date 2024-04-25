@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Common\Application;
 
 use MyEspacio\Common\Application\Captcha;
-use MyEspacio\Common\Domain\CaptchaIcon;
-use MyEspacio\Common\Domain\CaptchaIconCollection;
-use MyEspacio\Common\Infrastructure\IconsRepository;
+use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
+use MyEspacio\Common\Domain\Entity\CaptchaIcon;
+use MyEspacio\Common\Domain\Repository\IconRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -18,11 +18,11 @@ final class CaptchaTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $iconsRepository = $this->createMock(IconsRepository::class);
+        $iconRepository = $this->createMock(IconRepositoryInterface::class);
         $session = $this->createMock(Session::class);
-        $this->captcha = new Captcha($iconsRepository, $session);
+        $this->captcha = new Captcha($iconRepository, $session);
 
-        $iconsRepository->expects($this->once())
+        $iconRepository->expects($this->once())
             ->method('getIcons')
             ->willReturn(new CaptchaIconCollection(
                 [
