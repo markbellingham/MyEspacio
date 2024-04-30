@@ -31,9 +31,7 @@ final class Captcha implements JsonSerializable
 
     private function chooseSelectedIcon(): void
     {
-        $icons = $this->icons->toArray();
-        $index = array_rand($icons);
-        $this->selectedIcon = $this->icons[$index];
+        $this->selectedIcon = $this->icons->getRandomIcon();
     }
 
     private function encryptIcon(): void

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Common\Domain;
+namespace Tests\Common\Domain\Entity;
 
 use DateTimeImmutable;
 use Exception;

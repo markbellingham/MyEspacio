@@ -4,31 +4,38 @@ declare(strict_types=1);
 
 namespace MyEspacio\Common\Domain\Collection;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use InvalidArgumentException;
 use MyEspacio\Common\Domain\Entity\CaptchaIcon;
+use MyEspacio\Framework\DataSet;
+use MyEspacio\Framework\ModelCollection;
 
-class CaptchaIconCollection extends ArrayCollection
+class CaptchaIconCollection extends ModelCollection
 {
-    public function __construct(array $elements)
+    protected const REQUIRED_KEYS = [
+        'icon_id',
+        'icon',
+        'name'
+    ];
+
+    public function current(): CaptchaIcon
     {
-        parent::__construct();
-        foreach ($elements as $element) {
-            $this->add($element);
-        }
+        $data = $this->currentDataSet();
+        return $this->createModel($data);
     }
 
-    public function add(mixed $element): void
+    public function getRandomIcon(): CaptchaIcon
     {
-        if (is_array($element) === false) {
-            throw new InvalidArgumentException('The element must be an array');
-        }
-        $captchaIcon = new CaptchaIcon(
-            icon_id: intval($element['icon_id'] ?? 0),
-            icon: $element['icon'] ?? '',
-            name:$element['name'] ?? '',
-            colour:$element['colour'] ?? ''
+        $index = array_rand($this->data);
+        $selectedIcon = new DataSet($this->data[$index]);
+        return $this->createModel($selectedIcon);
+    }
+
+    private function createModel(DataSet $data): CaptchaIcon
+    {
+        return new CaptchaIcon(
+            iconId: $data->int('icon_id'),
+            icon: $data->string('icon'),
+            name:$data->string('name'),
+            colour:$data->string('colour')
         );
-        parent::add($captchaIcon);
     }
 }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace MyEspacio\Common\Domain\Entity;
 
-use JsonSerializable;
+use MyEspacio\Framework\Model;
 
-final class CaptchaIcon implements JsonSerializable
+final class CaptchaIcon extends Model
 {
     public function __construct(
-        private ?int $icon_id = null,
+        private ?int $iconId = null,
         private ?string $icon = '',
         private ?string $name = '',
         private ?string $colour = ''
@@ -18,12 +18,12 @@ final class CaptchaIcon implements JsonSerializable
 
     public function getIconId(): ?int
     {
-        return $this->icon_id;
+        return $this->iconId;
     }
 
-    public function setIconId(?int $icon_id): void
+    public function setIconId(?int $iconId): void
     {
-        $this->icon_id = $icon_id;
+        $this->iconId = $iconId;
     }
 
     public function getIcon(): ?string
