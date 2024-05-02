@@ -7,13 +7,13 @@ namespace MyEspacio\User\Domain;
 use DateTimeImmutable;
 use Exception;
 use InvalidArgumentException;
-use JsonSerializable;
+use MyEspacio\Framework\Model;
 use Ramsey\Uuid\Uuid;
 
 /**
  * @throws InvalidArgumentException
  */
-final class User implements JsonSerializable
+final class User extends Model
 {
     private bool $isLoggedIn = false;
 

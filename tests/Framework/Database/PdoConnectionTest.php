@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Framework\Database;
 
+use InvalidArgumentException;
 use MyEspacio\Framework\Database\PdoConnection;
+use MyEspacio\User\Domain\User;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
@@ -80,11 +82,12 @@ final class PdoConnectionTest extends TestCase
             );
 
         $connection = new PdoConnection($pdo);
+        /** @noinspection SqlInsertValues */
         $result = $connection->fetchOne(
             'INSERT INTO project.icons (icon_id, icon) VALUES (:icon_id, :icon)',
             [
                 'icon_id' => '1',
-                'icon' => '<i class="bi bi-phone-vibrate"></i>',
+                'icon' => '<i class="bi bi-phone-vibrate"></i>'
             ]
         );
         $this->assertNull($result);
@@ -118,6 +121,140 @@ final class PdoConnectionTest extends TestCase
             'SELECT * FROM project.icons WHERE icon_id = :id',
             ['id' => 100]
         );
+        $this->assertNull($result);
+    }
+
+    public function testFetchOneModel(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $pdoMock = $this->createMock(PDO::class);
+
+        $pdoMock->expects($this->once())
+            ->method('prepare')
+            ->willReturn($stmt);
+
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->willReturn(true);
+
+        $stmt->expects($this->once())
+            ->method('setFetchMode')
+            ->with(
+                PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,
+                User::class,
+                ['','','Anonymous',null,null,null,null,null,'email',null]
+            );
+
+        $stmt->expects($this->once())
+            ->method('errorInfo')
+            ->willReturn(['00000', null, null]);
+
+        $expectedModel = new User(
+            email: 'mail@example.com',
+            uuid: '9e94fd6f-b327-4493-b6cd-f08cbdf1dd83'
+        );
+
+        $stmt->expects($this->once())
+            ->method('fetch')
+            ->willReturn($expectedModel);
+
+        $pdoConnection = new PdoConnection($pdoMock);
+
+        $actualModel = $pdoConnection->fetchOneModel(
+            "SELECT email, uuid FROM project.users WHERE id = :id",
+            ['id' => 123],
+            User::class
+        );
+
+        $this->assertInstanceOf(User::class, $actualModel);
+        $this->assertEquals($expectedModel->getEmail(), $actualModel->getEmail());
+        $this->assertEquals($expectedModel->getUuid(), $actualModel->getUuid());
+    }
+
+    public function testFetchOneModelBadClassName()
+    {
+        $pdoMock = $this->createMock(PDO::class);
+        $pdoConnection = new PdoConnection($pdoMock);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Class 'bad_class_name' does not exist.");
+
+        $pdoConnection->fetchOneModel(
+            "SELECT email, uuid FROM project.users",
+            [],
+            'bad_class_name'
+        );
+    }
+
+    public function testFetchOneModelNotFound()
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $pdoMock = $this->createMock(PDO::class);
+
+        $pdoMock->expects($this->once())
+            ->method('prepare')
+            ->willReturn($stmt);
+
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->willReturn(true);
+
+        $stmt->expects($this->once())
+            ->method('setFetchMode')
+            ->with(
+                PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,
+                User::class,
+                ['','','Anonymous',null,null,null,null,null,'email',null]
+            );
+
+        $stmt->expects($this->once())
+            ->method('errorInfo')
+            ->willReturn(['00000', null, null]);
+
+        $stmt->expects($this->once())
+            ->method('fetch')
+            ->willReturn(null);
+
+        $pdoConnection = new PdoConnection($pdoMock);
+
+        $result = $pdoConnection->fetchOneModel(
+            "SELECT email, uuid FROM project.users WHERE id = :id",
+            ['id' => 123],
+            User::class
+        );
+
+        $this->assertNull($result);
+    }
+
+    public function testFetchOneModelDatabaseError()
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $pdoMock = $this->createMock(PDO::class);
+
+        $pdoMock->expects($this->once())
+            ->method('prepare')
+            ->willReturn($stmt);
+
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->willReturn(true);
+
+        $stmt->expects($this->once())
+            ->method('errorInfo')
+            ->willReturn([
+                'HY000',
+                1045,
+                'Access denied for user \'username\'@\'localhost\' (using password: YES)'
+            ]);
+
+        $pdoConnection = new PdoConnection($pdoMock);
+
+        $result = $pdoConnection->fetchOneModel(
+            "SELECT email, uuid FROM project.users WHERE id = :id",
+            ['id' => 123],
+            User::class
+        );
+
         $this->assertNull($result);
     }
 
