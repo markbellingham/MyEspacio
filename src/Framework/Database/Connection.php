@@ -10,6 +10,8 @@ interface Connection
 {
     public function fetchOne(string $sql, array $params): ?array;
 
+    public function fetchOneModel(string $sql, array $params, string $fqn);
+
     public function fetchAll(string $sql, array $params): array;
 
     public function run(string $sql, array $params): PDOStatement;

@@ -31,10 +31,15 @@ class PdoConnection implements Connection
         return $result ?: null;
     }
 
-    public function fetchOneModel(string $sql, array $params, string $className): ?Model
+    /**
+     * @template T of Model
+     * @param class-string<T> $fqn
+     * @return T|null
+     */
+    public function fetchOneModel(string $sql, array $params, string $fqn)
     {
-        if (class_exists($className) === false) {
-            throw new InvalidArgumentException("Class '{$className}' does not exist.");
+        if (class_exists($fqn) === false) {
+            throw new InvalidArgumentException("Class '{$fqn}' does not exist.");
         }
 
         $stmt = $this->pdo->prepare($sql);
@@ -46,9 +51,11 @@ class PdoConnection implements Connection
 
         $stmt->setFetchMode(
             PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,
-            $className,
-            $this->getConstructorArguments($className)
+            $fqn,
+            $this->getConstructorArguments($fqn)
         );
+
+        /** @var T|null $result */
         $result = $stmt->fetch();
         return $result ?: null;
     }

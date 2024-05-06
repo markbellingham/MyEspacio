@@ -7,7 +7,7 @@ use MyEspacio\Common\Infrastructure\MySqlIconRepository;
 use MyEspacio\Framework\Database\Connection;
 use PHPUnit\Framework\TestCase;
 
-final class IconsRepositoryTest extends TestCase
+final class MySqlIconsRepositoryTest extends TestCase
 {
     public function testGetIcons()
     {
