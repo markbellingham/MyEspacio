@@ -27,7 +27,7 @@ final class EmailMessageTest extends TestCase
     public function testEmailAddressNull()
     {
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - email: ');
+        $this->expectExceptionMessage('Invalid Message - email:');
         $this->msg->setProtectedEmailAddress(null);
     }
 
@@ -50,7 +50,7 @@ final class EmailMessageTest extends TestCase
     public function testMessageNull()
     {
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - message: ');
+        $this->expectExceptionMessage('Invalid Message - message:');
         $this->msg->setProtectedMessage(null);
     }
 
@@ -70,7 +70,7 @@ final class EmailMessageTest extends TestCase
     public function testNameNull()
     {
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - name: ');
+        $this->expectExceptionMessage('Invalid Message - name:');
         $this->msg->setProtectedName(null);
     }
 
@@ -90,7 +90,7 @@ final class EmailMessageTest extends TestCase
     public function testSubjectNull()
     {
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - subject: ');
+        $this->expectExceptionMessage('Invalid Message - subject:');
         $this->msg->setProtectedSubject(null);
     }
 

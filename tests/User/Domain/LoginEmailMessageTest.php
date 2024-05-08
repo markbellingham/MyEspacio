@@ -49,7 +49,7 @@ final class LoginEmailMessageTest extends TestCase
 
         $templateRenderer = $this->createMock(TemplateRenderer::class);
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - name: ');
+        $this->expectExceptionMessage('Invalid Message - name:');
         $loginEmailMessage = new LoginEmailMessage($templateRenderer);
         $loginEmailMessage->assemble($user);
     }

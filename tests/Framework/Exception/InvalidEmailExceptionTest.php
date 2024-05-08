@@ -19,17 +19,10 @@ class InvalidEmailExceptionTest extends TestCase
 
     public function testInvalidMessageException(): void
     {
-        $messageComponent = ['Value1', 'Value2'];
+        $messageComponent = ['Key1' => 'Value1', 'Key2' => 'Value2'];
         $exception = InvalidEmailException::invalidMessage($messageComponent);
 
         $this->assertInstanceOf(InvalidEmailException::class, $exception);
-
-        if (!empty($messageComponent)) {
-            $expectedMessage = 'Invalid Message - ' . array_key_first($messageComponent) . ': ' . $messageComponent[0];
-        } else {
-            $expectedMessage = 'Invalid Message';
-        }
-
-        $this->assertSame($expectedMessage, $exception->getMessage());
+        $this->assertSame('Invalid Message - Key1: Value1, Key2: Value2', $exception->getMessage());
     }
 }

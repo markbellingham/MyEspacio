@@ -15,6 +15,11 @@ final class InvalidEmailException extends Exception
 
     public static function invalidMessage(array $messageComponent): self
     {
-        return new self('Invalid Message - ' . array_key_first($messageComponent) . ': ' . $messageComponent[array_key_first($messageComponent)]);
+        $message = '';
+        foreach ($messageComponent as $key => $value) {
+            $message .= "$key: $value, ";
+        }
+        $message = rtrim($message, ', ');
+        return new self('Invalid Message - ' . $message);
     }
 }
