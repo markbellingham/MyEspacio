@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Framework\Http;
 
-use Auryn\Injector;
 use MyEspacio\Framework\Csrf\StoredTokenValidator;
 use MyEspacio\Framework\Http\RequestHandler;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
@@ -15,15 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RequestHandlerTest extends TestCase
 {
-    private StoredTokenValidator $storedTokenValidator;
     private TemplateRenderer $templateRenderer;
     private RequestHandler $requestHandler;
 
     protected function setUp(): void
     {
-        $this->storedTokenValidator = $this->createMock(StoredTokenValidator::class);
+        $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
         $this->templateRenderer = $this->createMock(TemplateRenderer::class);
-        $this->requestHandler = new RequestHandler($this->storedTokenValidator, $this->templateRenderer);
+        $this->requestHandler = new RequestHandler($storedTokenValidator, $this->templateRenderer);
     }
 
     public function testSetResponseType()
@@ -61,21 +59,14 @@ class RequestHandlerTest extends TestCase
         $this->assertFalse($requestHandler->validate($request));
     }
 
-//    public function testShowRoot()
-//    {
-//        $request = $this->createMock(Request::class);
-//        $vars = ['var1' => 'value1', 'var2' => 'value2']; // adjust this to your needs
-//
-//        $controller = $this->createMock(RootPageController::class);
-//        $controller->method('show')->willReturn(new Response());
-//
-//        $injector = $this->createMock(Injector::class);
-//        $injector->method('make')->willReturn($controller);
-//
-//        $result = $controller->showRoot($request, $vars);
-//
-//        $this->assertInstanceOf(Response::class, $result);
-//    }
+    public function testShowRoot()
+    {
+        $request = $this->createMock(Request::class);
+        $vars = ['var1' => 'value1', 'var2' => 'value2'];
+        $result = $this->requestHandler->showRoot($request, $vars);
+
+        $this->assertInstanceOf(Response::class, $result);
+    }
 
     public function testSendResponseJson(): void
     {

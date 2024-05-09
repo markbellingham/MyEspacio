@@ -48,7 +48,7 @@ final class RequestHandler
     public function showRoot(Request $request, array $vars): Response
     {
         $injector = include(ROOT_DIR . '/src/Dependencies.php');
-        $controller = $injector->make('Personly\FrontPage\Presentation\RootPageController');
+        $controller = $injector->make('MyEspacio\Home\Presentation\RootPageController');
         return $controller->show($request, $vars);
     }
 
