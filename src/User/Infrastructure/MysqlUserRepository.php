@@ -85,6 +85,22 @@ final class MysqlUserRepository implements UserRepositoryInterface
         return $this->db->statementHasErrors($stmt) === false && $stmt->rowCount() === 1;
     }
 
+    public function getAnonymousUser(): User
+    {
+        return new User(
+            email: 'website@markbellingham.uk',
+            uuid: '95c7cdac-6a6f-44ca-a28f-fc62ef61405d',
+            name: 'Anonymous',
+            phone: null,
+            loginAttempts: null,
+            loginDate: null,
+            magicLink: null,
+            phoneCode: null,
+            passcodeRoute: 'email',
+            id: 1
+        );
+    }
+
     private function createUserInstance(DataSet $result): User
     {
         return new User(

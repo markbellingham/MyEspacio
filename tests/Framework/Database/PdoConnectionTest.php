@@ -142,7 +142,7 @@ final class PdoConnectionTest extends TestCase
             ->with(
                 PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,
                 User::class,
-                ['','','Anonymous',null,null,null,null,null,'email',null]
+                ['','','',null,null,null,null,null,'email',null]
             );
 
         $stmt->expects($this->once())
@@ -151,7 +151,8 @@ final class PdoConnectionTest extends TestCase
 
         $expectedModel = new User(
             email: 'mail@example.com',
-            uuid: '9e94fd6f-b327-4493-b6cd-f08cbdf1dd83'
+            uuid: '9e94fd6f-b327-4493-b6cd-f08cbdf1dd83',
+            name: 'Anonymous'
         );
 
         $stmt->expects($this->once())
@@ -204,7 +205,7 @@ final class PdoConnectionTest extends TestCase
             ->with(
                 PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,
                 User::class,
-                ['','','Anonymous',null,null,null,null,null,'email',null]
+                ['','','',null,null,null,null,null,'email',null]
             );
 
         $stmt->expects($this->once())
@@ -305,7 +306,7 @@ final class PdoConnectionTest extends TestCase
         }
     }
 
-    public function testFetchALlFail()
+    public function testFetchAllFail()
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);

@@ -43,7 +43,7 @@ final class UserTest extends TestCase
         $this->assertEquals(
             [
                 'name' => 'Mark',
-                'uuid' => 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+                'uuid' => 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
             ],
             $user->jsonSerialize()
         );
@@ -53,7 +53,8 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            name: 'Anonymous'
         );
 
         $this->assertNull($user->getLoginAttempts());
@@ -70,7 +71,8 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            name: 'Anonymous'
         );
 
         $user->setUuid('a84e4c4f-110d-4f7f-8362-1d592aa8433e');
@@ -142,7 +144,8 @@ final class UserTest extends TestCase
 
         new User(
             email: 'mail@example.com',
-            uuid: 'Invalid UUID'
+            uuid: 'Invalid UUID',
+            name: 'Anonymous'
         );
     }
 
@@ -153,7 +156,8 @@ final class UserTest extends TestCase
 
         $user = new User(
             email: 'Invalid email',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            name: 'Anonymous'
         );
     }
 
@@ -161,7 +165,8 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            name: 'Anonymous'
         );
 
         $this->expectException(InvalidArgumentException::class);
@@ -173,7 +178,8 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            name: 'Anonymous'
         );
 
         $this->expectException(Exception::class);

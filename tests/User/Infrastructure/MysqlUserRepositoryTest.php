@@ -286,4 +286,13 @@ final class MysqlUserRepositoryTest extends TestCase
 
         $this->assertFalse($result);
     }
+
+    public function testGetAnonymousUser()
+    {
+        $db = $this->createMock(Connection::class);
+        $repository = new MysqlUserRepository($db);
+        $result = $repository->getAnonymousUser();
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertSame(1, $result->getId());
+    }
 }

@@ -25,7 +25,7 @@ final class User extends Model
     public function __construct(
         private string $email,
         private string $uuid,
-        private string $name = 'Anonymous',
+        private string $name,
         private ?string $phone = null,
         private ?int $loginAttempts = null,
         private ?DateTimeImmutable $loginDate = null,

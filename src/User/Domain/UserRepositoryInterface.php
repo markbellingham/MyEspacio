@@ -12,5 +12,7 @@ interface UserRepositoryInterface
 
     public function getUserFromMagicLink(string $magicLink): ?User;
 
+    public function getAnonymousUser(): User;
+
     public function saveLoginDetails(User $user): bool;
 }
