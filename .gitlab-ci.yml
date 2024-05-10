@@ -23,7 +23,7 @@ test:
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --no-scripts
   script:
-    - vendor/bin/phpcs --standard=PSR12 src tests
+    - vendor/bin/phpcs --standard=./phpcs.xml src tests
     - vendor/bin/phpunit --configuration phpunit.xml
   only:
     - merge_requests
