@@ -5,9 +5,25 @@
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-- test
-sast:
-  stage: test
+  - test
+  - security
+
+# Security scanning job (SAST)
 include:
-- template: Security/SAST.gitlab-ci.yml
-- component: gitlab.com/gitlab-components/code-quality/code-quality@main
+  - template: Security/SAST.gitlab-ci.yml
+  - component: gitlab.com/gitlab-components/code-quality/code-quality@main
+
+# Job to run PHP CodeSniffer and PHPUnit
+test:
+  stage: test
+  image: php:8.1
+  before_script:
+    - apt-get update && apt-get install -y zip
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer install --no-scripts
+  script:
+    - vendor/bin/phpcs --standard=PSR12 src tests
+    - vendor/bin/phpunit --configuration phpunit.xml
+  only:
+    - merge_requests
+    - master
