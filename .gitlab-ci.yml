@@ -18,7 +18,8 @@ test:
   stage: test
   image: php:8.1
   before_script:
-    - apt-get update && apt-get install -y zip
+    - apt-get update && apt-get install -y zip libexif-dev
+    - docker-php-ext-install exif
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --no-scripts
   script:
