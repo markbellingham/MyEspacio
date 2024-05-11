@@ -18,7 +18,9 @@ test:
     - composer install --no-scripts
     - cp config/config.sample.php config/config.php
     - apt-get update
-    - apt-get install -y php8.1-mysql
+    - apt-get install -y libmysqlclient-dev
+    - pecl install pdo_mysql
+    - docker-php-ext-enable pdo_mysql
   script:
     - vendor/bin/phpcs --standard=./phpcs.xml src tests
     - vendor/bin/phpunit --configuration phpunit.xml
