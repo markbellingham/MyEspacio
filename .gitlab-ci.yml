@@ -22,6 +22,7 @@ test:
     - docker-php-ext-install exif
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --no-scripts
+    - cp config/config.sample.php config/config.php
   script:
     - vendor/bin/phpcs --standard=./phpcs.xml src tests
     - vendor/bin/phpunit --configuration phpunit.xml
