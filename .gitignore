@@ -5,13 +5,12 @@ vendor
 # PHPStorm directory
 .idea
 
-# Config directory
-/config
+# Config file
+/config/config.php
 
 composer.lock
 package-lock.json
 
 /public/phpinfo.php
 
-/tests/Framework/Files/temp
 /.phpunit.result.cache

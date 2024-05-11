@@ -13,7 +13,7 @@ final class TemplateDirectoryTest extends TestCase
     {
         $templateDirectory = new TemplateDirectory(ROOT_DIR);
         $this->assertEquals(
-            '/home/mark/Sites/MyEspacio/tests/../templates',
+            ROOT_DIR . '/templates',
             $templateDirectory->toString()
         );
     }
