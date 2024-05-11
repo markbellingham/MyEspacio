@@ -18,7 +18,7 @@ test:
     - composer install --no-scripts
     - cp config/config.sample.php config/config.php
     - apt-get update
-    - apt-get install -y libmysqlclient-dev
+    - apt-get install -y libmariadb-dev
     - pecl install pdo_mysql
     - docker-php-ext-enable pdo_mysql
   script:
