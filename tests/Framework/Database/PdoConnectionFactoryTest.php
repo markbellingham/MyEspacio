@@ -11,9 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PdoConnectionFactoryTest extends TestCase
 {
-    /**
-     * @group database
-     */
+    #[Group('database')]
     public function testCreate()
     {
         $factory = new PdoConnectionFactory();

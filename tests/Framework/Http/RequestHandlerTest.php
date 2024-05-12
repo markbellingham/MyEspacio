@@ -7,6 +7,7 @@ namespace Tests\Framework\Http;
 use MyEspacio\Framework\Csrf\StoredTokenValidator;
 use MyEspacio\Framework\Http\RequestHandler;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,9 +60,7 @@ class RequestHandlerTest extends TestCase
         $this->assertFalse($requestHandler->validate($request));
     }
 
-    /**
-     * @group database
-     */
+    #[Group('database')]
     public function testShowRoot()
     {
         $request = $this->createMock(Request::class);
