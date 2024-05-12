@@ -59,6 +59,9 @@ class RequestHandlerTest extends TestCase
         $this->assertFalse($requestHandler->validate($request));
     }
 
+    /**
+     * @group database
+     */
     public function testShowRoot()
     {
         $request = $this->createMock(Request::class);
