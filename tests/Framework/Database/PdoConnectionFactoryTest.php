@@ -6,10 +6,12 @@ namespace Tests\Framework\Database;
 
 use MyEspacio\Framework\Database\PdoConnection;
 use MyEspacio\Framework\Database\PdoConnectionFactory;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class PdoConnectionFactoryTest extends TestCase
 {
+    #[Group('database')]
     public function testCreate()
     {
         $factory = new PdoConnectionFactory();

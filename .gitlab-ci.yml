@@ -17,13 +17,9 @@ test:
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --no-scripts
     - cp config/config.sample.php config/config.php
-    - apt-get update
-    - apt-get install -y libmariadb-dev
-    - pecl install pdo_mysql
-    - docker-php-ext-enable pdo_mysql
   script:
     - vendor/bin/phpcs --standard=./phpcs.xml src tests
-    - vendor/bin/phpunit --configuration phpunit.xml
+    - vendor/bin/phpunit --configuration phpunit.xml --exclude-group database
   only:
     - merge_requests
     - master
