@@ -39,7 +39,8 @@ final class RequestHandler
         }
 
         $layoutToken = $request->headers->get('X-Layout');
-        if (!$this->storedTokenValidator->validate('layout', new Token($layoutToken ?? ''))) {
+        $token = new Token($layoutToken ?? '');
+        if ($this->storedTokenValidator->validate('layout', $token) === false) {
             return true;
         }
         return false;
