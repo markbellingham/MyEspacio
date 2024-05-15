@@ -35,15 +35,15 @@ final class RequestHandler
          */
         $this->responseType = $request->headers->get('Accept');
         if ($this->responseType === 'application/json') {
-            return false;
+            return true;
         }
 
         $layoutToken = $request->headers->get('X-Layout');
         $token = new Token($layoutToken ?? '');
         if ($this->storedTokenValidator->validate('layout', $token) === false) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public function showRoot(Request $request, array $vars): Response

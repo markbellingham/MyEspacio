@@ -25,16 +25,13 @@ final class ContactController
 
     public function show(Request $request, array $vars): Response
     {
-        $redirect = $this->requestHandler->validate($request);
-        if ($redirect) {
+        $valid = $this->requestHandler->validate($request);
+        if ($valid === false) {
             return $this->requestHandler->showRoot($request, $vars);
         }
 
         $icons = $this->captcha->getIcons(self::CAPTCHA_ICONS_QUANTITY);
         $this->session->set('contactIcons', $icons->toArray());
-
-        $captcha1 = $this->captcha->getSelectedIcon();
-        $captcha2 = $this->captcha->getEncryptedIcon();
 
         return $this->requestHandler->sendResponse(
             [
