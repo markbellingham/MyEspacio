@@ -14,15 +14,15 @@ test:
   before_script:
     - apt-get update && apt-get install -y zip libexif-dev
     - docker-php-ext-install exif
-    - apt-get install -y php8.1-xdebug
-    - echo "zend_extension=xdebug.so" >> /usr/local/etc/php/php.ini
+    - pecl install xdebug
+    - echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20210902/xdebug.so" >> /usr/local/etc/php/php.ini
     - echo "xdebug.mode=coverage" >> /usr/local/etc/php/php.ini
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --no-scripts
     - cp config/config.sample.php config/config.php
   script:
     - vendor/bin/phpcs --standard=./phpcs.xml src tests
-    - vendor/bin/phpunit --configuration phpunit.xml --exclude-group database  --coverage-html coverage-report/
+    - vendor/bin/phpunit --configuration phpunit.xml --exclude-group database  --coverage-html coverage-report/ --colors=never
   artifacts:
     paths:
       - coverage-report/
