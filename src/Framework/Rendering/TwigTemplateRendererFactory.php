@@ -24,7 +24,7 @@ final class TwigTemplateRendererFactory
     ) {
     }
 
-    public function create(): TwigTemplateRenderer
+    public function create(string $locale = 'en'): TwigTemplateRenderer
     {
         $loader = new FilesystemLoader($this->templateDirectory->toString());
         $twigEnvironment = new Environment($loader, [
@@ -45,8 +45,6 @@ final class TwigTemplateRendererFactory
             })
         );
 
-
-        $locale = 'en';
         $this->translator = $this->translatorFactory->createTranslator($locale);
         $twigEnvironment->addFunction(
             new TwigFunction('trans', function (string $message, array $parameters = []): string {

@@ -15,10 +15,10 @@ final class ContactMeMessage extends EmailMessage
      * @throws InvalidEmailException
      */
     public function __construct(
-        string $emailAddress,
-        string $name,
-        string $subject,
-        string $message,
+        protected ?string $emailAddress,
+        protected ?string $name,
+        protected ?string $subject,
+        protected ?string $message,
         private ?int $captchaIconId,
         private ?string $description
     ) {

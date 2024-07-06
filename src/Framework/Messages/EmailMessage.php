@@ -12,10 +12,10 @@ class EmailMessage
     private const MINIMUM_NAME_LENGTH = 3;
     private const MINIMUM_SUBJECT_LENGTH = 3;
 
-    protected string $emailAddress;
-    protected string $message;
-    protected string $name;
-    protected string $subject;
+    protected ?string $emailAddress;
+    protected ?string $message;
+    protected ?string $name;
+    protected ?string $subject;
     protected ?string $error;
 
     public function getEmailAddress(): string

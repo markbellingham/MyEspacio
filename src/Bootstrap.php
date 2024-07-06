@@ -17,6 +17,24 @@ require ROOT_DIR . '/vendor/autoload.php';
 // phpcs:enable
 Debugger::enable();
 $request = Request::createFromGlobals();
+
+function parseLanguage(Request $request): string
+{
+    $supportedLanguages = ['en','es','fr'];
+    $path = $request->getPathInfo();
+    if (preg_match('#^/([a-zA-Z]{2})(/|$)#', $path, $matches)) {
+        $language = $matches[1];
+        if (in_array($language, $supportedLanguages)) {
+            $newPath = substr($path, 3);
+            $request->server->set('REQUEST_URI', $newPath);
+            return $language;
+        }
+    }
+    return 'en';
+}
+
+$request->attributes->set('language', parseLanguage($request));
+
 $dispatcher = simpleDispatcher(
     function (RouteCollector $r) {
         $routes = include ROOT_DIR . '/src/Routes.php';

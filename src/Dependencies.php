@@ -14,13 +14,12 @@ use MyEspacio\Framework\Database\PdoConnection;
 use MyEspacio\Framework\Database\PdoConnectionFactory;
 use MyEspacio\Framework\Http\ExternalHttpRequestInterface;
 use MyEspacio\Framework\Http\GuzzleHttpClient;
+use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Logger\LoggerInterface;
 use MyEspacio\Framework\Logger\MonologAdapter;
 use MyEspacio\Framework\Messages\EmailInterface;
 use MyEspacio\Framework\Messages\PhpMailerEmail;
 use MyEspacio\Framework\Rendering\TemplateDirectory;
-use MyEspacio\Framework\Rendering\TemplateRenderer;
-use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Infrastructure\MysqlUserRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -37,15 +36,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 $injector = new Injector();
 
-$injector->delegate(
-    TemplateRenderer::class,
-    function () use ($injector): TemplateRenderer {
-        $factory = $injector->make(TwigTemplateRendererFactory::class);
-        return $factory->create();
-    }
-);
-
 $injector->define(TemplateDirectory::class, [':rootDirectory' => ROOT_DIR]);
+
+$injector->define(LanguagesDirectory::class, [':rootDirectory' => ROOT_DIR]);
 //
 $injector->alias(TokenStorage::class, SymfonySessionTokenStorage::class);
 

@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'contact' => [
+        'bad_message' => 'Invalid Message',
+        'email_success' => 'Success! Message Sent.',
+        'email_fail' => 'Sorry, there was an error sending the message. Please try again later.',
+        'form_fail' => 'Sorry, there is a problem with the form.'
+    ],
     'login' => [
         'already_logged_in' => 'You are already logged in',
         'generic_error' => 'Something went wrong, please contact the website administrator',

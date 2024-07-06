@@ -6,7 +6,10 @@ namespace Tests\Framework\Http;
 
 use MyEspacio\Framework\Csrf\StoredTokenValidator;
 use MyEspacio\Framework\Http\RequestHandler;
-use MyEspacio\Framework\Rendering\TemplateRenderer;
+use MyEspacio\Framework\Localisation\LanguagesDirectory;
+use MyEspacio\Framework\Localisation\TranslationIdentifier;
+use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
+use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,55 +18,73 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RequestHandlerTest extends TestCase
 {
-    private TemplateRenderer $templateRenderer;
+    private TranslationIdentifierFactory $translationIdentifierFactory;
+    private TwigTemplateRendererFactory $templateRendererFactory;
     private RequestHandler $requestHandler;
 
     protected function setUp(): void
     {
         $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
-        $this->templateRenderer = $this->createMock(TemplateRenderer::class);
-        $this->requestHandler = new RequestHandler($storedTokenValidator, $this->templateRenderer);
+        $this->templateRendererFactory = $this->createMock(TwigTemplateRendererFactory::class);
+        $this->translationIdentifierFactory = $this->createMock(TranslationIdentifierFactory::class);
+        $this->requestHandler = new RequestHandler(
+            $storedTokenValidator,
+            $this->templateRendererFactory,
+            $this->translationIdentifierFactory
+        );
     }
 
-    public function testSetResponseType()
+    public function testSetResponseType(): void
     {
         $this->requestHandler->setResponseType('text/html');
         $this->assertEquals('text/html', $this->requestHandler->getResponseType());
     }
 
-    public function testValidateRequestJsonResponse()
+    public function testValidateRequestJsonResponse(): void
     {
-        $request = Request::createFromGlobals();
+        $request = new Request();
+        $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
         $this->assertTrue($this->requestHandler->validate($request));
     }
 
-    public function testValidateRequestHtmlResponseNoToken()
+    public function testValidateRequestHtmlResponseNoToken(): void
     {
-        $request = Request::createFromGlobals();
+        $request = new Request();
+        $request->attributes->set('language', 'en');
         $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
         $storedTokenValidator->expects($this->once())
             ->method('validate')
             ->willreturn(true);
-        $requestHandler = new RequestHandler($storedTokenValidator, $this->templateRenderer);
+        $requestHandler = new RequestHandler(
+            $storedTokenValidator,
+            $this->templateRendererFactory,
+            $this->translationIdentifierFactory
+        );
         $this->assertTrue($requestHandler->validate($request));
     }
 
-    public function testValidateRequestHtmlResponseWithToken()
+    public function testValidateRequestHtmlResponseWithToken(): void
     {
-        $request = Request::createFromGlobals();
+        $request = new Request();
+        $request->attributes->set('language', 'en');
         $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
         $storedTokenValidator->expects($this->once())
             ->method('validate')
             ->willreturn(false);
-        $requestHandler = new RequestHandler($storedTokenValidator, $this->templateRenderer);
+        $requestHandler = new RequestHandler(
+            $storedTokenValidator,
+            $this->templateRendererFactory,
+            $this->translationIdentifierFactory
+        );
         $this->assertFalse($requestHandler->validate($request));
     }
 
     #[Group('database')]
-    public function testShowRoot()
+    public function testShowRoot(): void
     {
-        $request = $this->createMock(Request::class);
+        $request = new Request();
+        $request->request->set('language', 'en');
         $vars = ['var1' => 'value1', 'var2' => 'value2'];
         $result = $this->requestHandler->showRoot($request, $vars);
 
@@ -81,16 +102,35 @@ class RequestHandlerTest extends TestCase
 
     public function testSendResponseHtml(): void
     {
-        $this->requestHandler->setResponseType('text/html');
-
-        $this->templateRenderer->expects($this->once())
-            ->method('render')
-            ->with('template', ['key' => 'value'])
-            ->willReturn('Rendered Template');
-
-        $response = $this->requestHandler->sendResponse(['key' => 'value'], 'template');
+        $request = new Request();
+        $request->attributes->set('language', 'en');
+        $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
+        $storedTokenValidator->expects($this->once())
+            ->method('validate')
+            ->willreturn(false);
+        $requestHandler = new RequestHandler(
+            $storedTokenValidator,
+            $this->templateRendererFactory,
+            $this->translationIdentifierFactory
+        );
+        $requestHandler->validate($request);
+        $response = $requestHandler->sendResponse(['key' => 'value'], 'template');
 
         $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals('Rendered Template', $response->getContent());
+        $this->assertEquals('', $response->getContent());
+    }
+
+    public function testGetTranslationIdentifier(): void
+    {
+        $this->translationIdentifierFactory->expects($this->once())
+            ->method('create')
+            ->willReturn(new TranslationIdentifier('en', 'messages', new LanguagesDirectory(ROOT_DIR)));
+
+        $request = new Request();
+        $request->attributes->set('language', 'en');
+
+        $result = $this->requestHandler->getTranslationIdentifier($request, 'messages');
+
+        $this->assertInstanceOf(TranslationIdentifier::class, $result);
     }
 }

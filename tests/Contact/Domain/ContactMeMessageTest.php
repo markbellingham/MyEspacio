@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ContactMeMessageTest extends TestCase
 {
-    public function testContactMeMessage()
+    public function testContactMeMessage(): void
     {
         $message = new ContactMeMessage(
             emailAddress: 'mail@example.tld',
@@ -24,10 +24,10 @@ final class ContactMeMessageTest extends TestCase
         $this->assertInstanceOf(ContactMeMessage::class, $message);
     }
 
-    public function testCaptchaIdNull()
+    public function testCaptchaIdNull(): void
     {
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - captchaIconId: ');
+        $this->expectExceptionMessage('Invalid Message - emailAddress: mail@example.tld, message: A test message with lots of characters, name: Anonymous, subject: A Test Subject, captchaIconId: , description:');
 
         $message = new ContactMeMessage(
             emailAddress: 'mail@example.tld',
@@ -39,10 +39,10 @@ final class ContactMeMessageTest extends TestCase
         );
     }
 
-    public function testDescriptionNull()
+    public function testDescriptionNull(): void
     {
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - captchaIconId: 1');
+        $this->expectExceptionMessage('Invalid Message - emailAddress: mail@example.tld, message: A test message with lots of characters, name: Anonymous, subject: A Test Subject, captchaIconId: 1, description:');
 
         $message = new ContactMeMessage(
             emailAddress: 'mail@example.tld',
@@ -54,10 +54,10 @@ final class ContactMeMessageTest extends TestCase
         );
     }
 
-    public function testDescriptionPopulated()
+    public function testDescriptionPopulated(): void
     {
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - captchaIconId: 1, description: An invalid description');
+        $this->expectExceptionMessage('Invalid Message - emailAddress: mail@example.tld, message: A test message with lots of characters, name: Anonymous, subject: A Test Subject, captchaIconId: 1, description: An invalid description');
 
         $message = new ContactMeMessage(
             emailAddress: 'mail@example.tld',

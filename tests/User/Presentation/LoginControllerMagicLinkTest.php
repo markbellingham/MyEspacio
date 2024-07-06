@@ -7,7 +7,6 @@ namespace Tests\User\Presentation;
 use DateTimeImmutable;
 use MyEspacio\Framework\Http\RequestHandler;
 use MyEspacio\Framework\Localisation\LanguageReader;
-use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
 use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
@@ -25,7 +24,6 @@ final class LoginControllerMagicLinkTest extends TestCase
     private SessionInterface $session;
     private UserRepositoryInterface $userRepository;
     private LanguageReader $languageReader;
-    private TranslationIdentifierFactory $translatorIdentifierFactory;
 
     private const LOGIN_CODE_EXPIRY_TIME = 15;
 
@@ -38,13 +36,12 @@ final class LoginControllerMagicLinkTest extends TestCase
         $this->session = $this->createMock(SessionInterface::class);
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->languageReader = $this->createMock(LanguageReader::class);
-        $this->translatorIdentifierFactory = $this->createMock(TranslationIdentifierFactory::class);
 
         $this->requestHandler->expects($this->once())
             ->method('validate');
     }
 
-    public function testLoginWithMagicLinkUserNotFound()
+    public function testLoginWithMagicLinkUserNotFound(): void
     {
         $vars = [
             'email' => 'test@example.tld',
@@ -74,7 +71,7 @@ final class LoginControllerMagicLinkTest extends TestCase
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
             ->willReturnCallback(function ($responseData) {
-                return new JsonResponse($responseData);
+                return new JsonResponse($responseData, Response::HTTP_NOT_FOUND);
             });
 
         $loginController = new LoginController(
@@ -82,20 +79,16 @@ final class LoginControllerMagicLinkTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->loginWithMagicLink($request, $vars);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'User not found'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(['error' => 'User not found'], json_decode($response->getContent(), true));
+        $this->assertSame(404, $response->getStatusCode());
     }
 
-    public function testLoginWithMagicLinkOutOfTime()
+    public function testLoginWithMagicLinkOutOfTime(): void
     {
         $vars = [
             'email' => 'test@example.tld',
@@ -139,7 +132,7 @@ final class LoginControllerMagicLinkTest extends TestCase
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
             ->willReturnCallback(function ($responseData) {
-                return new JsonResponse($responseData);
+                return new JsonResponse($responseData, Response::HTTP_REQUEST_TIMEOUT);
             });
 
         $loginController = new LoginController(
@@ -147,21 +140,17 @@ final class LoginControllerMagicLinkTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->loginWithMagicLink($request, $vars);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'Could not log you in.'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(['error' => 'Could not log you in.'], json_decode($response->getContent(), true));
+        $this->assertSame(408, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
     }
 
-    public function testLoginWithMagicLink()
+    public function testLoginWithMagicLink(): void
     {
         $vars = [
             'email' => 'test@example.tld',
@@ -207,13 +196,13 @@ final class LoginControllerMagicLinkTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->loginWithMagicLink($request, $vars);
 
         $this->assertEquals('<html lang="en"><body><p>You are logged in</p></body></html>', $response->getContent());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertTrue($user->isLoggedIn());
     }
 }

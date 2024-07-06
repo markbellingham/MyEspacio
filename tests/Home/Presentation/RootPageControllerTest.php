@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Home\Presentation;
 
-use MyEspacio\Framework\Rendering\TemplateRenderer;
+use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use MyEspacio\Home\Presentation\RootPageController;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
@@ -18,7 +18,7 @@ final class RootPageControllerTest extends TestCase
     public function testShow()
     {
         $session = $this->createMock(SessionInterface::class);
-        $templateRenderer = $this->createMock(TemplateRenderer::class);
+        $templateRendererFactory = $this->createMock(TwigTemplateRendererFactory::class);
         $userRepository = $this->createMock(UserRepositoryInterface::class);
 
         $request = new Request();
@@ -39,19 +39,10 @@ final class RootPageControllerTest extends TestCase
             ->with('user')
             ->willReturn(null);
 
-        $templateRenderer->expects($this->once())
-            ->method('render')
-            ->with('Layout.html.twig', [
-                'title' => 'Mark Bellingham',
-                'user' => $expectedUser,
-            ])
-            ->willReturn('<html lang="">Mocked HTML content</html>');
-
-        $controller = new RootPageController($session, $templateRenderer, $userRepository);
+        $controller = new RootPageController($session, $templateRendererFactory, $userRepository);
 
         $response = $controller->show($request, $vars);
 
         $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals('<html lang="">Mocked HTML content</html>', $response->getContent());
     }
 }

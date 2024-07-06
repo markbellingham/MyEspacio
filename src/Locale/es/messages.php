@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'contact' => [
+        'bad_message' => 'Mensaje Inválido',
+        'email_success' => '¡Éxito! Mensaje enviado.',
+        'email_fail' => 'Lo sentimos, hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.',
+        'form_fail' => 'Lo sentimos, hay un problema con el formulario.'
+    ],
     'login' => [
         'already_logged_in' => 'Ya has iniciado sesión',
         'generic_error' => 'Algo salió mal, por favor contacta al administrador del sitio web',

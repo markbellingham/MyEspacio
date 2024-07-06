@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace MyEspacio\Home\Presentation;
 
-use MyEspacio\Framework\Rendering\TemplateRenderer;
+use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
+use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,7 @@ final class RootPageController
 {
     public function __construct(
         private readonly SessionInterface $session,
-        private readonly TemplateRenderer $templateRenderer,
+        private readonly TwigTemplateRendererFactory $templateRendererFactory,
         private readonly UserRepositoryInterface $userRepository
     ) {
     }
@@ -28,7 +29,8 @@ final class RootPageController
             'user' => $user,
         ];
 
-        $content = $this->templateRenderer->render('Layout.html.twig', $params);
+        $templateRenderer = $this->templateRendererFactory->create('en');
+        $content = $templateRenderer->render('Layout.html.twig', $params);
         return new Response($content);
     }
 }

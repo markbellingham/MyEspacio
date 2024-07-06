@@ -8,8 +8,6 @@ use DateTimeImmutable;
 use Exception;
 use MyEspacio\Framework\Http\RequestHandler;
 use MyEspacio\Framework\Localisation\LanguageReader;
-use MyEspacio\Framework\Localisation\TranslationIdentifier;
-use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
 use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
@@ -29,65 +27,81 @@ final class LoginController
         private readonly SessionInterface $session,
         private readonly UserRepositoryInterface $userRepository,
         private readonly LanguageReader $languageReader,
-        private readonly TranslationIdentifierFactory $translationIdentifierFactory
     ) {
     }
 
     public function processLoginForm(Request $request): Response
     {
         $this->requestHandler->validate($request);
-        $translationIdentifier = $this->translationIdentifierFactory->create(
-            language: $request->attributes->get('language'),
-            filename: 'messages'
-        );
 
         if ($this->session->get('user')) {
-            return $this->requestHandler->sendResponse([
-                'success' => false,
-                'message' => $this->languageReader->getTranslationText($translationIdentifier, key: 'login.already_logged_in')
-            ]);
+            return $this->requestHandler->sendResponse(
+                data: [
+                    'error' => $this->languageReader->getTranslationText(
+                        $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                        key: 'login.already_logged_in'
+                    )
+                ],
+                statusCode: Response::HTTP_CONFLICT
+            );
         }
 
         $vars = json_decode($request->getContent(), true);
         $this->user = $this->getUserByLoginValues($vars);
         if ($this->user === null) {
-            return $this->requestHandler->sendResponse([
-                'success' => false,
-                'message' => $this->languageReader->getTranslationText($translationIdentifier, key: 'login.user_not_found')
-            ]);
+            return $this->requestHandler->sendResponse(
+                data: [
+                    'error' => $this->languageReader->getTranslationText(
+                        $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                        key: 'login.user_not_found'
+                    )
+                ],
+                statusCode: Response::HTTP_NOT_FOUND
+            );
         }
 
         if (($vars['phone_code'] ?? '') !== '') {
-            return $this->logUserIn($translationIdentifier, $vars);
+            return $this->logUserIn($request, $vars);
         }
 
         try {
             $this->loginCode->generateCode($this->user);
         } catch (Exception) {
-            return $this->requestHandler->sendResponse([
-                'success' => false,
-                'message' => $this->languageReader->getTranslationText($translationIdentifier, key: 'login.generic_error')
-            ]);
+            return $this->requestHandler->sendResponse(
+                data: [
+                    'error' => $this->languageReader->getTranslationText(
+                        $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                        key: 'login.generic_error'
+                    )
+                ],
+                statusCode: Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
         if (
             $this->userRepository->saveLoginDetails($this->user) === false ||
             $this->loginCode->sendToUser($this->user) === false
         ) {
-            return $this->requestHandler->sendResponse([
-                'success' => false,
-                'message' => $this->languageReader->getTranslationText($translationIdentifier, key: 'login.generic_error')
-            ]);
+            return $this->requestHandler->sendResponse(
+                data: [
+                    'error' => $this->languageReader->getTranslationText(
+                        $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                        key: 'login.generic_error'
+                    )
+                ],
+                statusCode: Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
-        return $this->requestHandler->sendResponse([
-            'success' => true,
-            'message' => $this->languageReader->getTranslationText(
-                identifier: $translationIdentifier,
-                key: 'login.code_sent',
-                variables: ['passcode_route' => $this->user->getPasscodeRoute()]
-            )
-        ]);
+        return $this->requestHandler->sendResponse(
+            data: [
+                'message' => $this->languageReader->getTranslationText(
+                    identifier: $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                    key: 'login.code_sent',
+                    variables: ['passcode_route' => $this->user->getPasscodeRoute()]
+                )
+            ]
+        );
     }
 
     private function getUserByLoginValues(array $vars): ?User
@@ -105,17 +119,18 @@ final class LoginController
     public function loginWithMagicLink(Request $request, array $vars): Response
     {
         $this->requestHandler->validate($request);
-        $translationIdentifier = $this->translationIdentifierFactory->create(
-            language: $request->attributes->get('language'),
-            filename: 'messages'
-        );
 
         $this->user = $this->userRepository->getUserFromMagicLink($vars['magicLink']);
         if ($this->user === null) {
-            return $this->requestHandler->sendResponse([
-                'success' => false,
-                'message' => $this->languageReader->getTranslationText($translationIdentifier, 'login.invalid_link')
-            ]);
+            return $this->requestHandler->sendResponse(
+                data: [
+                    'error' => $this->languageReader->getTranslationText(
+                        $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                        'login.invalid_link',
+                    ),
+                ],
+                statusCode: Response::HTTP_NOT_FOUND
+            );
         }
 
         if ($this->secondLoginRequestInTime()) {
@@ -123,27 +138,41 @@ final class LoginController
             return $this->requestHandler->showRoot($request, $vars);
         }
 
-        return $this->requestHandler->sendResponse([
-            'success' => false,
-            'message' => $this->languageReader->getTranslationText($translationIdentifier, 'login.error')
-        ]);
+        return $this->requestHandler->sendResponse(
+            data: [
+                'error' => $this->languageReader->getTranslationText(
+                    $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                    'login.error'
+                ),
+            ],
+            statusCode: Response::HTTP_REQUEST_TIMEOUT
+        );
     }
 
-    private function logUserIn(TranslationIdentifier $translationIdentifier, array $vars): Response
+    private function logUserIn(Request $request, array $vars): Response
     {
         if ($this->loginValuesCheckout($vars)) {
             $this->setUserLoggedIn();
-            return $this->requestHandler->sendResponse([
-                'success' => true,
-                'message' => $this->languageReader->getTranslationText($translationIdentifier, 'login.logged_in'),
-                'username' => $this->user->getName()
-            ]);
+            return $this->requestHandler->sendResponse(
+                data: [
+                    'message' => $this->languageReader->getTranslationText(
+                        $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                        'login.logged_in'
+                    ),
+                    'username' => $this->user->getName()
+                ]
+            );
         }
 
-        return $this->requestHandler->sendResponse([
-            'success' => false,
-            'message' => $this->languageReader->getTranslationText($translationIdentifier, 'login.error')
-        ]);
+        return $this->requestHandler->sendResponse(
+            data: [
+                'error' => $this->languageReader->getTranslationText(
+                    $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                    'login.error'
+                )
+            ],
+            statusCode: Response::HTTP_BAD_REQUEST
+        );
     }
 
     private function loginValuesCheckout(array $vars): bool
@@ -183,15 +212,15 @@ final class LoginController
     public function logout(Request $request, array $vars): Response
     {
         $this->requestHandler->validate($request);
-        $translationIdentifier = $this->translationIdentifierFactory->create(
-            language: $request->attributes->get('language'),
-            filename: 'messages'
-        );
 
         $this->session->remove('user');
-        return $this->requestHandler->sendResponse([
-            'success' => true,
-            'message' => $this->languageReader->getTranslationText($translationIdentifier, 'login.logged_out')
-        ]);
+        return $this->requestHandler->sendResponse(
+            [
+                'message' => $this->languageReader->getTranslationText(
+                    $this->requestHandler->getTranslationIdentifier($request, 'messages'),
+                    key: 'login.logged_out'
+                )
+            ]
+        );
     }
 }

@@ -8,7 +8,6 @@ use DateTimeImmutable;
 use Exception;
 use MyEspacio\Framework\Http\RequestHandler;
 use MyEspacio\Framework\Localisation\LanguageReader;
-use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
 use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
@@ -16,7 +15,6 @@ use MyEspacio\User\Presentation\LoginController;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class LoginControllerTest extends TestCase
@@ -26,7 +24,6 @@ final class LoginControllerTest extends TestCase
     private SessionInterface $session;
     private UserRepositoryInterface $userRepository;
     private LanguageReader $languageReader;
-    private TranslationIdentifierFactory $translatorIdentifierFactory;
 
     private const LOGIN_CODE_EXPIRY_TIME = 15;
 
@@ -39,19 +36,18 @@ final class LoginControllerTest extends TestCase
         $this->session = $this->createMock(SessionInterface::class);
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->languageReader = $this->createMock(LanguageReader::class);
-        $this->translatorIdentifierFactory = $this->createMock(TranslationIdentifierFactory::class);
 
         $this->requestHandler->expects($this->once())
             ->method('validate');
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->willReturnCallback(function ($responseData) {
-                return new JsonResponse($responseData);
+            ->willReturnCallback(function ($responseData, $template, $statusCode) {
+                return new JsonResponse($responseData, $statusCode);
             });
     }
 
-    public function testProcessLoginFormUserAlreadyLoggedIn()
+    public function testProcessLoginFormUserAlreadyLoggedIn(): void
     {
         $request = Request::createFromGlobals();
         $request->attributes->set('language', 'en');
@@ -71,20 +67,19 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'You are already logged in.'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['error' => 'You are already logged in.'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(409, $response->getStatusCode());
     }
 
-    public function testProcessLoginFormUserAlreadyLoggedInSpanish()
+    public function testProcessLoginFormUserAlreadyLoggedInSpanish(): void
     {
         $request = Request::createFromGlobals();
         $request->attributes->set('language', 'es');
@@ -104,20 +99,19 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'Ya has iniciado sesión'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['error' => 'Ya has iniciado sesión'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(409, $response->getStatusCode());
     }
 
-    public function testProcessLoginFormUserNotFound()
+    public function testProcessLoginFormUserNotFound(): void
     {
         $request = Request::create(
             '/login',
@@ -150,20 +144,19 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'User not found'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['error' => 'User not found'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(404, $response->getStatusCode());
     }
 
-    public function testProcessLoginFormCodeSentByEmail()
+    public function testProcessLoginFormCodeSentByEmail(): void
     {
         $request = Request::create(
             '/login',
@@ -218,21 +211,20 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => true,
-            'message' => 'Please check your email for the login code'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['message' => 'Please check your email for the login code'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
     }
 
-    public function testProcessLoginFormCodeSentByPhone()
+    public function testProcessLoginFormCodeSentByPhone(): void
     {
         $request = Request::create(
             '/login',
@@ -287,21 +279,20 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => true,
-            'message' => 'Please check your phone for the login code'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['message' => 'Please check your phone for the login code'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
     }
 
-    public function testProcessLoginFormLoginCodeThrewException()
+    public function testProcessLoginFormLoginCodeThrewException(): void
     {
         $request = Request::create(
             '/login',
@@ -351,21 +342,20 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'Something went wrong, please contact the website administrator'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['error' => 'Something went wrong, please contact the website administrator'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(500, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
     }
 
-    public function testProcessLoginFormLoginDetailsNotSaved()
+    public function testProcessLoginFormLoginDetailsNotSaved(): void
     {
         $request = Request::create(
             '/login',
@@ -416,21 +406,20 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'Something went wrong, please contact the website administrator'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['error' => 'Something went wrong, please contact the website administrator'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(500, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
     }
 
-    public function testProcessLoginFormEmailCodeNotSent()
+    public function testProcessLoginFormEmailCodeNotSent(): void
     {
         $request = Request::create(
             '/login',
@@ -485,21 +474,20 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'Something went wrong, please contact the website administrator'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['error' => 'Something went wrong, please contact the website administrator'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(500, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
     }
 
-    public function testProcessLoginFormLogUserInOutOfTime()
+    public function testProcessLoginFormLogUserInOutOfTime(): void
     {
         $request = Request::create(
             '/login',
@@ -549,21 +537,20 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'Could not log you in.'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['error' => 'Could not log you in.'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(400, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
     }
 
-    public function testProcessLoginFormLogUserInWrongCode()
+    public function testProcessLoginFormLogUserInWrongCode(): void
     {
         $request = Request::create(
             '/login',
@@ -613,21 +600,20 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'success' => false,
-            'message' => 'Could not log you in.'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['error' => 'Could not log you in.'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(400, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
     }
 
-    public function testProcessLoginFormLogUserIn()
+    public function testProcessLoginFormLogUserIn(): void
     {
         $request = Request::create(
             '/login',
@@ -677,22 +663,21 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->processLoginForm($request);
 
         $expectedResponse = [
-            'success' => true,
             'message' => 'You are now logged in',
-            'username' => $user->getName()
+            'username' => 'Mark'
         ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertTrue($user->isLoggedIn());
     }
 
-    public function testLogOut()
+    public function testLogOut(): void
     {
         $request = Request::create('/logout');
         $request->attributes->set('language', 'en');
@@ -711,16 +696,15 @@ final class LoginControllerTest extends TestCase
             $this->loginCode,
             $this->session,
             $this->userRepository,
-            $this->languageReader,
-            $this->translatorIdentifierFactory
+            $this->languageReader
         );
 
         $response = $loginController->logout($request, []);
 
-        $expectedResponse = [
-            'success' => true,
-            'message' => 'You are now logged out'
-        ];
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals(
+            ['message' => 'You are now logged out'],
+            json_decode($response->getContent(), true)
+        );
+        $this->assertSame(200, $response->getStatusCode());
     }
 }

@@ -6,7 +6,10 @@ namespace MyEspacio\Framework\Http;
 
 use MyEspacio\Framework\Csrf\StoredTokenValidator;
 use MyEspacio\Framework\Csrf\Token;
+use MyEspacio\Framework\Localisation\TranslationIdentifier;
+use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
+use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,19 +17,18 @@ use Symfony\Component\HttpFoundation\Response;
 final class RequestHandler
 {
     private ?string $responseType = null;
+    private TemplateRenderer $templateRenderer;
 
     public function __construct(
         private readonly StoredTokenValidator $storedTokenValidator,
-        private readonly TemplateRenderer $templateRenderer
+        private readonly TwigTemplateRendererFactory $templateRendererFactory,
+        private readonly TranslationIdentifierFactory $translationIdentifierFactory
     ) {
     }
 
     public function validate(Request $request): bool
     {
-        $request->attributes->set(
-            'language',
-            $this->extractLanguage($request->getPathInfo())
-        );
+        $this->templateRenderer = $this->templateRendererFactory->create($request->attributes->get('language') ?? 'en');
 
         /**
          * If the response type is text/html and does not contain the token, send a full application response
@@ -53,13 +55,16 @@ final class RequestHandler
         return $controller->show($request, $vars);
     }
 
-    public function sendResponse(array $data = [], string $template = ''): Response
-    {
+    public function sendResponse(
+        array $data = [],
+        string $template = '',
+        int $statusCode = Response::HTTP_OK
+    ): Response {
         if ($this->responseType === 'application/json' || $template == '') {
-            return new JsonResponse($data);
+            return new JsonResponse($data, $statusCode);
         }
         $content = $this->templateRenderer->render($template, $data);
-        return new Response($content);
+        return new Response($content, $statusCode);
     }
 
     public function setResponseType(string $responseType): void
@@ -72,11 +77,11 @@ final class RequestHandler
         return $this->responseType;
     }
 
-    private function extractLanguage(string $pathInfo): string
+    public function getTranslationIdentifier(Request $request, string $languageFile): TranslationIdentifier
     {
-        // Extract language from pathInfo
-        // For example, if the path is '/en/home', extract 'en' as the language
-        $parts = explode('/', trim($pathInfo, '/'));
-        return isset($parts[0]) && preg_match('/^[a-zA-Z]{2}$/', $parts[0]) ? $parts[0] : 'en';
+        return $this->translationIdentifierFactory->create(
+            language: $request->attributes->get('language'),
+            filename: $languageFile
+        );
     }
 }
