@@ -19,11 +19,12 @@ test:
     - pecl install xdebug && docker-php-ext-enable xdebug
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --no-scripts
-    - composer require --dev phpunit/phpunit phpunit/php-code-coverage
+    - composer require --dev phpunit/phpunit phpunit/php-code-coverage phpstan/phpstan
     - cp config/config.sample.php config/config.php
   script:
     - vendor/bin/phpcs --standard=./phpcs.xml src tests
     - php vendor/bin/phpunit --configuration phpunit.xml --exclude-group database  --coverage-text --coverage-cobertura=coverage.cobertura.xml
+    - vendor/bin/phpstan analyse -c phpstan.neon
   artifacts:
     reports:
       coverage_report:

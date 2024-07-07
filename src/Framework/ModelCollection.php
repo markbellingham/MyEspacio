@@ -15,6 +15,9 @@ abstract class ModelCollection implements Iterator
 
     final public function __construct(array $data)
     {
+        if (defined('static::REQUIRED_KEYS') === false) {
+            throw CollectionException::missingRequiredKeys();
+        }
         $this->requiredKeys = static::REQUIRED_KEYS;
         $this->validateElements($data);
         $this->data = $data;

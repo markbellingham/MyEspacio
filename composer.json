@@ -40,6 +40,7 @@
     "dg/bypass-finals": "dev-master",
     "guzzlehttp/guzzle": "^7.8",
     "mikey179/vfsstream": "^1.6",
+    "phpstan/phpstan": "^1.11",
     "phpunit/phpunit": "^10.4",
     "squizlabs/php_codesniffer": "3.*",
     "tracy/tracy": "^2.10",
@@ -49,8 +50,10 @@
     "lint": "@phpcs",
     "phpcs": "phpcs",
     "psalm": "psalm --config=psalm.xml",
+    "phpstan": "phpstan analyse -c phpstan.neon",
     "pre-commit": [
       "@lint",
+      "@phpstan",
       "@test"
     ],
     "test": "phpunit tests"
@@ -59,6 +62,7 @@
     "lint": "Run linting programs on the code base.",
     "phpcs": "Check PHP code conforms to the PSR-12 coding standard.",
     "psalm": "Check PHP code with Psalm for type safety and other issues.",
+    "phpstan": "Check PHP code with PHPStan for static analysis.",
     "pre-commit": "Run linting, Psalm, and testing programs as part of the pre-commit process.",
     "test": "Run PHPUnit tests."
   },

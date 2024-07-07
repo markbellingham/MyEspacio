@@ -9,14 +9,21 @@ use PHPUnit\Framework\TestCase;
 
 final class CollectionExceptionTest extends TestCase
 {
-    public function testWrongDataType()
+    public function testWrongDataType(): void
     {
         $exception = CollectionException::wrongDataType();
         $this->assertInstanceOf(CollectionException::class, $exception);
         $this->assertSame('The data passed is not an array.', $exception->getMessage());
     }
 
-    public function testMissingRequiredValues()
+    public function testMissingRequiredKeys(): void
+    {
+        $exception = CollectionException::missingRequiredKeys();
+        $this->assertInstanceOf(CollectionException::class, $exception);
+        $this->assertSame('The REQUIRED_KEYS constant has not been defined.', $exception->getMessage());
+    }
+
+    public function testMissingRequiredValues(): void
     {
         $exception = CollectionException::missingRequiredValues([]);
         $this->assertInstanceOf(CollectionException::class, $exception);
