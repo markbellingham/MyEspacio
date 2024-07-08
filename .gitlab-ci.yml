@@ -19,7 +19,7 @@ test:
     - pecl install xdebug && docker-php-ext-enable xdebug
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --no-scripts
-    - composer require --dev phpunit/phpunit phpunit/php-code-coverage phpstan/phpstan
+    - composer require --dev phpunit/phpunit phpunit/php-code-coverage phpstan/phpstan phpstan/phpstan-phpunit
     - cp config/config.sample.php config/config.php
   script:
     - vendor/bin/phpcs --standard=./phpcs.xml src tests

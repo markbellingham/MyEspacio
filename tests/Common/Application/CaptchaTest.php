@@ -20,7 +20,7 @@ final class CaptchaTest extends TestCase
         parent::setUp();
         $iconRepository = $this->createMock(IconRepositoryInterface::class);
         $session = $this->createMock(Session::class);
-        $this->captcha = new Captcha($iconRepository, $session);
+        $this->captcha = new Captcha($iconRepository);
 
         $iconRepository->expects($this->once())
             ->method('getIcons')
