@@ -5,26 +5,27 @@ namespace MyEspacio\Common\Domain\Entity;
 use DateTimeImmutable;
 use Exception;
 use JsonSerializable;
+use MyEspacio\Framework\Model;
 
-class Comment implements JsonSerializable
+class Comment extends Model implements JsonSerializable
 {
     public function __construct(
         private string $comment = '',
         private ?DateTimeImmutable $created = null,
         private readonly ?string $title = '',
-        private int $user_id = 0,
+        private int $userId = 0,
         private string $username = ''
     ) {
     }
 
     public function getUserId(): int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
-    public function setUserId(int $user_id): void
+    public function setUserId(int $userId): void
     {
-        $this->user_id = $user_id;
+        $this->userId = $userId;
     }
 
     public function getComment(): string

@@ -6,7 +6,7 @@ namespace MyEspacio\Common\Domain\Entity;
 
 use MyEspacio\Framework\Model;
 
-final class Tag extends Model
+class Tag extends Model
 {
     public function __construct(
         protected string $tag,

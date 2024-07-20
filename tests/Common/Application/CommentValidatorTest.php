@@ -17,7 +17,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            user_id: 2,
+            userId: 2,
             username: 'Mark Bellingham'
         );
 
@@ -31,7 +31,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            user_id: 1,
+            userId: 1,
             username: 'Mark Bellingham'
         );
 
@@ -45,7 +45,7 @@ final class CommentValidatorTest extends TestCase
             comment: '',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            user_id: 2,
+            userId: 2,
             username: 'Mark Bellingham'
         );
 
@@ -59,7 +59,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: 'Title',
-            user_id: 2,
+            userId: 2,
             username: 'Mark Bellingham'
         );
 
@@ -73,7 +73,7 @@ final class CommentValidatorTest extends TestCase
             comment: '<div class="my-class">Hello</div>',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            user_id: 2,
+            userId: 2,
             username: 'Mark Bellingham'
         );
 
@@ -87,7 +87,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            user_id: 2,
+            userId: 2,
             username: 'Mark Bellingham'
         );
 
@@ -105,7 +105,7 @@ final class CommentValidatorTest extends TestCase
             comment: '01234567890',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            user_id: 2,
+            userId: 2,
             username: 'Mark Bellingham'
         );
 

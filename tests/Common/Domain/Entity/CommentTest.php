@@ -17,7 +17,7 @@ final class CommentTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            user_id: 2,
+            userId: 2,
             username: 'Mark Bellingham'
         );
 
@@ -31,7 +31,7 @@ final class CommentTest extends TestCase
                 'comment' => 'Hello',
                 'created' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
                 'title' => null,
-                'user_id' => 2,
+                'userId' => 2,
                 'username' => 'Mark Bellingham'
             ],
             $comment->jsonSerialize()
@@ -52,7 +52,7 @@ final class CommentTest extends TestCase
                 'comment' => '',
                 'created' => null,
                 'title' => '',
-                'user_id' => 0,
+                'userId' => 0,
                 'username' => ''
             ],
             $comment->jsonSerialize()
@@ -65,7 +65,7 @@ final class CommentTest extends TestCase
             comment: '',
             created: null,
             title: null,
-            user_id: 0,
+            userId: 0,
             username: ''
         );
 
@@ -76,7 +76,7 @@ final class CommentTest extends TestCase
                 'comment' => '',
                 'created' => null,
                 'title' => null,
-                'user_id' => 0,
+                'userId' => 0,
                 'username' => ''
             ],
             $comment->jsonSerialize()
@@ -89,7 +89,7 @@ final class CommentTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            user_id: 2,
+            userId: 2,
             username: 'Mark Bellingham'
         );
         $this->assertEquals('Hello', $comment->getComment());
