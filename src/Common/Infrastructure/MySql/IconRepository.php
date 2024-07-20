@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyEspacio\Common\Infrastructure;
+namespace MyEspacio\Common\Infrastructure\MySql;
 
 use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use MyEspacio\Common\Domain\Repository\IconRepositoryInterface;
 use MyEspacio\Framework\Database\Connection;
 
-final class MySqlIconRepository implements IconRepositoryInterface
+final class IconRepository implements IconRepositoryInterface
 {
     public function __construct(
         private readonly Connection $db

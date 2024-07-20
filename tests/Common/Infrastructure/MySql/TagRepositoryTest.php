@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Common\Infrastructure;
+namespace Tests\Common\Infrastructure\MySql;
 
 use MyEspacio\Common\Domain\Entity\Tag;
-use MyEspacio\Common\Infrastructure\MySqlTagRepository;
+use MyEspacio\Common\Infrastructure\MySql\TagRepository;
 use MyEspacio\Framework\Database\Connection;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
-final class MySqlTagRepositoryTest extends TestCase
+final class TagRepositoryTest extends TestCase
 {
     private Tag $tag;
 
@@ -23,7 +23,7 @@ final class MySqlTagRepositoryTest extends TestCase
         );
     }
 
-    public function testSave()
+    public function testSave(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
 
@@ -47,12 +47,12 @@ final class MySqlTagRepositoryTest extends TestCase
             ->method('lastInsertId')
             ->willReturn(1);
 
-        $repository = new MySqlTagRepository($connection);
+        $repository = new \MyEspacio\Common\Infrastructure\MySql\TagRepository($connection);
         $result = $repository->save($this->tag);
         $this->assertSame(1, $result);
     }
 
-    public function testSaveStatementFail()
+    public function testSaveStatementFail(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
 
@@ -72,12 +72,12 @@ final class MySqlTagRepositoryTest extends TestCase
             ->with($stmt)
             ->willReturn(true);
 
-        $repository = new MySqlTagRepository($connection);
+        $repository = new \MyEspacio\Common\Infrastructure\MySql\TagRepository($connection);
         $result = $repository->save($this->tag);
         $this->assertNull($result);
     }
 
-    public function testGetTagByName()
+    public function testGetTagByName(): void
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -91,13 +91,13 @@ final class MySqlTagRepositoryTest extends TestCase
             )
             ->willReturn($this->tag);
 
-        $repository = new MySqlTagRepository($db);
+        $repository = new TagRepository($db);
         $result = $repository->getTagByName($this->tag->getTag());
         $this->assertInstanceOf(Tag::class, $result);
         $this->assertEquals($this->tag->getTag(), $result->getTag());
     }
 
-    public function testGetTagByNameNotFound()
+    public function testGetTagByNameNotFound(): void
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -111,7 +111,7 @@ final class MySqlTagRepositoryTest extends TestCase
             )
             ->willReturn(null);
 
-        $repository = new MySqlTagRepository($db);
+        $repository = new TagRepository($db);
         $result = $repository->getTagByName($this->tag->getTag());
         $this->assertNull($result);
     }

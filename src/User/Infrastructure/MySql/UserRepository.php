@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyEspacio\User\Infrastructure;
+namespace MyEspacio\User\Infrastructure\MySql;
 
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 
-final class MysqlUserRepository implements UserRepositoryInterface
+final class UserRepository implements UserRepositoryInterface
 {
     public function __construct(
         private readonly Connection $db

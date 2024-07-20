@@ -1,15 +1,14 @@
 <?php
 
-namespace Tests\Common\Infrastructure;
+namespace Tests\Common\Infrastructure\MySql;
 
 use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
-use MyEspacio\Common\Infrastructure\MySqlIconRepository;
 use MyEspacio\Framework\Database\Connection;
 use PHPUnit\Framework\TestCase;
 
-final class MySqlIconsRepositoryTest extends TestCase
+final class IconsRepositoryTest extends TestCase
 {
-    public function testGetIcons()
+    public function testGetIcons(): void
     {
         $qty = 2;
         $db = $this->createMock(Connection::class);
@@ -39,7 +38,7 @@ final class MySqlIconsRepositoryTest extends TestCase
                 ]
             );
 
-        $repository = new MySqlIconRepository($db);
+        $repository = new \MyEspacio\Common\Infrastructure\MySql\IconRepository($db);
         $results = $repository->getIcons($qty);
         $this->assertInstanceOf(CaptchaIconCollection::class, $results);
 

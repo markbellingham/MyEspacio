@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace MyEspacio\Common\Infrastructure;
+namespace MyEspacio\Common\Infrastructure\MySql;
 
 use MyEspacio\Common\Domain\Entity\Tag;
 use MyEspacio\Common\Domain\Repository\TagRepositoryInterface;
 use MyEspacio\Framework\Database\Connection;
 
-final class MySqlTagRepository implements TagRepositoryInterface
+final class TagRepository implements TagRepositoryInterface
 {
     public function __construct(
         private readonly Connection $db

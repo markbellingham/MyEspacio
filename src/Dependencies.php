@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Auryn\Injector;
 use MyEspacio\Common\Domain\Repository\IconRepositoryInterface;
 use MyEspacio\Common\Domain\Repository\TagRepositoryInterface;
-use MyEspacio\Common\Infrastructure\MySqlIconRepository;
-use MyEspacio\Common\Infrastructure\MySqlTagRepository;
+use MyEspacio\Common\Infrastructure\MySql\IconRepository;
+use MyEspacio\Common\Infrastructure\MySql\TagRepository;
 use MyEspacio\Framework\Csrf\SymfonySessionTokenStorage;
 use MyEspacio\Framework\Csrf\TokenStorage;
 use MyEspacio\Framework\Database\Connection;
@@ -21,7 +21,7 @@ use MyEspacio\Framework\Messages\EmailInterface;
 use MyEspacio\Framework\Messages\PhpMailerEmail;
 use MyEspacio\Framework\Rendering\TemplateDirectory;
 use MyEspacio\User\Domain\UserRepositoryInterface;
-use MyEspacio\User\Infrastructure\MysqlUserRepository;
+use MyEspacio\User\Infrastructure\MySql\UserRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -66,10 +66,10 @@ $injector->alias(ExternalHttpRequestInterface::class, GuzzleHttpClient::class);
 //
 //$injector->alias(GamesRepository::class, MysqlGamesRepository::class);
 
-$injector->alias(IconRepositoryInterface::class, MySqlIconRepository::class);
+$injector->alias(IconRepositoryInterface::class, IconRepository::class);
 
-$injector->alias(UserRepositoryInterface::class, MysqlUserRepository::class);
+$injector->alias(UserRepositoryInterface::class, UserRepository::class);
 
-$injector->alias(TagRepositoryInterface::class, MySqlTagRepository::class);
+$injector->alias(TagRepositoryInterface::class, TagRepository::class);
 
 return $injector;

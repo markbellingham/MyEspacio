@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Tests\User\Infrastructure;
+namespace Tests\User\Infrastructure\MySql;
 
 use DateTimeImmutable;
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\User\Domain\User;
-use MyEspacio\User\Infrastructure\MysqlUserRepository;
+use MyEspacio\User\Infrastructure\MySql\UserRepository;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
-final class MysqlUserRepositoryTest extends TestCase
+final class UserRepositoryTest extends TestCase
 {
     private User $user;
 
@@ -32,7 +32,7 @@ final class MysqlUserRepositoryTest extends TestCase
         );
     }
 
-    public function testGetUserByEmailAddress()
+    public function testGetUserByEmailAddress(): void
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -60,13 +60,13 @@ final class MysqlUserRepositoryTest extends TestCase
                 ]
             );
 
-        $repository = new MysqlUserRepository($db);
+        $repository = new UserRepository($db);
         $result = $repository->getUserByEmailAddress($this->user->getEmail());
 
         $this->assertInstanceOf(User::class, $result);
     }
 
-    public function testGetUserByEmailAddressNotFound()
+    public function testGetUserByEmailAddressNotFound(): void
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -81,13 +81,13 @@ final class MysqlUserRepositoryTest extends TestCase
             )
             ->willReturn(null);
 
-        $repository = new MysqlUserRepository($db);
+        $repository = new UserRepository($db);
         $result = $repository->getUserByEmailAddress($this->user->getEmail());
 
         $this->assertNull($result);
     }
 
-    public function testGetUserByPhoneNumber()
+    public function testGetUserByPhoneNumber(): void
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -115,13 +115,13 @@ final class MysqlUserRepositoryTest extends TestCase
                 ]
             );
 
-        $repository = new MysqlUserRepository($db);
+        $repository = new UserRepository($db);
         $result = $repository->getUserByPhoneNumber($this->user->getPhone());
 
         $this->assertInstanceOf(User::class, $result);
     }
 
-    public function testGetUserByPhoneNumberNotFound()
+    public function testGetUserByPhoneNumberNotFound(): void
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -136,13 +136,13 @@ final class MysqlUserRepositoryTest extends TestCase
             )
             ->willReturn(null);
 
-        $repository = new MysqlUserRepository($db);
+        $repository = new \MyEspacio\User\Infrastructure\MySql\UserRepository($db);
         $result = $repository->getUserByPhoneNumber($this->user->getPhone());
 
         $this->assertNull($result);
     }
 
-    public function testGetUserFromMagicLink()
+    public function testGetUserFromMagicLink(): void
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -170,13 +170,13 @@ final class MysqlUserRepositoryTest extends TestCase
                 ]
             );
 
-        $repository = new MysqlUserRepository($db);
+        $repository = new UserRepository($db);
         $result = $repository->getUserFromMagicLink($this->user->getMagicLink());
 
         $this->assertInstanceOf(User::class, $result);
     }
 
-    public function testGetUserFromMagicLinkNotFound()
+    public function testGetUserFromMagicLinkNotFound(): void
     {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
@@ -191,13 +191,13 @@ final class MysqlUserRepositoryTest extends TestCase
             )
             ->willreturn(null);
 
-        $repository = new MysqlUserRepository($db);
+        $repository = new UserRepository($db);
         $result = $repository->getUserFromMagicLink($this->user->getMagicLink());
 
         $this->assertNull($result);
     }
 
-    public function testSaveLoginDetails()
+    public function testSaveLoginDetails(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->expects($this->once())
@@ -222,13 +222,13 @@ final class MysqlUserRepositoryTest extends TestCase
             ->method('statementHasErrors')
             ->willReturn(false);
 
-        $repository = new MysqlUserRepository($db);
+        $repository = new UserRepository($db);
         $result = $repository->saveLoginDetails($this->user);
 
         $this->assertTrue($result);
     }
 
-    public function testSaveLoginDetailsUserNotFound()
+    public function testSaveLoginDetailsUserNotFound(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->expects($this->once())
@@ -253,13 +253,13 @@ final class MysqlUserRepositoryTest extends TestCase
             ->method('statementHasErrors')
             ->willReturn(false);
 
-        $repository = new MysqlUserRepository($db);
+        $repository = new UserRepository($db);
         $result = $repository->saveLoginDetails($this->user);
 
         $this->assertFalse($result);
     }
 
-    public function testSaveLoginDetailsDatabaseError()
+    public function testSaveLoginDetailsDatabaseError(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $db = $this->createMock(Connection::class);
@@ -281,16 +281,16 @@ final class MysqlUserRepositoryTest extends TestCase
             ->method('statementHasErrors')
             ->willReturn(true);
 
-        $repository = new MysqlUserRepository($db);
+        $repository = new UserRepository($db);
         $result = $repository->saveLoginDetails($this->user);
 
         $this->assertFalse($result);
     }
 
-    public function testGetAnonymousUser()
+    public function testGetAnonymousUser(): void
     {
         $db = $this->createMock(Connection::class);
-        $repository = new MysqlUserRepository($db);
+        $repository = new UserRepository($db);
         $result = $repository->getAnonymousUser();
         $this->assertInstanceOf(User::class, $result);
         $this->assertSame(1, $result->getId());
