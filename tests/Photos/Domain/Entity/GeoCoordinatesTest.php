@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Photos\Domain;
+namespace Tests\Photos\Domain\Entity;
 
-use MyEspacio\Photos\Domain\GeoCoordinates;
+use MyEspacio\Photos\Domain\Entity\GeoCoordinates;
 use PHPUnit\Framework\TestCase;
 
 final class GeoCoordinatesTest extends TestCase

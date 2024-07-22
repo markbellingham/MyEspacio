@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyEspacio\Photos\Domain;
+namespace MyEspacio\Photos\Domain\Entity;
 
 use DateTimeImmutable;
 use MyEspacio\Common\Domain\Entity\Comment;

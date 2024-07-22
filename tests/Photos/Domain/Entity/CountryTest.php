@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Photos\Domain;
+namespace Tests\Photos\Domain\Entity;
 
-use MyEspacio\Photos\Domain\Country;
 use PHPUnit\Framework\TestCase;
 
 final class CountryTest extends TestCase
 {
     public function testCountry(): void
     {
-        $country = new Country(
+        $country = new \MyEspacio\Photos\Domain\Entity\Country(
             id: 1,
             name:'United Kingdom',
             twoCharCode: 'GB',

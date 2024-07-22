@@ -2,27 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Tests\Photos\Domain;
+namespace Tests\Photos\Domain\Entity;
 
 use Monolog\DateTimeImmutable;
-use MyEspacio\Photos\Domain\Country;
-use MyEspacio\Photos\Domain\Dimensions;
-use MyEspacio\Photos\Domain\GeoCoordinates;
-use MyEspacio\Photos\Domain\Photo;
-use MyEspacio\Photos\Domain\Relevance;
+use MyEspacio\Photos\Domain\Entity\Country;
+use MyEspacio\Photos\Domain\Entity\Dimensions;
+use MyEspacio\Photos\Domain\Entity\GeoCoordinates;
+use MyEspacio\Photos\Domain\Entity\Photo;
 use PHPUnit\Framework\TestCase;
 
 final class PhotoTest extends TestCase
 {
     public function testPhoto(): void
     {
-        $country = new Country(
+        $country = new \MyEspacio\Photos\Domain\Entity\Country(
             id: 45,
             name:'Chile',
             twoCharCode: 'CL',
             threeCharCode: 'CHL'
         );
-        $geo = new GeoCoordinates(
+        $geo = new \MyEspacio\Photos\Domain\Entity\GeoCoordinates(
             id: 2559,
             photoId: 2559,
             latitude: -33438084,
@@ -33,7 +32,7 @@ final class PhotoTest extends TestCase
             width: 456,
             height: 123
         );
-        $relevance = new Relevance(
+        $relevance = new \MyEspacio\Photos\Domain\Entity\Relevance(
             cScore: 4,
             pScore: 5
         );
@@ -56,7 +55,7 @@ final class PhotoTest extends TestCase
         $this->assertInstanceOf(Country::class, $photo->getCountry());
         $this->assertInstanceOf(GeoCoordinates::class, $photo->getGeoCoordinates());
         $this->assertInstanceOf(Dimensions::class, $photo->getDimensions());
-        $this->assertInstanceOf(Relevance::class, $photo->getRelevance());
+        $this->assertInstanceOf(\MyEspacio\Photos\Domain\Entity\Relevance::class, $photo->getRelevance());
         $this->assertInstanceOf(DateTimeImmutable::class, $photo->getDateTaken());
         $this->assertEquals("Note the spurs...", $photo->getDescription());
         $this->assertEquals("RTW Trip\/16Chile\/03 - Valparaiso", $photo->getDirectory());

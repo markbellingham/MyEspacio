@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Photos\Domain;
+namespace Tests\Photos\Domain\Entity;
 
 use DateTimeImmutable;
 use MyEspacio\Common\Domain\Entity\Comment;
-use MyEspacio\Photos\Domain\PhotoComment;
+use MyEspacio\Photos\Domain\Entity\PhotoComment;
 use PHPUnit\Framework\TestCase;
 
 final class PhotoCommentTest extends TestCase
@@ -25,7 +25,7 @@ final class PhotoCommentTest extends TestCase
         );
 
         $this->assertInstanceOf(Comment::class, $photoComment);
-        $this->assertInstanceOf(PhotoComment::class, $photoComment);
+        $this->assertInstanceOf(\MyEspacio\Photos\Domain\Entity\PhotoComment::class, $photoComment);
 
         $this->assertSame(1, $photoComment->getPhotoId());
         $this->assertSame('Nice photo!', $photoComment->getComment());

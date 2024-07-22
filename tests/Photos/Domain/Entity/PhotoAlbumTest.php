@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Photos\Domain;
+namespace Tests\Photos\Domain\Entity;
 
-use MyEspacio\Photos\Domain\PhotoAlbum;
+use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use PHPUnit\Framework\TestCase;
 
 final class PhotoAlbumTest extends TestCase
