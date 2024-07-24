@@ -34,4 +34,19 @@ final class PhotoCommentTest extends TestCase
         $this->assertSame(2, $photoComment->getUserId());
         $this->assertSame('Mark Bellingham', $photoComment->getUsername());
     }
+
+    public function testNullValues(): void
+    {
+        $photoComment = new PhotoComment(
+            photoId: 1,
+            comment: 'Nice photo!',
+            created: null,
+            title: null,
+            userId: 2,
+            username: 'Mark Bellingham'
+        );
+
+        $this->assertNull($photoComment->getCreated());
+        $this->assertNull($photoComment->getTitle());
+    }
 }

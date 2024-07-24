@@ -10,11 +10,14 @@ use MyEspacio\Framework\ModelCollection;
 
 class CaptchaIconCollection extends ModelCollection
 {
-    protected const REQUIRED_KEYS = [
-        'icon_id',
-        'icon',
-        'name'
-    ];
+    public function getRequiredKeys(): array
+    {
+        return [
+            'icon_id',
+            'icon',
+            'name'
+        ];
+    }
 
     public function current(): CaptchaIcon
     {

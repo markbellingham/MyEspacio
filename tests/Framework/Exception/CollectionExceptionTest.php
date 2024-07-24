@@ -16,17 +16,10 @@ final class CollectionExceptionTest extends TestCase
         $this->assertSame('The data passed is not an array.', $exception->getMessage());
     }
 
-    public function testMissingRequiredKeys(): void
-    {
-        $exception = CollectionException::missingRequiredKeys();
-        $this->assertInstanceOf(CollectionException::class, $exception);
-        $this->assertSame('The REQUIRED_KEYS constant has not been defined.', $exception->getMessage());
-    }
-
     public function testMissingRequiredValues(): void
     {
         $exception = CollectionException::missingRequiredValues([]);
         $this->assertInstanceOf(CollectionException::class, $exception);
-        $this->assertSame('Missing required values: ', $exception->getMessage());
+        $this->assertSame('Missing required keys: ', $exception->getMessage());
     }
 }

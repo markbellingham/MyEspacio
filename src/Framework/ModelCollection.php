@@ -11,32 +11,32 @@ abstract class ModelCollection implements Iterator
 {
     protected array $data;
     protected int $position = 0;
-    public array $requiredKeys;
+
+    abstract public function getRequiredKeys(): array;
+
+    abstract public function current(): Model;
 
     final public function __construct(array $data)
     {
-        if (defined('static::REQUIRED_KEYS') === false) {
-            throw CollectionException::missingRequiredKeys();
-        }
-        $this->requiredKeys = static::REQUIRED_KEYS;
         $this->validateElements($data);
         $this->data = $data;
     }
 
+    /**
+     * @throws CollectionException
+     */
     protected function validateElements(array $data): void
     {
         foreach ($data as $element) {
             if (is_array($element) === false) {
                 throw CollectionException::wrongDataType();
             }
-            $missingKeys = array_diff($this->requiredKeys, array_keys($element));
+            $missingKeys = array_diff($this->getRequiredKeys(), array_keys($element));
             if (!empty($missingKeys)) {
                 throw CollectionException::missingRequiredValues($missingKeys);
             }
         }
     }
-
-    abstract public function current(): Model;
 
     public function rewind(): void
     {

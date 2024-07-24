@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class TagCollectionTest extends TestCase
 {
-    public function testTagCollection()
+    public function testTagCollection(): void
     {
         $data = [
             [
@@ -35,14 +35,14 @@ final class TagCollectionTest extends TestCase
         }
     }
 
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $collection = new TagCollection([]);
         $this->assertInstanceOf(TagCollection::class, $collection);
         $this->assertCount(0, $collection);
     }
 
-    public function testRequiredKeys()
+    public function testRequiredKeys(): void
     {
         $data = [
             [
@@ -51,14 +51,11 @@ final class TagCollectionTest extends TestCase
         ];
 
         $this->expectException(CollectionException::class);
-        $this->expectExceptionMessage('Missing required values: tag');
-        $collection = new TagCollection($data);
-
-        foreach ($collection as $tag) {
-        }
+        $this->expectExceptionMessage('Missing required keys: tag');
+        new TagCollection($data);
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $data = [
             [
@@ -75,7 +72,7 @@ final class TagCollectionTest extends TestCase
         $this->assertEquals($data, $collection->toArray());
     }
 
-    public function testWrongDataType()
+    public function testWrongDataType(): void
     {
         $data = [
             'tag' => 'sunset',
@@ -84,9 +81,6 @@ final class TagCollectionTest extends TestCase
 
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage('The data passed is not an array.');
-        $collection = new TagCollection($data);
-
-        foreach ($collection as $tag) {
-        }
+        new TagCollection($data);
     }
 }

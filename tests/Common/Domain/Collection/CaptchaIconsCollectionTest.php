@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class CaptchaIconsCollectionTest extends TestCase
 {
-    public function testCaptchaIconsCollection()
+    public function testCaptchaIconsCollection(): void
     {
         $elements = [
             [
@@ -38,7 +38,7 @@ final class CaptchaIconsCollectionTest extends TestCase
         }
     }
 
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $collection = new CaptchaIconCollection([]);
 
@@ -46,7 +46,7 @@ final class CaptchaIconsCollectionTest extends TestCase
         $this->assertCount(0, $collection);
     }
 
-    public function testRequiredKeys()
+    public function testRequiredKeys(): void
     {
         $elements = [
             [
@@ -58,14 +58,12 @@ final class CaptchaIconsCollectionTest extends TestCase
         ];
 
         $this->expectException(CollectionException::class);
-        $this->expectExceptionMessage('Missing required values: icon_id, icon, name');
+        $this->expectExceptionMessage('Missing required keys: icon_id, icon, name');
 
-        $collection = new CaptchaIconCollection($elements);
-        foreach ($collection as $tag) {
-        }
+        new CaptchaIconCollection($elements);
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $elements = [
             [
@@ -84,7 +82,7 @@ final class CaptchaIconsCollectionTest extends TestCase
         $this->assertEquals($elements, $collection->toArray());
     }
 
-    public function testWrongDataType()
+    public function testWrongDataType(): void
     {
         $elements = [
             'icon_id' => '1',
@@ -95,8 +93,6 @@ final class CaptchaIconsCollectionTest extends TestCase
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage('The data passed is not an array.');
 
-        $collection = new CaptchaIconCollection($elements);
-        foreach ($collection as $tag) {
-        }
+        new CaptchaIconCollection($elements);
     }
 }

@@ -9,9 +9,12 @@ use MyEspacio\Framework\ModelCollection;
 
 final class TagCollection extends ModelCollection
 {
-    public const REQUIRED_KEYS = [
-        'tag'
-    ];
+    public function getRequiredKeys(): array
+    {
+        return [
+            'tag'
+        ];
+    }
 
     public function current(): Tag
     {
