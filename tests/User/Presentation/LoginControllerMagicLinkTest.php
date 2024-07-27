@@ -11,6 +11,7 @@ use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Presentation\LoginController;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,11 +20,20 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class LoginControllerMagicLinkTest extends TestCase
 {
-    private RequestHandler $requestHandler;
-    private SendLoginCode $loginCode;
-    private SessionInterface $session;
-    private UserRepositoryInterface $userRepository;
-    private LanguageReader $languageReader;
+    /** @var RequestHandler|MockObject */
+    private RequestHandler|MockObject $requestHandler;
+
+    /** @var SendLoginCode|MockObject */
+    private SendLoginCode|MockObject $loginCode;
+
+    /** @var SessionInterface|MockObject */
+    private SessionInterface|MockObject $session;
+
+    /** @var UserRepositoryInterface|MockObject */
+    private UserRepositoryInterface|MockObject $userRepository;
+
+    /** @var LanguageReader|MockObject */
+    private LanguageReader|MockObject $languageReader;
 
     private const LOGIN_CODE_EXPIRY_TIME = 15;
 

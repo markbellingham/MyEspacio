@@ -9,11 +9,13 @@ use PHPUnit\Framework\TestCase;
 
 final class ModelTest extends TestCase
 {
-    public function testJsonSerializeReturnsPropertiesAsArray()
+    public function testJsonSerializeReturnsPropertiesAsArray(): void
     {
-        $model = new Model();
-        $model->property1 = 'value1';
-        $model->property2 = 123;
+        $model = new TestModel();
+
+        $model->__set('property1', 'value1');
+
+        $model->__set('property2', 123);
 
         $serialized = $model->jsonSerialize();
 
@@ -25,7 +27,7 @@ final class ModelTest extends TestCase
         $this->assertEquals($expected, $serialized);
     }
 
-    public function testJsonSerializeReturnsEmptyArrayForEmptyModel()
+    public function testJsonSerializeReturnsEmptyArrayForEmptyModel(): void
     {
         $model = new Model();
 

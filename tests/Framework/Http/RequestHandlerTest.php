@@ -11,6 +11,7 @@ use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
 use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RequestHandlerTest extends TestCase
 {
-    private TranslationIdentifierFactory $translationIdentifierFactory;
+    /** @var TranslationIdentifierFactory|MockObject */
+    private TranslationIdentifierFactory|MockObject $translationIdentifierFactory;
     private TwigTemplateRendererFactory $templateRendererFactory;
     private RequestHandler $requestHandler;
 

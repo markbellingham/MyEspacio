@@ -9,6 +9,7 @@ use MyEspacio\Framework\Model;
 use PDO;
 use PDOStatement;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionParameter;
 
 class PdoConnection implements Connection
@@ -115,12 +116,15 @@ class PdoConnection implements Connection
             return null;
         }
 
-        $typeName = $param->getType()?->getName();
-        return match ($typeName) {
-            'int', 'float' => 0,
-            'string' => '',
-            'bool' => false,
-            default => null
-        };
+        $type = $param->getType();
+        if ($type instanceof ReflectionNamedType) {
+            return match ($type->getName()) {
+                'int', 'float' => 0,
+                'string' => '',
+                'bool' => false,
+                default => null
+            };
+        }
+        return null;
     }
 }

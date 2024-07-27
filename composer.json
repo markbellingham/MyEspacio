@@ -40,6 +40,7 @@
     "dg/bypass-finals": "dev-master",
     "guzzlehttp/guzzle": "^7.8",
     "mikey179/vfsstream": "^1.6",
+    "phpstan/extension-installer": "^1.4",
     "phpstan/phpstan": "^1.11",
     "phpstan/phpstan-phpunit": "^1.4",
     "phpunit/phpunit": "^10.4",
@@ -47,6 +48,7 @@
     "tracy/tracy": "^2.10",
     "vimeo/psalm": "^5.23"
   },
+
   "scripts": {
     "lint": "@phpcs",
     "phpcs": "phpcs",
@@ -68,6 +70,9 @@
     "test": "Run PHPUnit tests."
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "phpstan/extension-installer": true
+    }
   }
 }

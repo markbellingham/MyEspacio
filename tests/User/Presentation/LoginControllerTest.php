@@ -12,6 +12,7 @@ use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Presentation\LoginController;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,14 +20,27 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class LoginControllerTest extends TestCase
 {
-    private RequestHandler $requestHandler;
-    private SendLoginCode $loginCode;
-    private SessionInterface $session;
-    private UserRepositoryInterface $userRepository;
-    private LanguageReader $languageReader;
-
     private const LOGIN_CODE_EXPIRY_TIME = 15;
 
+    /** @var MockObject|RequestHandler */
+    private RequestHandler|MockObject $requestHandler;
+
+    /** @var MockObject|SendLoginCode */
+    private MockObject|SendLoginCode $loginCode;
+
+    /** @var MockObject|SessionInterface  */
+    private SessionInterface|MockObject $session;
+
+    /** @var MockObject|UserRepositoryInterface */
+    private MockObject|UserRepositoryInterface $userRepository;
+
+    /** @var MockObject|LanguageReader */
+    private LanguageReader|MockObject $languageReader;
+
+    /**
+     * @return void
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     protected function setUp(): void
     {
         parent::setUp();
