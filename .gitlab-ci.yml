@@ -22,7 +22,7 @@ test:
     - composer require --dev phpunit/phpunit phpunit/php-code-coverage phpstan/phpstan phpstan/phpstan-phpunit
     - cp config/config.sample.php config/config.php
   script:
-    - vendor/bin/phpcs --standard=./phpcs.xml src tests
+    - vendor/bin/phpcs --standard=./phpcs.xml --parallel=8 src tests
     - php vendor/bin/phpunit --configuration phpunit.xml --exclude-group database  --coverage-text --coverage-cobertura=coverage.cobertura.xml
     - vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
   artifacts:

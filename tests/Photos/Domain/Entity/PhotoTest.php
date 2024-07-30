@@ -9,19 +9,20 @@ use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\Dimensions;
 use MyEspacio\Photos\Domain\Entity\GeoCoordinates;
 use MyEspacio\Photos\Domain\Entity\Photo;
+use MyEspacio\Photos\Domain\Entity\Relevance;
 use PHPUnit\Framework\TestCase;
 
 final class PhotoTest extends TestCase
 {
     public function testPhoto(): void
     {
-        $country = new \MyEspacio\Photos\Domain\Entity\Country(
+        $country = new Country(
             id: 45,
             name:'Chile',
             twoCharCode: 'CL',
             threeCharCode: 'CHL'
         );
-        $geo = new \MyEspacio\Photos\Domain\Entity\GeoCoordinates(
+        $geo = new GeoCoordinates(
             id: 2559,
             photoId: 2559,
             latitude: -33438084,
@@ -32,7 +33,7 @@ final class PhotoTest extends TestCase
             width: 456,
             height: 123
         );
-        $relevance = new \MyEspacio\Photos\Domain\Entity\Relevance(
+        $relevance = new Relevance(
             cScore: 4,
             pScore: 5
         );
