@@ -9,8 +9,6 @@ use MyEspacio\Framework\Messages\EmailMessage;
 
 final class ContactMeMessage extends EmailMessage
 {
-    private string $captchaEncrypted;
-
     /**
      * @throws InvalidEmailException
      */

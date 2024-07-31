@@ -80,7 +80,7 @@ final class PhotoRepositoryTest extends TestCase
         $this->assertInstanceOf(Photo::class, $result);
     }
 
-    public function testFindOneNotFound()
+    public function testFindOneNotFound(): void
     {
         $db = $this->createMock(Connection::class);
 

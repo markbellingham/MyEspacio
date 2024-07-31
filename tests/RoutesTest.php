@@ -35,7 +35,7 @@ final class RoutesTest extends TestCase
 
         return;
 
-        $this->assertTrue(class_exists($className), "Controller class '$className' does not exist.");
-        $this->assertTrue(method_exists($className, $method), "Method '$method' does not exist in '$className'.");
+//        $this->assertTrue(class_exists($className), "Controller class '$className' does not exist.");
+//        $this->assertTrue(method_exists($className, $method), "Method '$method' does not exist in '$className'.");
     }
 }

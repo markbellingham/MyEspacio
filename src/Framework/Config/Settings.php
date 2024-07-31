@@ -8,7 +8,7 @@ namespace MyEspacio\Framework\Config;
 
 final class Settings
 {
-    private static string $lastFmRefreshDate = '';
+//    private static string $lastFmRefreshDate = '';
 
     public static function getConfig(string $key): string|array
     {

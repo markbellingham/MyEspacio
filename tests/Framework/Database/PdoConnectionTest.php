@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PdoConnectionTest extends TestCase
 {
-    public function testFetchOne()
+    public function testFetchOne(): void
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);
@@ -52,7 +52,7 @@ final class PdoConnectionTest extends TestCase
         $this->assertArrayHasKey('icon_id', $result);
     }
 
-    public function testFetchOneFail()
+    public function testFetchOneFail(): void
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);
@@ -93,7 +93,7 @@ final class PdoConnectionTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testFetchOneNotFound()
+    public function testFetchOneNotFound(): void
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);
@@ -172,22 +172,23 @@ final class PdoConnectionTest extends TestCase
         $this->assertEquals($expectedModel->getUuid(), $actualModel->getUuid());
     }
 
-    public function testFetchOneModelBadClassName()
+    public function testFetchOneModelBadClassName(): void
     {
         $pdoMock = $this->createMock(PDO::class);
         $pdoConnection = new PdoConnection($pdoMock);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Class 'bad_class_name' does not exist.");
+        $this->expectExceptionMessage("Class 'BadNamespace\BadDirectory\BadModel' does not exist.");
 
         $pdoConnection->fetchOneModel(
             "SELECT email, uuid FROM project.users",
             [],
-            'bad_class_name'
+            // @phpstan-ignore-next-line
+            'BadNamespace\BadDirectory\BadModel'
         );
     }
 
-    public function testFetchOneModelNotFound()
+    public function testFetchOneModelNotFound(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $pdoMock = $this->createMock(PDO::class);
@@ -227,7 +228,7 @@ final class PdoConnectionTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testFetchOneModelDatabaseError()
+    public function testFetchOneModelDatabaseError(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $pdoMock = $this->createMock(PDO::class);
@@ -259,7 +260,7 @@ final class PdoConnectionTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testFetchAll()
+    public function testFetchAll(): void
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);
@@ -306,7 +307,7 @@ final class PdoConnectionTest extends TestCase
         }
     }
 
-    public function testFetchAllFail()
+    public function testFetchAllFail(): void
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);
@@ -337,7 +338,7 @@ final class PdoConnectionTest extends TestCase
         $this->assertCount(0, $results);
     }
 
-    public function testRun()
+    public function testRun(): void
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);
@@ -357,7 +358,7 @@ final class PdoConnectionTest extends TestCase
         $this->assertEquals($stmt, $result);
     }
 
-    public function testRunFail()
+    public function testRunFail(): void
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);
@@ -377,7 +378,7 @@ final class PdoConnectionTest extends TestCase
         $this->assertEquals($stmt, $result);
     }
 
-    public function testStatementHasErrorsFalse()
+    public function testStatementHasErrorsFalse(): void
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);
@@ -391,7 +392,7 @@ final class PdoConnectionTest extends TestCase
         );
     }
 
-    public function testStatementHasErrorsTrue()
+    public function testStatementHasErrorsTrue(): void
     {
         $pdo = $this->createMock(PDO::class);
         $stmt = $this->createMock(PDOStatement::class);
@@ -410,7 +411,7 @@ final class PdoConnectionTest extends TestCase
         );
     }
 
-    public function testLastInsertId()
+    public function testLastInsertId(): void
     {
         $pdo = $this->createMock(PDO::class);
         $pdo->expects($this->once())
@@ -422,7 +423,7 @@ final class PdoConnectionTest extends TestCase
         $this->assertEquals(1, $result);
     }
 
-    public function testLastInsertIdFail()
+    public function testLastInsertIdFail(): void
     {
         $pdo = $this->createMock(PDO::class);
         $pdo->expects($this->once())
