@@ -1,3 +1,9 @@
+# Code Quality
+
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![pipeline status](https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | [![coverage report](https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+
 # Music
 * Can list and filter all music files on my computer. 
 * Can add albums or individual tracks to the playlist, play file, skip previous / next, double click to another file. 
