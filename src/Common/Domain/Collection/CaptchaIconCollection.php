@@ -10,7 +10,7 @@ use MyEspacio\Framework\ModelCollection;
 
 class CaptchaIconCollection extends ModelCollection
 {
-    public function getRequiredKeys(): array
+    public function requiredKeys(): array
     {
         return [
             'icon_id',

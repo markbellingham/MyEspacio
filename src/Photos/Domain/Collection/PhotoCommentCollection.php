@@ -9,7 +9,7 @@ use MyEspacio\Photos\Domain\Entity\PhotoComment;
 
 final class PhotoCommentCollection extends ModelCollection
 {
-    public function getRequiredKeys(): array
+    public function requiredKeys(): array
     {
         return [
             'comment',

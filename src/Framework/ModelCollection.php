@@ -12,7 +12,7 @@ abstract class ModelCollection implements Iterator
     protected array $data;
     protected int $position = 0;
 
-    abstract public function getRequiredKeys(): array;
+    abstract public function requiredKeys(): array;
 
     abstract public function current(): Model;
 
@@ -31,7 +31,7 @@ abstract class ModelCollection implements Iterator
             if (is_array($element) === false) {
                 throw CollectionException::wrongDataType();
             }
-            $missingKeys = array_diff($this->getRequiredKeys(), array_keys($element));
+            $missingKeys = array_diff($this->requiredKeys(), array_keys($element));
             if (!empty($missingKeys)) {
                 throw CollectionException::missingRequiredValues($missingKeys);
             }

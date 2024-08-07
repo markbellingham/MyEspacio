@@ -10,8 +10,8 @@ final class PhotoAlbum extends Model
 {
     public function __construct(
         private readonly int $photoId,
-        private readonly string $title,
-        private ?int $albumId = null,
+        private string $title = 'Unassigned',
+        private ?int $albumId = 0,
         private ?string $description = null,
     ) {
     }
@@ -39,6 +39,11 @@ final class PhotoAlbum extends Model
     public function setAlbumId(int $albumId): void
     {
         $this->albumId = $albumId;
+    }
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
     }
 
     public function setDescription(?string $description): void

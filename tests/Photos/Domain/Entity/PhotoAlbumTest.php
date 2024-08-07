@@ -27,27 +27,29 @@ final class PhotoAlbumTest extends TestCase
     public function testDefaultValues(): void
     {
         $photoAlbum = new PhotoAlbum(
-            photoId: 1,
-            title: 'MyAlbum'
+            photoId: 1
         );
 
-        $this->assertNull($photoAlbum->getAlbumId());
+        $this->assertEquals('Unassigned', $photoAlbum->getTitle());
+        $this->assertSame(0, $photoAlbum->getAlbumId());
         $this->assertNull($photoAlbum->getDescription());
     }
 
     public function testSetters(): void
     {
         $photoAlbum = new PhotoAlbum(
-            photoId: 1,
-            title: 'MyAlbum'
+            photoId: 1
         );
 
-        $this->assertNull($photoAlbum->getAlbumId());
+        $this->assertEquals('Unassigned', $photoAlbum->getTitle());
+        $this->assertSame(0, $photoAlbum->getAlbumId());
         $this->assertNull($photoAlbum->getDescription());
 
+        $photoAlbum->setTitle('Yadda Yadda');
         $photoAlbum->setAlbumId(1);
         $photoAlbum->setDescription('My favourite photos');
 
+        $this->assertEquals('Yadda Yadda', $photoAlbum->getTitle());
         $this->assertSame(1, $photoAlbum->getAlbumId());
         $this->assertSame('My favourite photos', $photoAlbum->getDescription());
     }

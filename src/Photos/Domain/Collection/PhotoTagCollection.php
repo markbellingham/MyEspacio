@@ -9,7 +9,7 @@ use MyEspacio\Photos\Domain\Entity\PhotoTag;
 
 final class PhotoTagCollection extends ModelCollection
 {
-    public function getRequiredKeys(): array
+    public function requiredKeys(): array
     {
         return [
             'photo_id',

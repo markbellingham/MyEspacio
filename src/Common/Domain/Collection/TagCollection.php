@@ -9,7 +9,7 @@ use MyEspacio\Framework\ModelCollection;
 
 final class TagCollection extends ModelCollection
 {
-    public function getRequiredKeys(): array
+    public function requiredKeys(): array
     {
         return [
             'tag'
