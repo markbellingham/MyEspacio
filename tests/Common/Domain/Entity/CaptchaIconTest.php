@@ -9,9 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 final class CaptchaIconTest extends TestCase
 {
-    public function testCaptchaIcon()
+    public function testCaptchaIcon(): void
     {
-        $icon = new \MyEspacio\Common\Domain\Entity\CaptchaIcon(
+        $icon = new CaptchaIcon(
             iconId: 1,
             icon: '<i class="bi bi-phone-vibrate"></i>',
             name: 'Mobile',
@@ -30,7 +30,7 @@ final class CaptchaIconTest extends TestCase
         );
     }
 
-    public function testCaptchaIconDefaults()
+    public function testCaptchaIconDefaults(): void
     {
         $icon = new CaptchaIcon();
 
@@ -40,9 +40,9 @@ final class CaptchaIconTest extends TestCase
         $this->assertEquals('', $icon->getColour());
     }
 
-    public function testCaptchaIconNull()
+    public function testCaptchaIconNull(): void
     {
-        $icon = new \MyEspacio\Common\Domain\Entity\CaptchaIcon(
+        $icon = new CaptchaIcon(
             iconId: null,
             icon: null,
             name: null,
@@ -55,9 +55,9 @@ final class CaptchaIconTest extends TestCase
         $this->assertNull($icon->getColour());
     }
 
-    public function testCaptchaIconSetters()
+    public function testCaptchaIconSetters(): void
     {
-        $icon = new \MyEspacio\Common\Domain\Entity\CaptchaIcon(
+        $icon = new CaptchaIcon(
             iconId: null,
             icon: null,
             name: null,

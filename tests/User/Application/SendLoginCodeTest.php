@@ -25,7 +25,7 @@ final class SendLoginCodeTest extends TestCase
         );
     }
 
-    public function testGenerateCode()
+    public function testGenerateCode(): void
     {
         $user = new User(
             email: 'mail@example.com',
@@ -42,7 +42,7 @@ final class SendLoginCodeTest extends TestCase
         $this->assertEquals(6, strlen($user->getPhoneCode()));
     }
 
-    public function testSendToUser()
+    public function testSendToUser(): void
     {
         $loginEmailMessage = $this->createMock(LoginEmailMessage::class);
         $emailInterface = $this->createMock(EmailInterface::class);
@@ -56,7 +56,7 @@ final class SendLoginCodeTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testSendToUserFail()
+    public function testSendToUserFail(): void
     {
         $loginEmailMessage = $this->createMock(LoginEmailMessage::class);
         $emailInterface = $this->createMock(EmailInterface::class);
@@ -70,7 +70,7 @@ final class SendLoginCodeTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testSendToUserEmailException()
+    public function testSendToUserEmailException(): void
     {
         $loginEmailMessage = $this->createMock(LoginEmailMessage::class);
         $emailInterface = $this->createMock(EmailInterface::class);
@@ -82,7 +82,7 @@ final class SendLoginCodeTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testSendToUserByText()
+    public function testSendToUserByText(): void
     {
         $this->user->setPasscodeRoute('phone');
         $loginEmailMessage = $this->createMock(LoginEmailMessage::class);

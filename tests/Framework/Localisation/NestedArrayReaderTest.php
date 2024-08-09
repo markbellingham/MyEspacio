@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class NestedArrayReaderTest extends TestCase
 {
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $nestedArrayReader = new NestedArrayReader([
             'login' => []
@@ -18,7 +18,7 @@ final class NestedArrayReaderTest extends TestCase
         $this->assertArrayHasKey('login', $nestedArrayReader->getData());
     }
 
-    public function testSetData()
+    public function testSetData(): void
     {
         $data = [
             'login' => []
@@ -31,7 +31,7 @@ final class NestedArrayReaderTest extends TestCase
         $this->assertArrayHasKey('login', $nestedArrayReader->getData());
     }
 
-    public function testHasData()
+    public function testHasData(): void
     {
         $data = [
             'login' => []
@@ -46,7 +46,7 @@ final class NestedArrayReaderTest extends TestCase
         $this->assertFalse($nestedArrayReader->hasData());
     }
 
-    public function testGetValue()
+    public function testGetValue(): void
     {
         $nestedArrayReader = new NestedArrayReader([
             'login' => [
@@ -65,7 +65,7 @@ final class NestedArrayReaderTest extends TestCase
         $this->assertEquals('You are already logged in', $value);
     }
 
-    public function testGetValueUsingPrimaryKey()
+    public function testGetValueUsingPrimaryKey(): void
     {
         $nestedArrayReader = new NestedArrayReader([
             'login' => [
@@ -84,7 +84,7 @@ final class NestedArrayReaderTest extends TestCase
         $this->assertNull($value);
     }
 
-    public function testGetValueUsingNestedKey()
+    public function testGetValueUsingNestedKey(): void
     {
         $nestedArrayReader = new NestedArrayReader([
             'login' => [
@@ -103,7 +103,7 @@ final class NestedArrayReaderTest extends TestCase
         $this->assertNull($value);
     }
 
-    public function testGetValueUsingWrongKey()
+    public function testGetValueUsingWrongKey(): void
     {
         $nestedArrayReader = new NestedArrayReader([
             'login' => [

@@ -11,13 +11,13 @@ define('CONFIG_SETTINGS_TEST', include ROOT_DIR . '/config/config.php');
 
 final class SettingsTest extends TestCase
 {
-    public function testGetConfig()
+    public function testGetConfig(): void
     {
         $key = 'project';
         $this->assertEquals(CONFIG_SETTINGS_TEST[$key], Settings::getConfig($key));
     }
 
-    public function testGetServerSecret()
+    public function testGetServerSecret(): void
     {
         $this->assertEquals(
             CONFIG_SETTINGS_TEST['server_secret'],

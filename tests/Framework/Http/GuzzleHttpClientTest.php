@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 final class GuzzleHttpClientTest extends TestCase
 {
-    public function testGet()
+    public function testGet(): void
     {
         $url = 'https://httpbin.org/get';
         $expectedResponse = '{"url": "https://httpbin.org/get"}';
@@ -31,7 +31,7 @@ final class GuzzleHttpClientTest extends TestCase
         $this->assertEquals($url, $decoded['url']);
     }
 
-    public function testGetWithHeaders()
+    public function testGetWithHeaders(): void
     {
         $url = 'https://httpbin.org/get';
         $expectedResponse = '{"url": "https://httpbin.org/get"}';
@@ -62,7 +62,7 @@ final class GuzzleHttpClientTest extends TestCase
         $this->assertEquals($url, $decoded['url']);
     }
 
-    public function testPost()
+    public function testPost(): void
     {
         $url = 'https://httpbin.org/post';
         $expectedResponse = '{"url": "https://httpbin.org/post"}';
@@ -80,7 +80,7 @@ final class GuzzleHttpClientTest extends TestCase
         $this->assertEquals($url, $decoded['url']);
     }
 
-    public function testPostWithHeaders()
+    public function testPostWithHeaders(): void
     {
         $url = 'https://httpbin.org/post';
         $expectedResponse = '{"url": "https://httpbin.org/post"}';
@@ -109,7 +109,7 @@ final class GuzzleHttpClientTest extends TestCase
         $this->assertEquals($url, $decoded['url']);
     }
 
-    public function testPostWithData()
+    public function testPostWithData(): void
     {
         $url = 'https://httpbin.org/post';
         $expectedResponse = '{"data": {"name": "John Doe", "email": "john@example.com"}}';
@@ -143,7 +143,7 @@ final class GuzzleHttpClientTest extends TestCase
         $this->assertEquals($postData, $decoded['data']);
     }
 
-    public function testGetThrowsRequestException()
+    public function testGetThrowsRequestException(): void
     {
         $url = 'https://httpbin.org/get';
 
@@ -159,7 +159,7 @@ final class GuzzleHttpClientTest extends TestCase
         $this->assertFalse($response);
     }
 
-    public function testPostThrowsRequestException()
+    public function testPostThrowsRequestException(): void
     {
         $url = 'https://httpbin.org/post';
         $postData = ['name' => 'John Doe', 'email' => 'john@example.com'];

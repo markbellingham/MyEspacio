@@ -11,7 +11,7 @@ use Psr\Log\LogLevel;
 
 final class MonologAdapterTest extends TestCase
 {
-    public function testLog()
+    public function testLog(): void
     {
         $level = LogLevel::INFO;
         $message = 'Test message';

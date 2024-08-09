@@ -11,7 +11,7 @@ use Symfony\Component\Translation\Translator;
 
 final class TranslatorFactoryTest extends TestCase
 {
-    public function testCreateTranslator()
+    public function testCreateTranslator(): void
     {
         $locale = 'en';
         $arrayLoader = $this->createMock(ArrayLoader::class);

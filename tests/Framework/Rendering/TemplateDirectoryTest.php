@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class TemplateDirectoryTest extends TestCase
 {
-    public function testToString()
+    public function testToString(): void
     {
         $templateDirectory = new TemplateDirectory(ROOT_DIR);
         $this->assertEquals(

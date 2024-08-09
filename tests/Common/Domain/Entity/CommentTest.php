@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class CommentTest extends TestCase
 {
-    public function testComment()
+    public function testComment(): void
     {
         $comment = new Comment(
             comment: 'Hello',
@@ -38,7 +38,7 @@ final class CommentTest extends TestCase
         );
     }
 
-    public function testCommentDefault()
+    public function testCommentDefault(): void
     {
         $comment = new Comment();
 
@@ -59,7 +59,7 @@ final class CommentTest extends TestCase
         );
     }
 
-    public function testCommentNulls()
+    public function testCommentNulls(): void
     {
         $comment = new Comment(
             comment: '',
@@ -83,7 +83,7 @@ final class CommentTest extends TestCase
         );
     }
 
-    public function testCommentSetters()
+    public function testCommentSetters(): void
     {
         $comment = new Comment(
             comment: 'Hello',
@@ -110,7 +110,7 @@ final class CommentTest extends TestCase
         $this->assertEquals('Joe Bloggs', $comment->getUsername());
     }
 
-    public function testCreatedException()
+    public function testCreatedException(): void
     {
         $comment = new Comment();
         $this->expectException(Exception::class);

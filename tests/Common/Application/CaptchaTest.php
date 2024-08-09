@@ -9,7 +9,6 @@ use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 use MyEspacio\Common\Domain\Repository\IconRepositoryInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 final class CaptchaTest extends TestCase
 {
@@ -19,7 +18,6 @@ final class CaptchaTest extends TestCase
     {
         parent::setUp();
         $iconRepository = $this->createMock(IconRepositoryInterface::class);
-        $session = $this->createMock(Session::class);
         $this->captcha = new Captcha($iconRepository);
 
         $iconRepository->expects($this->once())
@@ -35,7 +33,7 @@ final class CaptchaTest extends TestCase
             ));
     }
 
-    public function testValidate()
+    public function testValidate(): void
     {
         $this->captcha->getIcons(5);
 
@@ -47,7 +45,7 @@ final class CaptchaTest extends TestCase
         $this->assertTrue($isValid);
     }
 
-    public function testValidateWithInvalidData()
+    public function testValidateWithInvalidData(): void
     {
         $this->captcha->getIcons(5);
 
@@ -61,25 +59,25 @@ final class CaptchaTest extends TestCase
         $this->assertFalse($isValidInvalidEncryptedIcon);
     }
 
-    public function testGetIcons()
+    public function testGetIcons(): void
     {
         $icons = $this->captcha->getIcons(5);
         $this->assertInstanceOf(CaptchaIconCollection::class, $icons);
     }
 
-    public function testGetSelectedIcon()
+    public function testGetSelectedIcon(): void
     {
         $this->captcha->getIcons(5);
         $this->assertInstanceOf(CaptchaIcon::class, $this->captcha->getSelectedIcon());
     }
 
-    public function testGetEncryptedIcon()
+    public function testGetEncryptedIcon(): void
     {
         $this->captcha->getIcons(5);
         $this->assertEquals(60, strlen($this->captcha->getEncryptedIcon()));
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $this->captcha->getIcons(5);
         $array = $this->captcha->jsonSerialize();

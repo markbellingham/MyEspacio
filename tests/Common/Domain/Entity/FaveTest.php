@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class FaveTest extends TestCase
 {
-    public function testFave()
+    public function testFave(): void
     {
         $fave = new Fave(2, 1);
 
@@ -24,7 +24,7 @@ final class FaveTest extends TestCase
         );
     }
 
-    public function testFaveSetters()
+    public function testFaveSetters(): void
     {
         $fave = new Fave(2, 1);
         $this->assertEquals(2, $fave->getUserId());

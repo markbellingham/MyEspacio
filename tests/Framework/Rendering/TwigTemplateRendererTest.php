@@ -10,7 +10,7 @@ use Twig\Environment;
 
 final class TwigTemplateRendererTest extends TestCase
 {
-    public function testRender()
+    public function testRender(): void
     {
         $environment = $this->createMock(Environment::class);
         $environment->expects($this->once())
@@ -22,7 +22,7 @@ final class TwigTemplateRendererTest extends TestCase
         $this->assertEquals('', $template);
     }
 
-    public function testRenderWithData()
+    public function testRenderWithData(): void
     {
         $environment = $this->createMock(Environment::class);
         $environment->expects($this->once())

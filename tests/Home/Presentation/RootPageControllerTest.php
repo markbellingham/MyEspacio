@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class RootPageControllerTest extends TestCase
 {
-    public function testShow()
+    public function testShow(): void
     {
         $session = $this->createMock(SessionInterface::class);
         $templateRendererFactory = $this->createMock(TwigTemplateRendererFactory::class);

@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 final class UserTest extends TestCase
 {
-    public function testUser()
+    public function testUser(): void
     {
         $user = new User(
             email: 'mail@example.com',
@@ -49,7 +49,7 @@ final class UserTest extends TestCase
         );
     }
 
-    public function testDefaultValues()
+    public function testDefaultValues(): void
     {
         $user = new User(
             email: 'mail@example.com',
@@ -67,7 +67,7 @@ final class UserTest extends TestCase
         $this->assertEquals('Anonymous', $user->getName());
     }
 
-    public function testSetters()
+    public function testSetters(): void
     {
         $user = new User(
             email: 'mail@example.com',
@@ -112,7 +112,7 @@ final class UserTest extends TestCase
         $this->assertEquals('phone', $user->getPasscodeRoute());
     }
 
-    public function testNonDefaultNullValues()
+    public function testNonDefaultNullValues(): void
     {
         $user = new User(
             email: 'mail@example.com',
@@ -137,7 +137,7 @@ final class UserTest extends TestCase
         $this->assertNull($user->getPhoneCode());
     }
 
-    public function testUuidException()
+    public function testUuidException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid UUID');
@@ -149,7 +149,7 @@ final class UserTest extends TestCase
         );
     }
 
-    public function testEmailException()
+    public function testEmailException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid email address');
@@ -161,7 +161,7 @@ final class UserTest extends TestCase
         );
     }
 
-    public function testPasscodeRouteException()
+    public function testPasscodeRouteException(): void
     {
         $user = new User(
             email: 'mail@example.com',
@@ -174,7 +174,7 @@ final class UserTest extends TestCase
         $user->setPasscodeRoute('Careless whispers');
     }
 
-    public function testLoginDateException()
+    public function testLoginDateException(): void
     {
         $user = new User(
             email: 'mail@example.com',

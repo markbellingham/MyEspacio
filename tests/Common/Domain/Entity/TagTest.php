@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Common\Domain\Entity;
 
+use MyEspacio\Common\Domain\Entity\Tag;
 use PHPUnit\Framework\TestCase;
 
 final class TagTest extends TestCase
 {
-    public function testTag()
+    public function testTag(): void
     {
-        $tag = new \MyEspacio\Common\Domain\Entity\Tag(
+        $tag = new Tag(
             tag: 'sunset',
             id: 1
         );
@@ -19,9 +20,9 @@ final class TagTest extends TestCase
         $this->assertSame(1, $tag->getId());
     }
 
-    public function testTagNoId()
+    public function testTagNoId(): void
     {
-        $tag = new \MyEspacio\Common\Domain\Entity\Tag(
+        $tag = new Tag(
             tag: 'sunset'
         );
 
@@ -29,9 +30,9 @@ final class TagTest extends TestCase
         $this->assertNull($tag->getId());
     }
 
-    public function testSetters()
+    public function testSetters(): void
     {
-        $tag = new \MyEspacio\Common\Domain\Entity\Tag(
+        $tag = new Tag(
             tag: 'sunset'
         );
 

@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class CommentValidatorTest extends TestCase
 {
-    public function testValidComment()
+    public function testValidComment(): void
     {
         $comment = new Comment(
             comment: 'Hello',
@@ -25,7 +25,7 @@ final class CommentValidatorTest extends TestCase
         $this->assertTrue($validator->validate());
     }
 
-    public function testInvalidUserId()
+    public function testInvalidUserId(): void
     {
         $comment = new Comment(
             comment: 'Hello',
@@ -39,7 +39,7 @@ final class CommentValidatorTest extends TestCase
         $this->assertFalse($validator->validate());
     }
 
-    public function testCommentIsEmpty()
+    public function testCommentIsEmpty(): void
     {
         $comment = new Comment(
             comment: '',
@@ -53,7 +53,7 @@ final class CommentValidatorTest extends TestCase
         $this->assertFalse($validator->validate());
     }
 
-    public function testInvalidTitle()
+    public function testInvalidTitle(): void
     {
         $comment = new Comment(
             comment: 'Hello',
@@ -67,7 +67,7 @@ final class CommentValidatorTest extends TestCase
         $this->assertFalse($validator->validate());
     }
 
-    public function testCommentContainsTags()
+    public function testCommentContainsTags(): void
     {
         $comment = new Comment(
             comment: '<div class="my-class">Hello</div>',
@@ -81,7 +81,7 @@ final class CommentValidatorTest extends TestCase
         $this->assertFalse($validator->validate());
     }
 
-    public function testCommentContainsHtml()
+    public function testCommentContainsHtml(): void
     {
         $comment = new Comment(
             comment: 'Hello',
@@ -99,7 +99,7 @@ final class CommentValidatorTest extends TestCase
         }
     }
 
-    public function testCommentContainsConsecutiveNumbers()
+    public function testCommentContainsConsecutiveNumbers(): void
     {
         $comment = new Comment(
             comment: '01234567890',

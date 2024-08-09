@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class DirectoryExceptionTest extends TestCase
 {
-    public function testDirectoryDoesNotExist()
+    public function testDirectoryDoesNotExist(): void
     {
         $noneExistantDirectory = 'nonexistent/directory';
         $exception = DirectoryException::directoryDoesNotExist($noneExistantDirectory);

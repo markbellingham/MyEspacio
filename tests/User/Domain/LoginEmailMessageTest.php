@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 final class LoginEmailMessageTest extends TestCase
 {
-    public function testAssemble()
+    public function testAssemble(): void
     {
         $user = new User(
             email: 'website@mexample.com',
@@ -38,7 +38,7 @@ final class LoginEmailMessageTest extends TestCase
         );
     }
 
-    public function testAssembleWithException()
+    public function testAssembleWithException(): void
     {
         $user = new User(
             email: 'website@mexample.com',

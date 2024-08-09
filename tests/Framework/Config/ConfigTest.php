@@ -10,7 +10,7 @@ define('CONFIG_CONFIG_TEST', include ROOT_DIR . '/config/config.php');
 
 final class ConfigTest extends TestCase
 {
-    public function testArrayKeys()
+    public function testArrayKeys(): void
     {
         $expectedKeys = [
             'contact',
@@ -24,7 +24,7 @@ final class ConfigTest extends TestCase
         }
     }
 
-    public function testContactConfig()
+    public function testContactConfig(): void
     {
         $config = CONFIG['contact'];
         $expectedKeys = [
@@ -38,7 +38,7 @@ final class ConfigTest extends TestCase
         }
     }
 
-    public function testDbConfig()
+    public function testDbConfig(): void
     {
         $config = CONFIG['project'];
         $expectedKeys = [
@@ -55,7 +55,7 @@ final class ConfigTest extends TestCase
         }
     }
 
-    public function testLastFmApiConfig()
+    public function testLastFmApiConfig(): void
     {
         $config = CONFIG['lastfm_api'];
         $expectedKeys = [
@@ -71,7 +71,7 @@ final class ConfigTest extends TestCase
         }
     }
 
-    public function testGoogleConfig()
+    public function testGoogleConfig(): void
     {
         $config = CONFIG['google'];
         $expectedKeys = [
@@ -85,7 +85,7 @@ final class ConfigTest extends TestCase
         }
     }
 
-    public function testServerSecret()
+    public function testServerSecret(): void
     {
         $this->assertIsString(CONFIG['server_secret']);
         $this->assertNotEmpty(CONFIG['server_secret']);

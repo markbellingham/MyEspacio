@@ -11,7 +11,7 @@ final class RoutesTest extends TestCase
     private const ROUTE_URL_TOKENS = '/^\/[A-z]?\/?.*/';
     private const CONTROLLER_CLASS_NAME_TOKENS = '~^[A-Za-z0-9\\\]+#[A-Za-z0-9]+$~';
 
-    public function testRoutes()
+    public function testRoutes(): void
     {
         $allowedRouteMethods = [
             'GET',

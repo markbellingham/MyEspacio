@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class TranslationIdentifierFactoryTest extends TestCase
 {
-    public function testCreate()
+    public function testCreate(): void
     {
         $languagesDirectory = new LanguagesDirectory(ROOT_DIR);
 

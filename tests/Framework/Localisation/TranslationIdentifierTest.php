@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class TranslationIdentifierTest extends TestCase
 {
-    public function testTranslationIdentifier()
+    public function testTranslationIdentifier(): void
     {
         $directory = new LanguagesDirectory(ROOT_DIR);
         $identifier = new TranslationIdentifier('en', 'messages', $directory);
@@ -20,7 +20,7 @@ final class TranslationIdentifierTest extends TestCase
         $this->assertEquals('messages', $identifier->getFilename());
     }
 
-    public function testTranslationIdentifierWrongLanguage()
+    public function testTranslationIdentifierWrongLanguage(): void
     {
         $directory = new LanguagesDirectory(ROOT_DIR);
         $identifier = new TranslationIdentifier('se', 'messages', $directory);
@@ -29,7 +29,7 @@ final class TranslationIdentifierTest extends TestCase
         $this->assertEquals('messages', $identifier->getFilename());
     }
 
-    public function testTranslationIdentifierWrongFile()
+    public function testTranslationIdentifierWrongFile(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('File does not exist: Bad File');

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Framework\Messages;
 
-use MyEspacio\Framework\Messages\EmailMessage;
 use MyEspacio\Framework\Messages\PhpMailerEmail;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -12,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class PhpMailerEmailTest extends TestCase
 {
-    public function testSendEmail()
+    public function testSendEmail(): void
     {
         $phpMailer = $this->createMock(PHPMailer::class);
         $phpMailer->expects($this->once())
@@ -33,7 +32,7 @@ class PhpMailerEmailTest extends TestCase
         }
     }
 
-    public function testSendEmailFail()
+    public function testSendEmailFail(): void
     {
         $phpMailer = $this->createMock(PHPMailer::class);
         $phpMailer->expects($this->once())

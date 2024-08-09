@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 final class LanguageReaderTest extends TestCase
 {
-    public function testGetTranslationText()
+    public function testGetTranslationText(): void
     {
         $languageLoader = $this->createMock(LanguageLoader::class);
         $reader = $this->createMock(NestedArrayReader::class);
@@ -31,7 +31,7 @@ final class LanguageReaderTest extends TestCase
         $this->assertEquals('You are now logged in', $result);
     }
 
-    public function testGetTranslationTextWithVariables()
+    public function testGetTranslationTextWithVariables(): void
     {
         $languageLoader = $this->createMock(LanguageLoader::class);
         $reader = $this->createMock(NestedArrayReader::class);
@@ -50,7 +50,7 @@ final class LanguageReaderTest extends TestCase
         $this->assertEquals('Please check your email for the login code', $result);
     }
 
-    public function testGetTranslationTextNotFound()
+    public function testGetTranslationTextNotFound(): void
     {
         $languageLoader = $this->createMock(LanguageLoader::class);
         $reader = $this->createMock(NestedArrayReader::class);
@@ -69,7 +69,7 @@ final class LanguageReaderTest extends TestCase
         $this->assertEquals('', $result);
     }
 
-    public function testGetTranslationTextNoInitialData()
+    public function testGetTranslationTextNoInitialData(): void
     {
         $languageLoader = $this->createMock(LanguageLoader::class);
         $reader = $this->createMock(NestedArrayReader::class);

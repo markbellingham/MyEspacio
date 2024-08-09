@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class DataSetTest extends TestCase
 {
-    public function testString()
+    public function testString(): void
     {
         $dataset = new DataSet([
             'one' => 'one',
@@ -33,7 +33,7 @@ final class DataSetTest extends TestCase
         $this->assertEquals('', $dataset->string('eight'));
     }
 
-    public function testInt()
+    public function testInt(): void
     {
         $dataset = new DataSet([
             'one' => '1',
@@ -53,7 +53,7 @@ final class DataSetTest extends TestCase
         $this->assertSame(0, $dataset->int('six'));
     }
 
-    public function testFloat()
+    public function testFloat(): void
     {
         $dataset = new DataSet([
             'one' => '1',
@@ -73,7 +73,7 @@ final class DataSetTest extends TestCase
         $this->assertSame(0.0, $dataset->float('six'));
     }
 
-    public function testBool()
+    public function testBool(): void
     {
         $dataset = new DataSet([
             'one' => 'true',
@@ -107,7 +107,7 @@ final class DataSetTest extends TestCase
         $this->assertFalse($dataset->bool('thirteen'));
     }
 
-    public function testDateTimeNull()
+    public function testDateTimeNull(): void
     {
         $dataset = new DataSet([
             'one' => '2024-03-10 13:35:00',
@@ -125,7 +125,7 @@ final class DataSetTest extends TestCase
         $this->assertNull($dataset->dateTimeNull('five'));
     }
 
-    public function testStringNull()
+    public function testStringNull(): void
     {
         $dataset = new DataSet([
             'one' => 'one',
@@ -149,7 +149,7 @@ final class DataSetTest extends TestCase
         $this->assertNull($dataset->stringNull('eight'));
     }
 
-    public function testIntNull()
+    public function testIntNull(): void
     {
         $dataset = new DataSet([
             'one' => '1',
@@ -169,7 +169,7 @@ final class DataSetTest extends TestCase
         $this->assertNull($dataset->intNull('six'));
     }
 
-    public function testFloatNull()
+    public function testFloatNull(): void
     {
         $dataset = new DataSet([
             'one' => '1',
@@ -189,7 +189,7 @@ final class DataSetTest extends TestCase
         $this->assertNull($dataset->floatNull('six'));
     }
 
-    public function testBoolNull()
+    public function testBoolNull(): void
     {
         $dataset = new DataSet([
             'one' => 'true',
@@ -223,7 +223,7 @@ final class DataSetTest extends TestCase
         $this->assertNull($dataset->boolNull('thirteen'));
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
         $data = [
             'some' => 'data'
@@ -233,7 +233,7 @@ final class DataSetTest extends TestCase
         $this->assertEquals($data, $dataset->toArray());
     }
 
-    public function testToArrayEmpty()
+    public function testToArrayEmpty(): void
     {
         $dataset = new DataSet();
         $this->assertEquals([], $dataset->toArray());

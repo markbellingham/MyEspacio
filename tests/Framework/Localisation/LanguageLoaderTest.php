@@ -30,7 +30,7 @@ final class LanguageLoaderTest extends TestCase
         $this->assertEquals(['hello' => 'Hello', 'goodbye' => 'Goodbye'], $loader->loadTranslations('en', 'test'));
     }
 
-    public function testFileDoesNotExist()
+    public function testFileDoesNotExist(): void
     {
         $root = vfsStream::setup();
         $directory = vfsStream::newDirectory('languages')->at($root);
@@ -48,7 +48,7 @@ final class LanguageLoaderTest extends TestCase
         $this->assertEquals(['hello' => 'Hello', 'goodbye' => 'Goodbye'], $loader->loadTranslations('fr', 'test'));
     }
 
-    public function testEnglishFileNotFound()
+    public function testEnglishFileNotFound(): void
     {
         $root = vfsStream::setup();
         $directory = vfsStream::newDirectory('languages')->at($root);
@@ -67,7 +67,7 @@ final class LanguageLoaderTest extends TestCase
         $loader->loadTranslations('en', 'bad_file');
     }
 
-    public function testFileDoesNotReturnArray()
+    public function testFileDoesNotReturnArray(): void
     {
         $root = vfsStream::setup();
         $directory = vfsStream::newDirectory('languages')->at($root);
@@ -86,7 +86,7 @@ final class LanguageLoaderTest extends TestCase
         $loader->loadTranslations('en', 'not_array');
     }
 
-    public function testNotFoundAndNotArray()
+    public function testNotFoundAndNotArray(): void
     {
         $root = vfsStream::setup();
         $directory = vfsStream::newDirectory('languages')->at($root);

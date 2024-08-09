@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 final class PdoConnectionFactoryTest extends TestCase
 {
     #[Group('database')]
-    public function testCreate()
+    public function testCreate(): void
     {
         $factory = new PdoConnectionFactory();
         $connection = $factory->create('project');

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class LanguagesDirectoryTest extends TestCase
 {
-    public function testToString()
+    public function testToString(): void
     {
         $localDir = '/src/Locale';
         $directory = new LanguagesDirectory(ROOT_DIR);

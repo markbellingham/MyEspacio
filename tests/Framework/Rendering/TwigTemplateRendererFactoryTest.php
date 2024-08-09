@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 final class TwigTemplateRendererFactoryTest extends TestCase
 {
-    public function testCreate()
+    public function testCreate(): void
     {
         $captcha = $this->createMock(Captcha::class);
         $storedTokenReader = $this->createMock(StoredTokenReader::class);
