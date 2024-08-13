@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace MyEspacio\Framework;
 
 use DateTimeImmutable;
+use stdClass;
 use Throwable;
 
 final class DataSet
 {
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(
         private readonly array $data = []
     ) {
@@ -16,7 +20,7 @@ final class DataSet
 
     public function string(string $key): string
     {
-        $value = $this->data[$key] ?? null;
+        $value = $this->data[$key] ?? '';
         if (
             is_scalar($value)
         ) {
@@ -25,9 +29,13 @@ final class DataSet
             is_array($value) ||
             is_object($value)
         ) {
-            return json_encode($value);
+            $json = json_encode($value);
+            if ($json === false) {
+                return '[Encoding error]';
+            }
+            return $json;
         }
-        return '';
+        return '[Unsupported type]';
     }
 
     public function int(string $key): int
@@ -89,9 +97,13 @@ final class DataSet
             is_array($value) ||
             is_object($value)
         ) {
-            return json_encode($value);
+            $json = json_encode($value);
+            if ($json === false) {
+                return '[Encoding error]';
+            }
+            return $json;
         }
-        return $value;
+        return null;
     }
 
     public function intNull(string $key): ?int
@@ -133,6 +145,7 @@ final class DataSet
         );
     }
 
+    /** @return stdClass[][]|String[]|String[][] */
     public function toArray(): array
     {
         return $this->data;

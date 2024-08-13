@@ -32,6 +32,7 @@
     "phpmailer/phpmailer": "^6.7",
     "ramsey/uuid": "^4.7",
     "rdlowrey/auryn": "^1.4",
+    "symfony/dependency-injection": "^6.4",
     "symfony/http-foundation": "^5.3",
     "symfony/translation": "^6.4",
     "twig/twig": "^3.3"

@@ -10,6 +10,10 @@ final class Settings
 {
 //    private static string $lastFmRefreshDate = '';
 
+    /**
+     * @param string $key
+     * @return string|array<string, string>
+     */
     public static function getConfig(string $key): string|array
     {
         return CONFIG[$key] ?? '';

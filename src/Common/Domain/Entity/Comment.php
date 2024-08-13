@@ -4,10 +4,9 @@ namespace MyEspacio\Common\Domain\Entity;
 
 use DateTimeImmutable;
 use Exception;
-use JsonSerializable;
 use MyEspacio\Framework\Model;
 
-class Comment extends Model implements JsonSerializable
+class Comment extends Model
 {
     public function __construct(
         private string $comment = '',

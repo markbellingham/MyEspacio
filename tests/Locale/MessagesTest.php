@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Locale;
 
 use Monolog\Test\TestCase;
-use MyEspacio\Framework\Localisation\LanguagesDirectory;
 
 final class MessagesTest extends TestCase
 {
+    /** @var array|String[] */
     private array $referenceKeys;
 
     protected function setUp(): void
@@ -27,6 +27,10 @@ final class MessagesTest extends TestCase
         $this->assertEquals($this->referenceKeys, $comparedKeys);
     }
 
+    /**
+     * @param array<string, String[]>|String[] $array
+     * @return String[] $array
+     */
     private function arrayKeysRecursive(array $array): array
     {
         $keys = [];
@@ -41,6 +45,9 @@ final class MessagesTest extends TestCase
         return $keys;
     }
 
+    /**
+     * @return array<int, String[]>
+     */
     public static function localizationFilesProvider(): array
     {
         return [

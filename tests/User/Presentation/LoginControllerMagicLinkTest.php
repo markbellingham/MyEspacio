@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\User\Presentation;
 
 use DateTimeImmutable;
-use MyEspacio\Framework\Http\RequestHandler;
+use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Domain\User;
@@ -20,8 +20,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class LoginControllerMagicLinkTest extends TestCase
 {
-    /** @var RequestHandler|MockObject */
-    private RequestHandler|MockObject $requestHandler;
+    /** @var RequestHandlerInterface|MockObject */
+    private RequestHandlerInterface|MockObject $requestHandler;
 
     /** @var SendLoginCode|MockObject */
     private SendLoginCode|MockObject $loginCode;
@@ -41,7 +41,7 @@ final class LoginControllerMagicLinkTest extends TestCase
     {
         parent::setUp();
 
-        $this->requestHandler = $this->createMock(RequestHandler::class);
+        $this->requestHandler = $this->createMock(RequestHandlerInterface::class);
         $this->loginCode = $this->createMock(SendLoginCode::class);
         $this->session = $this->createMock(SessionInterface::class);
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);

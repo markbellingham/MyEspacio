@@ -6,7 +6,7 @@ namespace MyEspacio\User\Presentation;
 
 use DateTimeImmutable;
 use Exception;
-use MyEspacio\Framework\Http\RequestHandler;
+use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Domain\User;
@@ -22,7 +22,7 @@ final class LoginController
     private const LOGIN_CODE_EXPIRY_TIME = 15;
 
     public function __construct(
-        private readonly RequestHandler $requestHandler,
+        private readonly RequestHandlerInterface $requestHandler,
         private readonly SendLoginCode $loginCode,
         private readonly SessionInterface $session,
         private readonly UserRepositoryInterface $userRepository,

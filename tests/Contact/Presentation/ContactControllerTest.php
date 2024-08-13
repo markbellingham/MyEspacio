@@ -8,7 +8,7 @@ use MyEspacio\Common\Application\Captcha;
 use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 use MyEspacio\Contact\Presentation\ContactController;
-use MyEspacio\Framework\Http\RequestHandler;
+use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
@@ -23,7 +23,7 @@ final class ContactControllerTest extends TestCase
 {
     public function testShow(): void
     {
-        $requestHandler = $this->createMock(RequestHandler::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(Captcha::class);
@@ -83,7 +83,7 @@ final class ContactControllerTest extends TestCase
 
     public function testShowWithRoot(): void
     {
-        $requestHandler = $this->createMock(RequestHandler::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(Captcha::class);
@@ -108,7 +108,7 @@ final class ContactControllerTest extends TestCase
 
     public function testSendMessageNoToken(): void
     {
-        $requestHandler = $this->createMock(RequestHandler::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(Captcha::class);
@@ -136,7 +136,7 @@ final class ContactControllerTest extends TestCase
 
     public function testSendMessageBadCaptcha(): void
     {
-        $requestHandler = $this->createMock(RequestHandler::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(Captcha::class);
@@ -177,7 +177,7 @@ final class ContactControllerTest extends TestCase
 
     public function testSendMessageBadMessage(): void
     {
-        $requestHandler = $this->createMock(RequestHandler::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(Captcha::class);
@@ -207,7 +207,7 @@ final class ContactControllerTest extends TestCase
 
     public function testSendMessageSendFail(): void
     {
-        $requestHandler = $this->createMock(RequestHandler::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(Captcha::class);
@@ -240,7 +240,7 @@ final class ContactControllerTest extends TestCase
 
     public function testSendMessageSendSuccess(): void
     {
-        $requestHandler = $this->createMock(RequestHandler::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(Captcha::class);

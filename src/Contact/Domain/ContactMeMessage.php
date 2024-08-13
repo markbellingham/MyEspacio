@@ -47,6 +47,7 @@ final class ContactMeMessage extends EmailMessage
         }
     }
 
+    /** @return array<string, mixed> */
     private function toArray(): array
     {
         return get_object_vars($this);

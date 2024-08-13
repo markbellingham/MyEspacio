@@ -8,7 +8,7 @@ use MyEspacio\Common\Application\Captcha;
 use MyEspacio\Contact\Domain\ContactMeMessage;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
-use MyEspacio\Framework\Http\RequestHandler;
+use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\Framework\Messages\EmailInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +20,7 @@ final class ContactController
     public const CAPTCHA_ICONS_QUANTITY = 7;
 
     public function __construct(
-        private readonly RequestHandler $requestHandler,
+        private readonly RequestHandlerInterface $requestHandler,
         private readonly SessionInterface $session,
         private readonly EmailInterface $email,
         private readonly Captcha $captcha,
@@ -28,6 +28,11 @@ final class ContactController
     ) {
     }
 
+    /**
+     * @param Request $request
+     * @param array<string, string> $vars
+     * @return Response
+     */
     public function show(Request $request, array $vars): Response
     {
         $valid = $this->requestHandler->validate($request);

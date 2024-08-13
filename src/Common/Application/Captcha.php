@@ -60,6 +60,7 @@ final class Captcha implements JsonSerializable
         return $this->selectedIcon;
     }
 
+    /** @return array<string, mixed> */
     public function jsonSerialize(): array
     {
         return [

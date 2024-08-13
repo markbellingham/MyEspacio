@@ -9,9 +9,11 @@ use MyEspacio\Framework\Exceptions\CollectionException;
 
 abstract class ModelCollection implements Iterator
 {
+    /** @var array<int, mixed> */
     protected array $data;
     protected int $position = 0;
 
+    /** @return String[] */
     abstract public function requiredKeys(): array;
 
     abstract public function current(): Model;
@@ -23,6 +25,7 @@ abstract class ModelCollection implements Iterator
     }
 
     /**
+     * @param array<int, mixed> $data
      * @throws CollectionException
      */
     protected function validateElements(array $data): void
@@ -64,6 +67,7 @@ abstract class ModelCollection implements Iterator
         return new DataSet($element);
     }
 
+    /** @return array<int, array<string, mixed>> */
     public function toArray(): array
     {
         return $this->data;

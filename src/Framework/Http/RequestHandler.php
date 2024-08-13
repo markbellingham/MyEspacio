@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class RequestHandler
+final class RequestHandler implements RequestHandlerInterface
 {
     private ?string $responseType = null;
     private TemplateRenderer $templateRenderer;

@@ -2,9 +2,9 @@
 
 namespace MyEspacio\Common\Domain\Entity;
 
-use JsonSerializable;
+use MyEspacio\Framework\Model;
 
-final class Fave implements JsonSerializable
+final class Fave extends Model
 {
     public function __construct(
         private int $user_id,
