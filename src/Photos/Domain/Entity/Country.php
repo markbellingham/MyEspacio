@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Photos\Domain\Entity;
 
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 
 final class Country extends Model
@@ -34,5 +35,20 @@ final class Country extends Model
     public function getThreeCharCode(): string
     {
         return $this->threeCharCode;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
+    public static function createFromDataSet(DataSet $data): Country
+    {
+        return new Country(
+            id: $data->int('country_id'),
+            name: $data->string('country_name'),
+            twoCharCode: $data->string('two_char_code'),
+            threeCharCode: $data->string('three_char_code')
+        );
     }
 }

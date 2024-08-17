@@ -7,6 +7,7 @@ namespace Tests\Common\Domain\Entity;
 use DateTimeImmutable;
 use Exception;
 use MyEspacio\Common\Domain\Entity\Comment;
+use MyEspacio\Framework\DataSet;
 use PHPUnit\Framework\TestCase;
 
 final class CommentTest extends TestCase
@@ -29,9 +30,7 @@ final class CommentTest extends TestCase
         $this->assertEquals(
             [
                 'comment' => 'Hello',
-                'created' => DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
-                'title' => null,
-                'userId' => 2,
+                'created' => '2023-12-30 12:13:14',
                 'username' => 'Mark Bellingham'
             ],
             $comment->jsonSerialize()
@@ -51,8 +50,6 @@ final class CommentTest extends TestCase
             [
                 'comment' => '',
                 'created' => null,
-                'title' => '',
-                'userId' => 0,
                 'username' => ''
             ],
             $comment->jsonSerialize()
@@ -75,8 +72,6 @@ final class CommentTest extends TestCase
             [
                 'comment' => '',
                 'created' => null,
-                'title' => null,
-                'userId' => 0,
                 'username' => ''
             ],
             $comment->jsonSerialize()
@@ -115,5 +110,25 @@ final class CommentTest extends TestCase
         $comment = new Comment();
         $this->expectException(Exception::class);
         $comment->setCreated('invalid_date');
+    }
+
+    public function testCreateFromDataset(): void
+    {
+        $data = new DataSet([
+            'comment' => 'Hello',
+            'created' => '2023-12-30 12:13:14',
+            'title' => null,
+            'user_id' => 2,
+            'username' => 'Mark Bellingham'
+        ]);
+
+        $comment = Comment::createFromDataSet($data);
+        $this->assertInstanceOf(Comment::class, $comment);
+        $this->assertEquals('Hello', $comment->getComment());
+        $this->assertInstanceOf(DateTimeImmutable::class, $comment->getCreated());
+        $this->assertEquals('2023-12-30 12:13:14', $comment->getCreatedString());
+        $this->assertEquals('', $comment->getTitle());
+        $this->assertSame(2, $comment->getUserId());
+        $this->assertEquals('Mark Bellingham', $comment->getUsername());
     }
 }

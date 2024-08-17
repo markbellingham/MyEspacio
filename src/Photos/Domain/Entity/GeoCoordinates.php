@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Photos\Domain\Entity;
 
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 
 final class GeoCoordinates extends Model
@@ -40,5 +41,21 @@ final class GeoCoordinates extends Model
     public function getAccuracy(): int
     {
         return $this->accuracy;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
+    public static function createFromDataSet(DataSet $data): GeoCoordinates
+    {
+        return new GeoCoordinates(
+            id: $data->int('geo_id'),
+            photoId: $data->int('photo_id'),
+            latitude: $data->int('latitude'),
+            longitude: $data->int('longitude'),
+            accuracy: $data->int('accuracy')
+        );
     }
 }

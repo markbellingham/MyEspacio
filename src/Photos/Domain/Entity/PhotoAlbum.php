@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Photos\Domain\Entity;
 
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 
 final class PhotoAlbum extends Model
@@ -49,5 +50,15 @@ final class PhotoAlbum extends Model
     public function setDescription(?string $description): void
     {
         $this->description = $description;
+    }
+
+    public static function createFromDataSet(DataSet $data): PhotoAlbum
+    {
+        return new PhotoAlbum(
+            photoId: $data->int('photo_id'),
+            title: $data->string('title'),
+            albumId: $data->int('album_id'),
+            description: $data->string('description')
+        );
     }
 }

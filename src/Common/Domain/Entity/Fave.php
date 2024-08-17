@@ -2,38 +2,42 @@
 
 namespace MyEspacio\Common\Domain\Entity;
 
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 
 final class Fave extends Model
 {
     public function __construct(
-        private int $user_id,
-        private int $item_id
+        private int $userId,
+        private int $itemId
     ) {
-    }
-
-    public function jsonSerialize(): array
-    {
-        return get_object_vars($this);
     }
 
     public function getUserId(): int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
     public function setUserId(int $userId): void
     {
-        $this->user_id = $userId;
+        $this->userId = $userId;
     }
 
     public function getItemId(): int
     {
-        return $this->item_id;
+        return $this->itemId;
     }
 
     public function setItemId(int $itemId): void
     {
-        $this->item_id = $itemId;
+        $this->itemId = $itemId;
+    }
+
+    public static function createFromDataSet(DataSet $data): Fave
+    {
+        return new Fave(
+            userId: $data->int('user_id'),
+            itemId: $data->int('item_id')
+        );
     }
 }

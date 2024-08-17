@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace MyEspacio\Photos\Domain\Entity;
 
 use DateTimeImmutable;
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 
 final class Photo extends Model
@@ -91,5 +92,29 @@ final class Photo extends Model
     public function getFaveCount(): ?int
     {
         return $this->faveCount;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
+    }
+
+    public static function createFromDataSet(DataSet $data): Model
+    {
+        return new Photo(
+            country: Country::createFromDataSet($data),
+            geoCoordinates: GeoCoordinates::createFromDataSet($data),
+            dimensions: Dimensions::createFromDataSet($data),
+            relevance: Relevance::createFromDataSet($data),
+            dateTaken: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data->string('date_taken')),
+            description: $data->string('description'),
+            directory: $data->string('directory'),
+            filename: $data->string('filename'),
+            id: $data->int('photo_id'),
+            title: $data->string('title'),
+            town: $data->string('town'),
+            commentCount: $data->int('comment_count'),
+            faveCount: $data->int('fave_count')
+        );
     }
 }

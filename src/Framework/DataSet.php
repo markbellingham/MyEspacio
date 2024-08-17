@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace MyEspacio\Framework;
 
 use DateTimeImmutable;
-use stdClass;
 use Throwable;
 
 final class DataSet
 {
-    /**
-     * @param array<string, mixed> $data
-     */
+    /** @param array<string, mixed> $data */
     public function __construct(
         private readonly array $data = []
     ) {
@@ -20,61 +17,22 @@ final class DataSet
 
     public function string(string $key): string
     {
-        $value = $this->data[$key] ?? '';
-        if (
-            is_scalar($value)
-        ) {
-            return trim((string)$value);
-        } elseif (
-            is_array($value) ||
-            is_object($value)
-        ) {
-            $json = json_encode($value);
-            if ($json === false) {
-                return '[Encoding error]';
-            }
-            return $json;
-        }
-        return '[Unsupported type]';
+        return $this->stringNull($key) ?? '';
     }
 
     public function int(string $key): int
     {
-        $value = $this->data[$key] ?? null;
-        if (is_scalar($value) === false) {
-            return 0;
-        }
-        return filter_var(
-            value: $value,
-            filter: FILTER_VALIDATE_INT,
-            options: ['options' => ['default' => 0]]
-        );
+        return $this->intNull($key) ?? 0;
     }
 
     public function float(string $key): float
     {
-        $value = $this->data[$key] ?? null;
-        if (is_scalar($value) === false) {
-            return 0.0;
-        }
-        return filter_var(
-            value: $value,
-            filter: FILTER_VALIDATE_FLOAT,
-            options: ['options' => ['default' => 0.0]]
-        );
+        return $this->floatNull($key) ?? 0.00;
     }
 
     public function bool(string $key): bool
     {
-        $value = $this->data[$key] ?? null;
-        if (is_scalar($value) === false) {
-            return false;
-        }
-        return filter_var(
-            value: $value,
-            filter: FILTER_VALIDATE_BOOLEAN,
-            options: ['options' => ['default' => false]]
-        );
+        return $this->boolNull($key) ?? false;
     }
 
     public function dateTimeNull(string $key): ?DateTimeImmutable
@@ -86,7 +44,7 @@ final class DataSet
         }
     }
 
-    public function stringNull(string $key): ?string
+    public function stringNull(string|null $key): ?string
     {
         $value = $this->data[$key] ?? null;
         if (
@@ -106,7 +64,7 @@ final class DataSet
         return null;
     }
 
-    public function intNull(string $key): ?int
+    public function intNull(string|null $key): ?int
     {
         $value = $this->data[$key] ?? null;
         if (is_scalar($value) === false) {
@@ -119,7 +77,7 @@ final class DataSet
         );
     }
 
-    public function floatNull(string $key): ?float
+    public function floatNull(string|null $key): ?float
     {
         $value = $this->data[$key] ?? null;
         if (is_scalar($value) === false) {
@@ -132,7 +90,7 @@ final class DataSet
         );
     }
 
-    public function boolNull(string $key): ?bool
+    public function boolNull(string|null $key): ?bool
     {
         $value = $this->data[$key] ?? null;
         if (is_scalar($value) === false) {
@@ -145,7 +103,7 @@ final class DataSet
         );
     }
 
-    /** @return stdClass[][]|String[]|String[][] */
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return $this->data;

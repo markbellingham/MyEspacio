@@ -7,6 +7,7 @@ namespace MyEspacio\User\Domain;
 use DateTimeImmutable;
 use Exception;
 use InvalidArgumentException;
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 use Ramsey\Uuid\Uuid;
 
@@ -192,5 +193,21 @@ final class User extends Model
             throw new InvalidArgumentException('Passcode route must be one of ' . implode(', ', self::VALID_PASSCODE_ROUTES));
         }
         return true;
+    }
+
+    public static function createFromDataSet(DataSet $data): User
+    {
+        return new User(
+            email: $data->string('email'),
+            uuid: $data->string('uuid'),
+            name: $data->string('name'),
+            phone: $data->stringNull('phone'),
+            loginAttempts: $data->intNull('login_attempts'),
+            loginDate: $data->dateTimeNull('login_date'),
+            magicLink: $data->stringNull('magic_link'),
+            phoneCode: $data->stringNull('phone_code'),
+            passcodeRoute: $data->string('passcode_route'),
+            id: $data->int('id')
+        );
     }
 }

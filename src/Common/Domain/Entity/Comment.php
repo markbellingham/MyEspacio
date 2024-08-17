@@ -4,6 +4,7 @@ namespace MyEspacio\Common\Domain\Entity;
 
 use DateTimeImmutable;
 use Exception;
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 
 class Comment extends Model
@@ -72,6 +73,21 @@ class Comment extends Model
 
     public function jsonSerialize(): array
     {
-        return get_object_vars($this);
+        return [
+            'comment' => $this->comment,
+            'created' => $this->getCreatedString(),
+            'username' => $this->username
+        ];
+    }
+
+    public static function createFromDataSet(DataSet $data): Comment
+    {
+        return new Comment(
+            comment: $data->string('comment'),
+            created: $data->dateTimeNull('created'),
+            title: $data->string('title'),
+            userId: $data->int('user_id'),
+            username: $data->string('username')
+        );
     }
 }

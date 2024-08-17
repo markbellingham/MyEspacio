@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Common\Domain\Entity;
 
 use MyEspacio\Common\Domain\Entity\CaptchaIcon;
+use MyEspacio\Framework\DataSet;
 use PHPUnit\Framework\TestCase;
 
 final class CaptchaIconTest extends TestCase
@@ -78,5 +79,35 @@ final class CaptchaIconTest extends TestCase
         $this->assertEquals('<i class="bi bi-phone-vibrate"></i>', $icon->getIcon());
         $this->assertEquals('Mobile', $icon->getName());
         $this->assertEquals('btn-warning', $icon->getColour());
+    }
+
+    public function testBuildFromDataset(): void
+    {
+        $data = new DataSet([
+            'icon_id' => 1,
+            'icon' => '<i class="bi bi-phone-vibrate"></i>',
+            'name' => 'Mobile',
+            'colour' => 'btn-warning'
+        ]);
+
+        $icon = CaptchaIcon::createFromDataSet($data);
+        $this->assertInstanceOf(CaptchaIcon::class, $icon);
+        $this->assertSame(1, $icon->getIconId());
+        $this->assertEquals('<i class="bi bi-phone-vibrate"></i>', $icon->getIcon());
+        $this->assertEquals('Mobile', $icon->getName());
+        $this->assertEquals('btn-warning', $icon->getColour());
+    }
+
+    public function testCreateFromDatasetFail(): void
+    {
+        $data = new DataSet([
+            'bad_key' => null
+        ]);
+        $icon = CaptchaIcon::createFromDataSet($data);
+        $this->assertInstanceOf(CaptchaIcon::class, $icon);
+        $this->assertSame(0, $icon->getIconId());
+        $this->assertEquals('', $icon->getIcon());
+        $this->assertEquals('', $icon->getName());
+        $this->assertEquals('', $icon->getColour());
     }
 }

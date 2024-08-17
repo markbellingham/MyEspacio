@@ -6,11 +6,13 @@ namespace MyEspacio\Framework;
 
 use JsonSerializable;
 
-class Model implements JsonSerializable
+abstract class Model implements JsonSerializable
 {
-    /** @return String[] */
+    abstract public static function createFromDataSet(DataSet $data): Model;
+
+    /** @return array<string, mixed> */
     public function jsonSerialize(): array
     {
-        return get_object_vars($this);
+        return [];
     }
 }

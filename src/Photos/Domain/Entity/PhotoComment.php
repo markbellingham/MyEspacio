@@ -6,6 +6,7 @@ namespace MyEspacio\Photos\Domain\Entity;
 
 use DateTimeImmutable;
 use MyEspacio\Common\Domain\Entity\Comment;
+use MyEspacio\Framework\DataSet;
 
 final class PhotoComment extends Comment
 {
@@ -29,5 +30,28 @@ final class PhotoComment extends Comment
     public function getPhotoId(): int
     {
         return $this->photoId;
+    }
+
+    /** @return array<string, mixed> */
+    public function jsonSerialize(): array
+    {
+        return [
+            'photoId' => $this->photoId,
+            'comment' => $this->comment,
+            'created' => $this->getCreatedString(),
+            'username' => $this->username
+        ];
+    }
+
+    public static function createFromDataSet(DataSet $data): Comment
+    {
+        return new PhotoComment(
+            photoId: $data->int('photo_id'),
+            comment: $data->string('comment'),
+            created: $data->dateTimeNull('created'),
+            title: $data->stringNull('title'),
+            userId: $data->int('user_id'),
+            username: $data->string('username')
+        );
     }
 }

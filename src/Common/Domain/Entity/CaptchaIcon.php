@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Common\Domain\Entity;
 
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 
 final class CaptchaIcon extends Model
@@ -61,5 +62,15 @@ final class CaptchaIcon extends Model
         return [
             'name' => $this->name
         ];
+    }
+
+    public static function createFromDataSet(DataSet $data): CaptchaIcon
+    {
+        return new CaptchaIcon(
+            iconId: $data->int('icon_id'),
+            icon: $data->string('icon'),
+            name: $data->string('name'),
+            colour: $data->string('colour')
+        );
     }
 }

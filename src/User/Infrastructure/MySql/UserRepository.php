@@ -29,7 +29,7 @@ final class UserRepository implements UserRepositoryInterface
 
         if ($result) {
             $result = new DataSet($result);
-            return $this->createUserInstance($result);
+            return User::createFromDataSet($result);
         }
         return null;
     }
@@ -47,7 +47,7 @@ final class UserRepository implements UserRepositoryInterface
 
         if ($result) {
             $result = new DataSet($result);
-            return $this->createUserInstance($result);
+            return User::createFromDataSet($result);
         }
         return null;
     }
@@ -64,7 +64,7 @@ final class UserRepository implements UserRepositoryInterface
         );
         if ($result) {
             $result = new DataSet($result);
-            return $this->createUserInstance($result);
+            return User::createFromDataSet($result);
         }
         return null;
     }
@@ -98,22 +98,6 @@ final class UserRepository implements UserRepositoryInterface
             phoneCode: null,
             passcodeRoute: 'email',
             id: 1
-        );
-    }
-
-    private function createUserInstance(DataSet $result): User
-    {
-        return new User(
-            email: $result->string('email'),
-            uuid: $result->string('uuid'),
-            name: $result->string('name'),
-            phone: $result->stringNull('phone'),
-            loginAttempts: $result->intNull('login_attempts'),
-            loginDate: $result->dateTimeNull('login_date'),
-            magicLink: $result->stringNull('magic_link'),
-            phoneCode: $result->stringNull('phone_code'),
-            passcodeRoute: $result->string('passcode_route'),
-            id: $result->int('id')
         );
     }
 }
