@@ -37,8 +37,18 @@ final class DataSet
 
     public function dateTimeNull(string $key): ?DateTimeImmutable
     {
+        $value = $this->data[$key] ?? null;
+        if (
+            $value === null ||
+            is_string($value) === false
+        ) {
+            return null;
+        }
+        if (str_contains($value, ':') === false) {
+            $value .= ' 00:00:00';
+        }
         try {
-            return new DateTimeImmutable($this->data[$key] ?? null);
+            return new DateTimeImmutable($value);
         } catch (Throwable) {
             return null;
         }

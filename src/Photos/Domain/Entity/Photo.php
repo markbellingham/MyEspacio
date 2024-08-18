@@ -54,6 +54,11 @@ final class Photo extends Model
         return $this->dateTaken;
     }
 
+    public function getDateTakenString(string $format = 'Y-m-d H:i:s'): ?string
+    {
+        return $this->dateTaken?->format($format);
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
@@ -96,7 +101,9 @@ final class Photo extends Model
 
     public function jsonSerialize(): array
     {
-        return get_object_vars($this);
+        $array = get_object_vars($this);
+        $array['dateTaken'] = $this->getDateTakenString();
+        return $array;
     }
 
     public static function createFromDataSet(DataSet $data): Model
@@ -106,7 +113,7 @@ final class Photo extends Model
             geoCoordinates: GeoCoordinates::createFromDataSet($data),
             dimensions: Dimensions::createFromDataSet($data),
             relevance: Relevance::createFromDataSet($data),
-            dateTaken: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data->string('date_taken')),
+            dateTaken: $data->dateTimeNull('date_taken'),
             description: $data->string('description'),
             directory: $data->string('directory'),
             filename: $data->string('filename'),
