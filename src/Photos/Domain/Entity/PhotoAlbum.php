@@ -6,20 +6,19 @@ namespace MyEspacio\Photos\Domain\Entity;
 
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
+use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 
 final class PhotoAlbum extends Model
 {
     public function __construct(
-        private readonly int $photoId,
         private string $title = 'Unassigned',
         private ?int $albumId = 0,
         private ?string $description = null,
+        private ?PhotoCollection $photos = null
     ) {
-    }
-
-    public function getPhotoId(): int
-    {
-        return $this->photoId;
+        if ($this->photos === null) {
+            $this->photos = new PhotoCollection([]);
+        }
     }
 
     public function getTitle(): string
@@ -52,10 +51,19 @@ final class PhotoAlbum extends Model
         $this->description = $description;
     }
 
+    public function getPhotos(): PhotoCollection
+    {
+        return $this->photos;
+    }
+
+    public function setPhotos(PhotoCollection $photos): void
+    {
+        $this->photos = $photos;
+    }
+
     public static function createFromDataSet(DataSet $data): PhotoAlbum
     {
         return new PhotoAlbum(
-            photoId: $data->int('photo_id'),
             title: $data->string('title'),
             albumId: $data->int('album_id'),
             description: $data->string('description')
