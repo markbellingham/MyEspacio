@@ -14,6 +14,7 @@ final class PhotoAlbum extends Model
         private string $title = 'Unassigned',
         private ?int $albumId = 0,
         private ?string $description = null,
+        private ?Country $country = null,
         private ?PhotoCollection $photos = null
     ) {
         if ($this->photos === null) {
@@ -51,6 +52,16 @@ final class PhotoAlbum extends Model
         $this->description = $description;
     }
 
+    public function getCountry(): ?Country
+    {
+        return $this->country;
+    }
+
+    public function setCountry(Country $country): void
+    {
+        $this->country = $country;
+    }
+
     public function getPhotos(): PhotoCollection
     {
         return $this->photos;
@@ -63,10 +74,20 @@ final class PhotoAlbum extends Model
 
     public static function createFromDataSet(DataSet $data): PhotoAlbum
     {
+        $country = null;
+        if ($data->value('country_id') !== null) {
+            $country = new Country(
+                id: $data->int('country_id'),
+                name: $data->string('country_name'),
+                twoCharCode: $data->string('two_char_code'),
+                threeCharCode: $data->string('three_char_code')
+            );
+        }
         return new PhotoAlbum(
             title: $data->string('title'),
             albumId: $data->int('album_id'),
-            description: $data->string('description')
+            description: $data->string('description'),
+            country: $country
         );
     }
 }

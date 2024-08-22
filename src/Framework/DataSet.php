@@ -15,6 +15,11 @@ final class DataSet
     ) {
     }
 
+    public function value(string $key): mixed
+    {
+        return $this->data[$key] ?? null;
+    }
+
     public function string(string $key): string
     {
         return $this->stringNull($key) ?? '';

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Photos\Domain\Entity;
 
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
+use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use PHPUnit\Framework\TestCase;
 
@@ -15,12 +16,20 @@ final class PhotoAlbumTest extends TestCase
         $photoAlbum = new PhotoAlbum(
             title: 'MyAlbum',
             albumId: 1,
-            description: 'My favourite photos'
+            description: 'My favourite photos',
+            country: new Country(
+                id: 1,
+                name: 'United Kingdom',
+                twoCharCode: 'GB',
+                threeCharCode: 'GBR'
+            )
         );
 
         $this->assertSame('MyAlbum', $photoAlbum->getTitle());
         $this->assertSame(1, $photoAlbum->getAlbumId());
         $this->assertSame('My favourite photos', $photoAlbum->getDescription());
+        $this->assertInstanceOf(Country::class, $photoAlbum->getCountry());
+        $this->assertEquals('United Kingdom', $photoAlbum->getCountry()->getName());
     }
 
     public function testDefaultValues(): void
@@ -30,6 +39,8 @@ final class PhotoAlbumTest extends TestCase
         $this->assertEquals('Unassigned', $photoAlbum->getTitle());
         $this->assertSame(0, $photoAlbum->getAlbumId());
         $this->assertNull($photoAlbum->getDescription());
+        $this->assertNull($photoAlbum->getCountry());
+        $this->assertInstanceOf(PhotoCollection::class, $photoAlbum->getPhotos());
     }
 
     public function testSetters(): void
@@ -39,17 +50,25 @@ final class PhotoAlbumTest extends TestCase
         $this->assertEquals('Unassigned', $photoAlbum->getTitle());
         $this->assertSame(0, $photoAlbum->getAlbumId());
         $this->assertNull($photoAlbum->getDescription());
+        $this->assertNull($photoAlbum->getCountry());
 
         $photoAlbum->setTitle('Yadda Yadda');
         $photoAlbum->setAlbumId(1);
         $photoAlbum->setDescription('My favourite photos');
+        $photoAlbum->setCountry(new Country(
+            id: 1,
+            name: 'United Kingdom',
+            twoCharCode: 'GB',
+            threeCharCode: 'GBR'
+        ));
 
         $this->assertEquals('Yadda Yadda', $photoAlbum->getTitle());
         $this->assertSame(1, $photoAlbum->getAlbumId());
         $this->assertSame('My favourite photos', $photoAlbum->getDescription());
+        $this->assertInstanceOf(Country::class, $photoAlbum->getCountry());
     }
 
-    public function testCollection(): void
+    public function testAlbumPhotos(): void
     {
         $photoAlbum = new PhotoAlbum(
             title: 'MyAlbum',
