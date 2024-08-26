@@ -9,6 +9,11 @@ use PDO;
 
 final class PdoConnectionFactory
 {
+    /**
+     * @param string $dbName
+     * @param array<int, mixed> $options
+     * @return PdoConnection
+     */
     public function create(string $dbName = 'project', array $options = []): PdoConnection
     {
         $dbConfig = Settings::getConfig($dbName);

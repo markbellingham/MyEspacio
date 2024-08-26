@@ -17,6 +17,11 @@ final class LanguageLoader
         $this->languageDirectory = $localisationDirectory->toString();
     }
 
+    /**
+     * @param string $language
+     * @param string $filename
+     * @return array<string, array<string, string>>
+     */
     public function loadTranslations(string $language, string $filename): array
     {
         $languageFilePath = $this->languageDirectory . "/$language/$filename.php";

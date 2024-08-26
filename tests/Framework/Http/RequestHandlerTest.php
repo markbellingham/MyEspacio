@@ -26,6 +26,7 @@ class RequestHandlerTest extends TestCase
 
     protected function setUp(): void
     {
+        /** @var StoredTokenValidator|MockObject $storedTokenValidator */
         $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
         $this->templateRendererFactory = $this->createMock(TwigTemplateRendererFactory::class);
         $this->translationIdentifierFactory = $this->createMock(TranslationIdentifierFactory::class);

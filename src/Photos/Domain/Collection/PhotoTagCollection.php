@@ -7,6 +7,9 @@ namespace MyEspacio\Photos\Domain\Collection;
 use MyEspacio\Framework\ModelCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoTag;
 
+/**
+ * @template-extends ModelCollection<int, PhotoTag>
+ */
 final class PhotoTagCollection extends ModelCollection
 {
     public function requiredKeys(): array

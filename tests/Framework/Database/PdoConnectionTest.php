@@ -180,6 +180,7 @@ final class PdoConnectionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Class 'BadNamespace\BadDirectory\BadModel' does not exist.");
 
+        // @phpstan-ignore-next-line
         $pdoConnection->fetchOneModel(
             "SELECT email, uuid FROM project.users",
             [],

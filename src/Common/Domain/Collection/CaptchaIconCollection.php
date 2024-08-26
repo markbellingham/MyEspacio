@@ -8,6 +8,9 @@ use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\ModelCollection;
 
+/**
+ * @template-extends ModelCollection<int, CaptchaIcon>
+ */
 class CaptchaIconCollection extends ModelCollection
 {
     public function requiredKeys(): array

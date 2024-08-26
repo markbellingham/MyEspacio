@@ -6,11 +6,18 @@ namespace MyEspacio\Framework\Localisation;
 
 final class NestedArrayReader
 {
+    /**
+     * @param array<string, array<string, string>> $data
+     */
     public function __construct(
         private array $data = []
     ) {
     }
 
+    /**
+     * @param array<int, string> $keys
+     * @return string|null
+     */
     public function getValue(array $keys): ?string
     {
         $value = $this->data;
@@ -26,11 +33,18 @@ final class NestedArrayReader
         return is_string($value) ? $value : null;
     }
 
+    /**
+     * @param array<string, array<string, string>> $data
+     * @return void
+     */
     public function setData(array $data): void
     {
         $this->data = $data;
     }
 
+    /**
+     * @return array<string, array<string, string>>
+     */
     public function getData(): array
     {
         return $this->data;

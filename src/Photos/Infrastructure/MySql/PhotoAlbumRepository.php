@@ -54,12 +54,27 @@ class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
     public function fetchAlbumPhotos(PhotoAlbum $album): PhotoCollection
     {
         $result = $this->db->fetchAll(
-            PhotoRepository::PHOTO_PROPERTIES . ' WHERE photo_album.album_id = :albumId',
+            PhotoRepository::PHOTO_PROPERTIES .
+            ' WHERE photo_album.album_id = :albumId',
             [
                 'albumId' => $album->getAlbumId()
             ]
         );
 
         return new PhotoCollection($result);
+    }
+
+    public function searchAlbumPhotos(int $albumId, string $searchTerm): PhotoCollection
+    {
+        $results = $this->db->fetchAll(
+            PhotoRepository::PHOTO_MATCH_PROPERTIES .
+            ' WHERE album.album_id = :albumId AND 
+            MATCH (photo.title, photo.description photo.town AGAINST (:searchTerm) > 0',
+            [
+                'albumId' => $albumId,
+                'searchTerm' => $searchTerm
+            ]
+        );
+        return new PhotoCollection($results);
     }
 }

@@ -7,6 +7,9 @@ namespace MyEspacio\Common\Domain\Collection;
 use MyEspacio\Common\Domain\Entity\Tag;
 use MyEspacio\Framework\ModelCollection;
 
+/**
+ * @template-extends ModelCollection<int, Tag>
+ */
 final class TagCollection extends ModelCollection
 {
     public function requiredKeys(): array

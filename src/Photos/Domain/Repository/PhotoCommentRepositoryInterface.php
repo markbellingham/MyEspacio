@@ -11,7 +11,7 @@ interface PhotoCommentRepositoryInterface
 {
     public function getCommentCount(int $photoId): int;
 
-    public function addComment(PhotoComment $comment);
+    public function addComment(PhotoComment $comment): bool;
 
     public function getPhotoComments(int $photoId): PhotoCommentCollection;
 }

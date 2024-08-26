@@ -8,6 +8,7 @@ use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use MyEspacio\Home\Presentation\RootPageController;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,7 @@ final class RootPageControllerTest extends TestCase
     public function testShow(): void
     {
         $session = $this->createMock(SessionInterface::class);
+        /** @var TwigTemplateRendererFactory|MockObject $templateRendererFactory */
         $templateRendererFactory = $this->createMock(TwigTemplateRendererFactory::class);
         $userRepository = $this->createMock(UserRepositoryInterface::class);
 

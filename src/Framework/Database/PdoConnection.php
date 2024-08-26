@@ -9,6 +9,7 @@ use MyEspacio\Framework\Model;
 use PDO;
 use PDOStatement;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
 
@@ -21,6 +22,11 @@ class PdoConnection implements Connection
     ) {
     }
 
+    /**
+     * @param string $sql
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>|null
+     */
     public function fetchOne(string $sql, array $params): ?array
     {
         $stmt = $this->pdo->prepare($sql);
@@ -34,6 +40,8 @@ class PdoConnection implements Connection
 
     /**
      * @template T of Model
+     * @param string $sql
+     * @param array<string, mixed> $params
      * @param class-string<T> $fqn
      * @return T|null
      */
@@ -89,6 +97,11 @@ class PdoConnection implements Connection
         return intval($this->pdo->lastInsertId());
     }
 
+    /**
+     * @param string $className
+     * @return array<int, mixed>
+     * @throws ReflectionException
+     */
     private function getConstructorArguments(string $className): array
     {
         $reflectionClass = new ReflectionClass($className);
@@ -106,7 +119,7 @@ class PdoConnection implements Connection
         return $args;
     }
 
-    private function getDefaultValueForParameter(ReflectionParameter $param)
+    private function getDefaultValueForParameter(ReflectionParameter $param): mixed
     {
         if ($param->isDefaultValueAvailable()) {
             return $param->getDefaultValue();

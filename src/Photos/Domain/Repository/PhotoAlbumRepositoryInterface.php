@@ -15,4 +15,6 @@ interface PhotoAlbumRepositoryInterface
     public function fetchAll(): PhotoAlbumCollection;
 
     public function fetchAlbumPhotos(PhotoAlbum $album): PhotoCollection;
+
+    public function searchAlbumPhotos(int $albumId, string $searchTerm): PhotoCollection;
 }

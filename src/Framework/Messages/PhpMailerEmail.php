@@ -10,8 +10,6 @@ use PHPMailer\PHPMailer\SMTP;
 
 final class PhpMailerEmail implements EmailInterface
 {
-    public array $errors;
-
     private const SMTP_SERVER = 'smtp.gmail.com';
     private const SMTP_PORT = 465;
 

@@ -7,6 +7,11 @@ namespace MyEspacio\Framework;
 use Iterator;
 use MyEspacio\Framework\Exceptions\CollectionException;
 
+/**
+ * @template TKey of array-key
+ * @template TValue of Model
+ * @implements Iterator<TKey, TValue>
+ */
 abstract class ModelCollection implements Iterator
 {
     /** @var array<int, mixed> */
@@ -18,6 +23,10 @@ abstract class ModelCollection implements Iterator
 
     abstract public function current(): Model;
 
+    /**
+     * @param array<int, mixed> $data
+     * @throws CollectionException
+     */
     final public function __construct(array $data)
     {
         $this->validateElements($data);

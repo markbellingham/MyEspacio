@@ -12,6 +12,8 @@ use RecursiveIteratorIterator;
 class DirectoryReader
 {
     /**
+     * @param string $directory
+     * @return RecursiveIteratorIterator<RecursiveDirectoryIterator>
      * @throws DirectoryException
      */
     public static function getFiles(string $directory): RecursiveIteratorIterator

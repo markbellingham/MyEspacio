@@ -8,6 +8,9 @@ use MyEspacio\Framework\ModelCollection;
 use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 
+/**
+ * @template-extends ModelCollection<int, PhotoAlbum>
+ */
 class PhotoAlbumCollection extends ModelCollection
 {
     public function requiredKeys(): array

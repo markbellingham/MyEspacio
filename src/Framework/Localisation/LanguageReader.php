@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Localisation;
 
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
-
 class LanguageReader
 {
     private const PLACEHOLDER_PATTERN = '/%\{(\w+)}/';
@@ -16,6 +14,12 @@ class LanguageReader
     ) {
     }
 
+    /**
+     * @param TranslationIdentifier $identifier
+     * @param string $key
+     * @param array<string, string> $variables
+     * @return string|null
+     */
     public function getTranslationText(
         TranslationIdentifier $identifier,
         string $key,
@@ -37,6 +41,11 @@ class LanguageReader
         return $value === null ? '' : $value;
     }
 
+    /**
+     * @param string $text
+     * @param array<string, string> $variables
+     * @return string
+     */
     private function replaceVariables(string $text, array $variables): string
     {
         return preg_replace_callback(

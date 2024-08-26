@@ -713,7 +713,7 @@ final class LoginControllerTest extends TestCase
             $this->languageReader
         );
 
-        $response = $loginController->logout($request, []);
+        $response = $loginController->logout($request);
 
         $this->assertEquals(
             ['message' => 'You are now logged out'],

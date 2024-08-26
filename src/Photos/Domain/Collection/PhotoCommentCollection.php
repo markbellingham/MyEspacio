@@ -7,6 +7,9 @@ namespace MyEspacio\Photos\Domain\Collection;
 use MyEspacio\Framework\ModelCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoComment;
 
+/**
+ * @template-extends ModelCollection<int, PhotoComment>
+ */
 final class PhotoCommentCollection extends ModelCollection
 {
     public function requiredKeys(): array

@@ -104,6 +104,10 @@ final class LoginController
         );
     }
 
+    /**
+     * @param array<string, mixed> $vars
+     * @return User|null
+     */
     private function getUserByLoginValues(array $vars): ?User
     {
         if (($vars['email'] ?? '') !== '') {
@@ -116,6 +120,11 @@ final class LoginController
         return $this->user ?: null;
     }
 
+    /**
+     * @param Request $request
+     * @param array<string, mixed> $vars
+     * @return Response
+     */
     public function loginWithMagicLink(Request $request, array $vars): Response
     {
         $this->requestHandler->validate($request);
@@ -149,6 +158,11 @@ final class LoginController
         );
     }
 
+    /**
+     * @param Request $request
+     * @param array<string, mixed> $vars
+     * @return Response
+     */
     private function logUserIn(Request $request, array $vars): Response
     {
         if ($this->loginValuesCheckout($vars)) {
@@ -175,6 +189,10 @@ final class LoginController
         );
     }
 
+    /**
+     * @param array<string, mixed> $vars
+     * @return bool
+     */
     private function loginValuesCheckout(array $vars): bool
     {
         if ($this->secondLoginRequestInTime() === false) {
@@ -209,7 +227,7 @@ final class LoginController
         $this->session->set('user', $this->user);
     }
 
-    public function logout(Request $request, array $vars): Response
+    public function logout(Request $request): Response
     {
         $this->requestHandler->validate($request);
 

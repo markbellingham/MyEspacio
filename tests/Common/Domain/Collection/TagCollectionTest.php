@@ -81,6 +81,8 @@ final class TagCollectionTest extends TestCase
 
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage('The data passed is not an array.');
+
+        // @phpstan-ignore argument.type
         new TagCollection($data);
     }
 }

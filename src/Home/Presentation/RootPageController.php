@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MyEspacio\Home\Presentation;
 
-use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
 use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +19,11 @@ final class RootPageController
     ) {
     }
 
+    /**
+     * @param Request $request
+     * @param array<string, mixed> $vars
+     * @return Response
+     */
     public function show(Request $request, array $vars): Response
     {
         $user = $this->session->get('user') ?? $this->userRepository->getAnonymousUser();

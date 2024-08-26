@@ -9,6 +9,7 @@ use MyEspacio\Framework\Messages\EmailInterface;
 use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Domain\LoginEmailMessage;
 use MyEspacio\User\Domain\User;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class SendLoginCodeTest extends TestCase
@@ -33,6 +34,7 @@ final class SendLoginCodeTest extends TestCase
             name: 'Mark Bellingham'
         );
 
+        /** @var LoginEmailMessage|MockObject $loginEmailMessage */
         $loginEmailMessage = $this->createMock(LoginEmailMessage::class);
         $emailInterface = $this->createMock(EmailInterface::class);
 

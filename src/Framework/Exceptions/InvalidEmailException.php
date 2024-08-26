@@ -13,6 +13,10 @@ final class InvalidEmailException extends Exception
         return new self('Invalid Email Address');
     }
 
+    /**
+     * @param array<string, string> $messageComponent
+     * @return self
+     */
     public static function invalidMessage(array $messageComponent): self
     {
         $message = '';
