@@ -7,7 +7,7 @@ namespace Tests\User\Presentation;
 use DateTimeImmutable;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
-use MyEspacio\User\Application\SendLoginCode;
+use MyEspacio\User\Application\SendLoginCodeInterface;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Presentation\LoginController;
@@ -23,8 +23,8 @@ final class LoginControllerMagicLinkTest extends TestCase
     /** @var RequestHandlerInterface|MockObject */
     private RequestHandlerInterface|MockObject $requestHandler;
 
-    /** @var SendLoginCode|MockObject */
-    private SendLoginCode|MockObject $loginCode;
+    /** @var SendLoginCodeInterface|MockObject */
+    private SendLoginCodeInterface $loginCode;
 
     /** @var SessionInterface|MockObject */
     private SessionInterface|MockObject $session;
@@ -42,7 +42,7 @@ final class LoginControllerMagicLinkTest extends TestCase
         parent::setUp();
 
         $this->requestHandler = $this->createMock(RequestHandlerInterface::class);
-        $this->loginCode = $this->createMock(SendLoginCode::class);
+        $this->loginCode = $this->createMock(SendLoginCodeInterface::class);
         $this->session = $this->createMock(SessionInterface::class);
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->languageReader = $this->createMock(LanguageReader::class);

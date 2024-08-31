@@ -34,7 +34,7 @@ final class PhpMailerEmail implements EmailInterface
     /**
      * @throws Exception
      */
-    public function send(EmailMessage $emailMessage): bool
+    public function send(EmailMessageInterface $emailMessage): bool
     {
         $this->phpMailer->addAddress($emailMessage->getEmailAddress(), $emailMessage->getName());
         $this->phpMailer->Subject = $emailMessage->getSubject();

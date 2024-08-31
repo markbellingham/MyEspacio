@@ -9,7 +9,7 @@ class LanguageReader
     private const PLACEHOLDER_PATTERN = '/%\{(\w+)}/';
 
     public function __construct(
-        private readonly LanguageLoader $languageLoader,
+        private readonly LanguageLoaderInterface $languageLoader,
         private readonly NestedArrayReader $nestedArrayReader
     ) {
     }

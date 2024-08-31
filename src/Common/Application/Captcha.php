@@ -10,7 +10,7 @@ use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 use MyEspacio\Common\Domain\Repository\IconRepositoryInterface;
 use MyEspacio\Framework\Config\Settings;
 
-final class Captcha implements JsonSerializable
+final class Captcha implements CaptchaInterface, JsonSerializable
 {
     private CaptchaIconCollection $icons;
     private string $encryptedIcon;

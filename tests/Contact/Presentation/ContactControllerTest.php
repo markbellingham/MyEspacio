@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Contact\Presentation;
 
-use MyEspacio\Common\Application\Captcha;
+use MyEspacio\Common\Application\CaptchaInterface;
 use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 use MyEspacio\Contact\Presentation\ContactController;
@@ -26,7 +26,7 @@ final class ContactControllerTest extends TestCase
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
-        $captcha = $this->createMock(Captcha::class);
+        $captcha = $this->createMock(CaptchaInterface::class);
         $languageReader = $this->createMock(LanguageReader::class);
 
         $captchaIcons = new CaptchaIconCollection([
@@ -86,7 +86,7 @@ final class ContactControllerTest extends TestCase
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
-        $captcha = $this->createMock(Captcha::class);
+        $captcha = $this->createMock(CaptchaInterface::class);
         $languageReader = $this->createMock(LanguageReader::class);
 
         $expectedResponse = 'Rendered HTML Root Content';
@@ -111,7 +111,7 @@ final class ContactControllerTest extends TestCase
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
-        $captcha = $this->createMock(Captcha::class);
+        $captcha = $this->createMock(CaptchaInterface::class);
         $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
@@ -139,7 +139,7 @@ final class ContactControllerTest extends TestCase
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
-        $captcha = $this->createMock(Captcha::class);
+        $captcha = $this->createMock(CaptchaInterface::class);
         $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
@@ -180,7 +180,7 @@ final class ContactControllerTest extends TestCase
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
-        $captcha = $this->createMock(Captcha::class);
+        $captcha = $this->createMock(CaptchaInterface::class);
         $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
@@ -210,7 +210,7 @@ final class ContactControllerTest extends TestCase
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
-        $captcha = $this->createMock(Captcha::class);
+        $captcha = $this->createMock(CaptchaInterface::class);
         $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
@@ -243,7 +243,7 @@ final class ContactControllerTest extends TestCase
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
-        $captcha = $this->createMock(Captcha::class);
+        $captcha = $this->createMock(CaptchaInterface::class);
         $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
@@ -273,7 +273,7 @@ final class ContactControllerTest extends TestCase
         $response = $controller->sendMessage($request);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals('{"captcha":[],"message":"Success! Message Sent."}', $response->getContent());
+        $this->assertEquals('{"captcha":{},"message":"Success! Message Sent."}', $response->getContent());
         $this->assertSame(200, $response->getStatusCode());
     }
 }

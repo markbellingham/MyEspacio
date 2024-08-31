@@ -213,7 +213,7 @@ final class LoginControllerTest extends TestCase
             ->willReturn(true);
 
         $this->loginCode->expects($this->once())
-            ->method('sendToUser')
+            ->method('sendTo')
             ->willReturn(true);
 
         $this->languageReader->expects($this->once())
@@ -281,7 +281,7 @@ final class LoginControllerTest extends TestCase
             ->willReturn(true);
 
         $this->loginCode->expects($this->once())
-            ->method('sendToUser')
+            ->method('sendTo')
             ->willReturn(true);
 
         $this->languageReader->expects($this->once())
@@ -476,7 +476,7 @@ final class LoginControllerTest extends TestCase
             ->willReturn(true);
 
         $this->loginCode->expects($this->once())
-            ->method('sendToUser')
+            ->method('sendTo')
             ->willReturn(false);
 
         $this->languageReader->expects($this->once())

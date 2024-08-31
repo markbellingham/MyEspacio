@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use Exception;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
-use MyEspacio\User\Application\SendLoginCode;
+use MyEspacio\User\Application\SendLoginCodeInterface;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +23,7 @@ final class LoginController
 
     public function __construct(
         private readonly RequestHandlerInterface $requestHandler,
-        private readonly SendLoginCode $loginCode,
+        private readonly SendLoginCodeInterface $loginCode,
         private readonly SessionInterface $session,
         private readonly UserRepositoryInterface $userRepository,
         private readonly LanguageReader $languageReader,
@@ -80,7 +80,7 @@ final class LoginController
 
         if (
             $this->userRepository->saveLoginDetails($this->user) === false ||
-            $this->loginCode->sendToUser($this->user) === false
+            $this->loginCode->sendTo($this->user) === false
         ) {
             return $this->requestHandler->sendResponse(
                 data: [

@@ -6,16 +6,15 @@ namespace MyEspacio\User\Application;
 
 use Exception;
 use MyEspacio\Framework\Messages\EmailInterface;
-use MyEspacio\User\Domain\LoginEmailMessage;
 use MyEspacio\User\Domain\User;
 
-final class SendLoginCode
+final class SendLoginCode implements SendLoginCodeInterface
 {
     private const MAGIC_LINK_LENGTH = 20;
     private const PHONE_CODE_LENGTH = 3;
 
     public function __construct(
-        private readonly LoginEmailMessage $loginEmailMessage,
+        private readonly LoginEmailMessageInterface $loginEmailMessage,
         private readonly EmailInterface $email
     ) {
     }
@@ -30,7 +29,7 @@ final class SendLoginCode
         return $user;
     }
 
-    public function sendToUser(User $user): bool
+    public function sendTo(User $user): bool
     {
         if ($user->getPasscodeRoute() == 'email') {
             return $this->sendByEmail($user);

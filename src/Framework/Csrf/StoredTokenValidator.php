@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Csrf;
 
-final class StoredTokenValidator
+final class StoredTokenValidator implements StoredTokenValidatorInterface
 {
     public function __construct(
         private readonly TokenStorage $tokenStorage

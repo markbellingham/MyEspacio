@@ -7,21 +7,16 @@ namespace MyEspacio\Framework\Localisation;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
-final class LanguageLoader
+final class LanguageLoader implements LanguageLoaderInterface
 {
     private string $languageDirectory;
 
     public function __construct(
-        LanguagesDirectory $localisationDirectory,
+        LanguagesDirectoryInterface $localisationDirectory,
     ) {
         $this->languageDirectory = $localisationDirectory->toString();
     }
 
-    /**
-     * @param string $language
-     * @param string $filename
-     * @return array<string, array<string, string>>
-     */
     public function loadTranslations(string $language, string $filename): array
     {
         $languageFilePath = $this->languageDirectory . "/$language/$filename.php";

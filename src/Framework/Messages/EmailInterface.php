@@ -6,5 +6,5 @@ namespace MyEspacio\Framework\Messages;
 
 interface EmailInterface
 {
-    public function send(EmailMessage $emailMessage): bool;
+    public function send(EmailMessageInterface $emailMessage): bool;
 }

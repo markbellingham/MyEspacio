@@ -6,7 +6,7 @@ namespace MyEspacio\Framework\Messages;
 
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
 
-class EmailMessage
+class EmailMessage implements EmailMessageInterface
 {
     private const MINIMUM_MESSAGE_LENGTH = 20;
     private const MINIMUM_NAME_LENGTH = 3;

@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace MyEspacio\User\Domain;
+namespace MyEspacio\User\Application;
 
 use Exception;
 use MyEspacio\Framework\Messages\EmailMessage;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
+use MyEspacio\User\Domain\User;
 
-final class LoginEmailMessage extends EmailMessage
+final class LoginEmailMessage extends EmailMessage implements LoginEmailMessageInterface
 {
     private const EMAIL_SUBJECT = 'Your Activation Code';
 

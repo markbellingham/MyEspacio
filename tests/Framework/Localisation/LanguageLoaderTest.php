@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Framework\Localisation;
 
 use MyEspacio\Framework\Localisation\LanguageLoader;
-use MyEspacio\Framework\Localisation\LanguagesDirectory;
+use MyEspacio\Framework\Localisation\LanguagesDirectoryInterface;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -22,7 +22,7 @@ final class LanguageLoaderTest extends TestCase
         vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
         vfsStream::newFile('non_existent_file.php')->at($englishDirectory);
 
-        $languagesDirectory = $this->createMock(LanguagesDirectory::class);
+        $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);
         $languagesDirectory->method('toString')->willReturn($directory->url());
 
         $loader = new LanguageLoader($languagesDirectory);
@@ -39,7 +39,7 @@ final class LanguageLoaderTest extends TestCase
         vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
         vfsStream::newFile('non_existent_file.php')->at($englishDirectory);
 
-        $languagesDirectory = $this->createMock(LanguagesDirectory::class);
+        $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);
         $languagesDirectory->method('toString')->willReturn($directory->url());
 
         $loader = new LanguageLoader($languagesDirectory);
@@ -57,7 +57,7 @@ final class LanguageLoaderTest extends TestCase
         vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
         vfsStream::newFile('non_existent_file.php')->at($englishDirectory);
 
-        $languagesDirectory = $this->createMock(LanguagesDirectory::class);
+        $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);
         $languagesDirectory->method('toString')->willReturn($directory->url());
 
         $loader = new LanguageLoader($languagesDirectory);
@@ -76,7 +76,7 @@ final class LanguageLoaderTest extends TestCase
         vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
         vfsStream::newFile('not_array.php')->at($englishDirectory);
 
-        $languagesDirectory = $this->createMock(LanguagesDirectory::class);
+        $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);
         $languagesDirectory->method('toString')->willReturn($directory->url());
 
         $loader = new LanguageLoader($languagesDirectory);
@@ -95,7 +95,7 @@ final class LanguageLoaderTest extends TestCase
         vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
         vfsStream::newFile('not_array.php')->at($englishDirectory);
 
-        $languagesDirectory = $this->createMock(LanguagesDirectory::class);
+        $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);
         $languagesDirectory->method('toString')->willReturn($directory->url());
 
         $loader = new LanguageLoader($languagesDirectory);

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Framework\Rendering;
 
-use MyEspacio\Common\Application\Captcha;
+use MyEspacio\Common\Application\CaptchaInterface;
 use MyEspacio\Framework\Csrf\StoredTokenReader;
 use MyEspacio\Framework\Rendering\TemplateDirectory;
 use MyEspacio\Framework\Rendering\TranslatorFactory;
@@ -16,7 +16,7 @@ final class TwigTemplateRendererFactoryTest extends TestCase
 {
     public function testCreate(): void
     {
-        $captcha = $this->createMock(Captcha::class);
+        $captcha = $this->createMock(CaptchaInterface::class);
         $storedTokenReader = $this->createMock(StoredTokenReader::class);
         $templateDirectory = $this->createMock(TemplateDirectory::class);
         $translatorFactory = $this->createMock(TranslatorFactory::class);

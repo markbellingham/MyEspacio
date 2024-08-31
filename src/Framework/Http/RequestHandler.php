@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Http;
 
-use MyEspacio\Framework\Csrf\StoredTokenValidator;
+use MyEspacio\Framework\Csrf\StoredTokenValidatorInterface;
 use MyEspacio\Framework\Csrf\Token;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
@@ -20,7 +20,7 @@ final class RequestHandler implements RequestHandlerInterface
     private TemplateRenderer $templateRenderer;
 
     public function __construct(
-        private readonly StoredTokenValidator $storedTokenValidator,
+        private readonly StoredTokenValidatorInterface $storedTokenValidator,
         private readonly TwigTemplateRendererFactory $templateRendererFactory,
         private readonly TranslationIdentifierFactory $translationIdentifierFactory
     ) {

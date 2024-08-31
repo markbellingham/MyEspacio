@@ -6,10 +6,9 @@ namespace Tests\User\Application;
 
 use Exception;
 use MyEspacio\Framework\Messages\EmailInterface;
+use MyEspacio\User\Application\LoginEmailMessageInterface;
 use MyEspacio\User\Application\SendLoginCode;
-use MyEspacio\User\Domain\LoginEmailMessage;
 use MyEspacio\User\Domain\User;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class SendLoginCodeTest extends TestCase
@@ -34,8 +33,7 @@ final class SendLoginCodeTest extends TestCase
             name: 'Mark Bellingham'
         );
 
-        /** @var LoginEmailMessage|MockObject $loginEmailMessage */
-        $loginEmailMessage = $this->createMock(LoginEmailMessage::class);
+        $loginEmailMessage = $this->createMock(LoginEmailMessageInterface::class);
         $emailInterface = $this->createMock(EmailInterface::class);
 
         $sendLoginCode = new SendLoginCode($loginEmailMessage, $emailInterface);
@@ -46,7 +44,7 @@ final class SendLoginCodeTest extends TestCase
 
     public function testSendToUser(): void
     {
-        $loginEmailMessage = $this->createMock(LoginEmailMessage::class);
+        $loginEmailMessage = $this->createMock(LoginEmailMessageInterface::class);
         $emailInterface = $this->createMock(EmailInterface::class);
         $emailInterface->expects($this->once())
             ->method('send')
@@ -54,13 +52,13 @@ final class SendLoginCodeTest extends TestCase
             ->willReturn(true);
 
         $sendLoginCode = new SendLoginCode($loginEmailMessage, $emailInterface);
-        $result = $sendLoginCode->sendToUser($this->user);
+        $result = $sendLoginCode->sendTo($this->user);
         $this->assertTrue($result);
     }
 
     public function testSendToUserFail(): void
     {
-        $loginEmailMessage = $this->createMock(LoginEmailMessage::class);
+        $loginEmailMessage = $this->createMock(LoginEmailMessageInterface::class);
         $emailInterface = $this->createMock(EmailInterface::class);
         $emailInterface->expects($this->once())
             ->method('send')
@@ -68,30 +66,30 @@ final class SendLoginCodeTest extends TestCase
             ->willReturn(false);
 
         $sendLoginCode = new SendLoginCode($loginEmailMessage, $emailInterface);
-        $result = $sendLoginCode->sendToUser($this->user);
+        $result = $sendLoginCode->sendTo($this->user);
         $this->assertFalse($result);
     }
 
     public function testSendToUserEmailException(): void
     {
-        $loginEmailMessage = $this->createMock(LoginEmailMessage::class);
+        $loginEmailMessage = $this->createMock(LoginEmailMessageInterface::class);
         $emailInterface = $this->createMock(EmailInterface::class);
         $emailInterface->method('send')
             ->willThrowException(new Exception('Error'));
 
         $sendLoginCode = new SendLoginCode($loginEmailMessage, $emailInterface);
-        $result = $sendLoginCode->sendToUser($this->user);
+        $result = $sendLoginCode->sendTo($this->user);
         $this->assertFalse($result);
     }
 
     public function testSendToUserByText(): void
     {
         $this->user->setPasscodeRoute('phone');
-        $loginEmailMessage = $this->createMock(LoginEmailMessage::class);
+        $loginEmailMessage = $this->createMock(LoginEmailMessageInterface::class);
         $emailInterface = $this->createMock(EmailInterface::class);
 
         $sendLoginCode = new SendLoginCode($loginEmailMessage, $emailInterface);
-        $result = $sendLoginCode->sendToUser($this->user);
+        $result = $sendLoginCode->sendTo($this->user);
         $this->assertFalse($result);
     }
 }

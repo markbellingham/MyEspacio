@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Localisation;
 
-final class LanguagesDirectory
+final class LanguagesDirectory implements LanguagesDirectoryInterface
 {
     private string $languagesDirectory;
 

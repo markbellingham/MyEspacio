@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Framework\Http;
 
 use MyEspacio\Framework\Csrf\StoredTokenValidator;
+use MyEspacio\Framework\Csrf\StoredTokenValidatorInterface;
 use MyEspacio\Framework\Http\RequestHandler;
 use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
@@ -21,13 +22,15 @@ class RequestHandlerTest extends TestCase
 {
     /** @var TranslationIdentifierFactory|MockObject */
     private TranslationIdentifierFactory|MockObject $translationIdentifierFactory;
-    private TwigTemplateRendererFactory $templateRendererFactory;
-    private RequestHandler $requestHandler;
+
+    /** @var TwigTemplateRendererFactory|MockObject $templateRendererFactory */
+    private TwigTemplateRendererFactory|MockObject $templateRendererFactory;
+
+    private RequestHandler|MockObject $requestHandler;
 
     protected function setUp(): void
     {
-        /** @var StoredTokenValidator|MockObject $storedTokenValidator */
-        $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
+        $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
         $this->templateRendererFactory = $this->createMock(TwigTemplateRendererFactory::class);
         $this->translationIdentifierFactory = $this->createMock(TranslationIdentifierFactory::class);
         $this->requestHandler = new RequestHandler(

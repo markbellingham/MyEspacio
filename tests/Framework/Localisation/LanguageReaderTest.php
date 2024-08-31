@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Framework\Localisation;
 
-use MyEspacio\Framework\Localisation\LanguageLoader;
+use MyEspacio\Framework\Localisation\LanguageLoaderInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\Framework\Localisation\NestedArrayReader;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
@@ -14,7 +14,7 @@ final class LanguageReaderTest extends TestCase
 {
     public function testGetTranslationText(): void
     {
-        $languageLoader = $this->createMock(LanguageLoader::class);
+        $languageLoader = $this->createMock(LanguageLoaderInterface::class);
         $reader = $this->createMock(NestedArrayReader::class);
         $identifier = $this->createMock(TranslationIdentifier::class);
 
@@ -33,7 +33,7 @@ final class LanguageReaderTest extends TestCase
 
     public function testGetTranslationTextWithVariables(): void
     {
-        $languageLoader = $this->createMock(LanguageLoader::class);
+        $languageLoader = $this->createMock(LanguageLoaderInterface::class);
         $reader = $this->createMock(NestedArrayReader::class);
         $identifier = $this->createMock(TranslationIdentifier::class);
 
@@ -52,7 +52,7 @@ final class LanguageReaderTest extends TestCase
 
     public function testGetTranslationTextNotFound(): void
     {
-        $languageLoader = $this->createMock(LanguageLoader::class);
+        $languageLoader = $this->createMock(LanguageLoaderInterface::class);
         $reader = $this->createMock(NestedArrayReader::class);
         $identifier = $this->createMock(TranslationIdentifier::class);
 
@@ -71,7 +71,7 @@ final class LanguageReaderTest extends TestCase
 
     public function testGetTranslationTextNoInitialData(): void
     {
-        $languageLoader = $this->createMock(LanguageLoader::class);
+        $languageLoader = $this->createMock(LanguageLoaderInterface::class);
         $reader = $this->createMock(NestedArrayReader::class);
         $identifier = $this->createMock(TranslationIdentifier::class);
 

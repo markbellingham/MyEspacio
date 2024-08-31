@@ -14,7 +14,7 @@ final class TranslationIdentifier
     public function __construct(
         private string $language,
         private readonly string $filename,
-        private readonly LanguagesDirectory $localisationDirectory
+        private readonly LanguagesDirectoryInterface $localisationDirectory
     ) {
         if (in_array($this->language, self::ALLOWED_LANGUAGES) === false) {
             $this->language = self::DEFAULT_LANGUAGE;

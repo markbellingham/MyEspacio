@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Rendering;
 
-use MyEspacio\Common\Application\Captcha;
+use MyEspacio\Common\Application\CaptchaInterface;
 use MyEspacio\Framework\Csrf\StoredTokenReader;
 use Symfony\Component\Translation\Translator;
 use Twig\Environment;
@@ -17,7 +17,7 @@ final class TwigTemplateRendererFactory
     private ?Translator $translator = null;
 
     public function __construct(
-        private readonly Captcha $captcha,
+        private readonly CaptchaInterface $captcha,
         private readonly StoredTokenReader $storedTokenReader,
         private readonly TemplateDirectory $templateDirectory,
         private readonly TranslatorFactory $translatorFactory

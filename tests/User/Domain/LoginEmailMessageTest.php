@@ -6,7 +6,7 @@ namespace Tests\User\Domain;
 
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
-use MyEspacio\User\Domain\LoginEmailMessage;
+use MyEspacio\User\Application\LoginEmailMessage;
 use MyEspacio\User\Domain\User;
 use PHPUnit\Framework\TestCase;
 

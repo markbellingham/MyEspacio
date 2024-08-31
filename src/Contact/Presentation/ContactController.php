@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Contact\Presentation;
 
-use MyEspacio\Common\Application\Captcha;
+use MyEspacio\Common\Application\CaptchaInterface;
 use MyEspacio\Contact\Domain\ContactMeMessage;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
@@ -23,7 +23,7 @@ final class ContactController
         private readonly RequestHandlerInterface $requestHandler,
         private readonly SessionInterface $session,
         private readonly EmailInterface $email,
-        private readonly Captcha $captcha,
+        private readonly CaptchaInterface $captcha,
         private readonly LanguageReader $languageReader,
     ) {
     }

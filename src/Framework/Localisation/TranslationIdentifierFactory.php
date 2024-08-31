@@ -4,10 +4,9 @@ namespace MyEspacio\Framework\Localisation;
 
 final class TranslationIdentifierFactory
 {
-    private LanguagesDirectory $languagesDirectory;
-
-    public function __construct(LanguagesDirectory $languagesDirectory)
-    {
+    public function __construct(
+        private LanguagesDirectoryInterface $languagesDirectory
+    ) {
         $this->languagesDirectory = $languagesDirectory;
     }
 
