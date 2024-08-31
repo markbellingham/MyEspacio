@@ -6,7 +6,7 @@ namespace Tests\Framework\Localisation;
 
 use MyEspacio\Framework\Localisation\LanguageLoaderInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
-use MyEspacio\Framework\Localisation\NestedArrayReader;
+use MyEspacio\Framework\Localisation\NestedArrayReaderInterface;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +15,7 @@ final class LanguageReaderTest extends TestCase
     public function testGetTranslationText(): void
     {
         $languageLoader = $this->createMock(LanguageLoaderInterface::class);
-        $reader = $this->createMock(NestedArrayReader::class);
+        $reader = $this->createMock(NestedArrayReaderInterface::class);
         $identifier = $this->createMock(TranslationIdentifier::class);
 
         $reader->expects($this->once())
@@ -34,7 +34,7 @@ final class LanguageReaderTest extends TestCase
     public function testGetTranslationTextWithVariables(): void
     {
         $languageLoader = $this->createMock(LanguageLoaderInterface::class);
-        $reader = $this->createMock(NestedArrayReader::class);
+        $reader = $this->createMock(NestedArrayReaderInterface::class);
         $identifier = $this->createMock(TranslationIdentifier::class);
 
         $reader->expects($this->once())
@@ -53,7 +53,7 @@ final class LanguageReaderTest extends TestCase
     public function testGetTranslationTextNotFound(): void
     {
         $languageLoader = $this->createMock(LanguageLoaderInterface::class);
-        $reader = $this->createMock(NestedArrayReader::class);
+        $reader = $this->createMock(NestedArrayReaderInterface::class);
         $identifier = $this->createMock(TranslationIdentifier::class);
 
         $reader->expects($this->once())
@@ -72,7 +72,7 @@ final class LanguageReaderTest extends TestCase
     public function testGetTranslationTextNoInitialData(): void
     {
         $languageLoader = $this->createMock(LanguageLoaderInterface::class);
-        $reader = $this->createMock(NestedArrayReader::class);
+        $reader = $this->createMock(NestedArrayReaderInterface::class);
         $identifier = $this->createMock(TranslationIdentifier::class);
 
         $reader->expects($this->once())

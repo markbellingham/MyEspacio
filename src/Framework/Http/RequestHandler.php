@@ -9,7 +9,7 @@ use MyEspacio\Framework\Csrf\Token;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
-use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
+use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +21,7 @@ final class RequestHandler implements RequestHandlerInterface
 
     public function __construct(
         private readonly StoredTokenValidatorInterface $storedTokenValidator,
-        private readonly TwigTemplateRendererFactory $templateRendererFactory,
+        private readonly TemplateRendererFactoryInterface $templateRendererFactory,
         private readonly TranslationIdentifierFactory $translationIdentifierFactory
     ) {
     }

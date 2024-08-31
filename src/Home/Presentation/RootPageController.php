@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Home\Presentation;
 
-use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
+use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +14,7 @@ final class RootPageController
 {
     public function __construct(
         private readonly SessionInterface $session,
-        private readonly TwigTemplateRendererFactory $templateRendererFactory,
+        private readonly TemplateRendererFactoryInterface $templateRendererFactory,
         private readonly UserRepositoryInterface $userRepository
     ) {
     }

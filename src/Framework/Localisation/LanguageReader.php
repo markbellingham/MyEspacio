@@ -10,7 +10,7 @@ class LanguageReader
 
     public function __construct(
         private readonly LanguageLoaderInterface $languageLoader,
-        private readonly NestedArrayReader $nestedArrayReader
+        private readonly NestedArrayReaderInterface $nestedArrayReader
     ) {
     }
 

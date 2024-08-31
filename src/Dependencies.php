@@ -20,11 +20,15 @@ use MyEspacio\Framework\Localisation\LanguageLoader;
 use MyEspacio\Framework\Localisation\LanguageLoaderInterface;
 use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Localisation\LanguagesDirectoryInterface;
+use MyEspacio\Framework\Localisation\NestedArrayReader;
+use MyEspacio\Framework\Localisation\NestedArrayReaderInterface;
 use MyEspacio\Framework\Logger\LoggerInterface;
 use MyEspacio\Framework\Logger\MonologAdapter;
 use MyEspacio\Framework\Messages\EmailInterface;
 use MyEspacio\Framework\Messages\PhpMailerEmail;
 use MyEspacio\Framework\Rendering\TemplateDirectory;
+use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
+use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
@@ -50,10 +54,12 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 $injector = new Injector();
 
 $injector->define(TemplateDirectory::class, [':rootDirectory' => ROOT_DIR]);
+$injector->alias(TemplateRendererFactoryInterface::class, TwigTemplateRendererFactory::class);
 
 $injector->alias(LanguagesDirectoryInterface::class, LanguagesDirectory::class);
 $injector->define(LanguagesDirectory::class, [':rootDirectory' => ROOT_DIR]);
 $injector->alias(LanguageLoaderInterface::class, LanguageLoader::class);
+$injector->alias(NestedArrayReaderInterface::class, NestedArrayReader::class);
 //
 $injector->alias(TokenStorage::class, SymfonySessionTokenStorage::class);
 

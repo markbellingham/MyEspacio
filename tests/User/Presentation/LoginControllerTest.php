@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use Exception;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
-use MyEspacio\User\Application\SendLoginCode;
+use MyEspacio\User\Application\SendLoginCodeInterface;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Presentation\LoginController;
@@ -25,8 +25,8 @@ final class LoginControllerTest extends TestCase
     /** @var MockObject|RequestHandlerInterface */
     private MockObject|RequestHandlerInterface $requestHandler;
 
-    /** @var MockObject|SendLoginCode */
-    private MockObject|SendLoginCode $loginCode;
+    /** @var MockObject|SendLoginCodeInterface */
+    private SendLoginCodeInterface|MockObject $loginCode;
 
     /** @var MockObject|SessionInterface  */
     private SessionInterface|MockObject $session;
@@ -46,7 +46,7 @@ final class LoginControllerTest extends TestCase
         parent::setUp();
 
         $this->requestHandler = $this->createMock(RequestHandlerInterface::class);
-        $this->loginCode = $this->createMock(SendLoginCode::class);
+        $this->loginCode = $this->createMock(SendLoginCodeInterface::class);
         $this->session = $this->createMock(SessionInterface::class);
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->languageReader = $this->createMock(LanguageReader::class);

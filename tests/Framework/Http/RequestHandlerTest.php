@@ -10,7 +10,7 @@ use MyEspacio\Framework\Http\RequestHandler;
 use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
-use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
+use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -23,15 +23,14 @@ class RequestHandlerTest extends TestCase
     /** @var TranslationIdentifierFactory|MockObject */
     private TranslationIdentifierFactory|MockObject $translationIdentifierFactory;
 
-    /** @var TwigTemplateRendererFactory|MockObject $templateRendererFactory */
-    private TwigTemplateRendererFactory|MockObject $templateRendererFactory;
+    private TemplateRendererFactoryInterface $templateRendererFactory;
 
     private RequestHandler|MockObject $requestHandler;
 
     protected function setUp(): void
     {
         $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
-        $this->templateRendererFactory = $this->createMock(TwigTemplateRendererFactory::class);
+        $this->templateRendererFactory = $this->createMock(TemplateRendererFactoryInterface::class);
         $this->translationIdentifierFactory = $this->createMock(TranslationIdentifierFactory::class);
         $this->requestHandler = new RequestHandler(
             $storedTokenValidator,

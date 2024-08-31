@@ -11,7 +11,7 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
-final class TwigTemplateRendererFactory
+final class TwigTemplateRendererFactory implements TemplateRendererFactoryInterface
 {
     private ?TemplateRenderer $templateRenderer = null;
     private ?Translator $translator = null;
