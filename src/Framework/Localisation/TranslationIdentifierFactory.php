@@ -2,7 +2,7 @@
 
 namespace MyEspacio\Framework\Localisation;
 
-final class TranslationIdentifierFactory
+final class TranslationIdentifierFactory implements TranslationIdentifierFactoryInterface
 {
     public function __construct(
         private LanguagesDirectoryInterface $languagesDirectory

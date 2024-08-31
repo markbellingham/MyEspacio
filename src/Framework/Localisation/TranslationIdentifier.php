@@ -6,7 +6,7 @@ namespace MyEspacio\Framework\Localisation;
 
 use InvalidArgumentException;
 
-final class TranslationIdentifier
+final class TranslationIdentifier implements TranslationIdentifierInterface
 {
     private const ALLOWED_LANGUAGES = ['en','es','fr'];
     private const DEFAULT_LANGUAGE = 'en';

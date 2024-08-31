@@ -7,7 +7,7 @@ namespace MyEspacio\Framework\Rendering;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Translator;
 
-final class TranslatorFactory
+final class TranslatorFactory implements TranslatorFactoryInterface
 {
     public function __construct(
         private readonly ArrayLoader $arrayLoader

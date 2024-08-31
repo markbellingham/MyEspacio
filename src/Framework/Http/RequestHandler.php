@@ -7,7 +7,7 @@ namespace MyEspacio\Framework\Http;
 use MyEspacio\Framework\Csrf\StoredTokenValidatorInterface;
 use MyEspacio\Framework\Csrf\Token;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
-use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
+use MyEspacio\Framework\Localisation\TranslationIdentifierFactoryInterface;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
 use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +22,7 @@ final class RequestHandler implements RequestHandlerInterface
     public function __construct(
         private readonly StoredTokenValidatorInterface $storedTokenValidator,
         private readonly TemplateRendererFactoryInterface $templateRendererFactory,
-        private readonly TranslationIdentifierFactory $translationIdentifierFactory
+        private readonly TranslationIdentifierFactoryInterface $translationIdentifierFactory
     ) {
     }
 

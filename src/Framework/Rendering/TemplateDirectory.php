@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Rendering;
 
-final class TemplateDirectory
+final class TemplateDirectory implements TemplateDirectoryInterface
 {
     private string $templateDirectory;
 

@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Framework\Http;
 
-use MyEspacio\Framework\Csrf\StoredTokenValidator;
 use MyEspacio\Framework\Csrf\StoredTokenValidatorInterface;
 use MyEspacio\Framework\Http\RequestHandler;
 use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
-use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
+use MyEspacio\Framework\Localisation\TranslationIdentifierFactoryInterface;
 use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,8 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RequestHandlerTest extends TestCase
 {
-    /** @var TranslationIdentifierFactory|MockObject */
-    private TranslationIdentifierFactory|MockObject $translationIdentifierFactory;
+    /** @var TranslationIdentifierFactoryInterface|MockObject */
+    private TranslationIdentifierFactoryInterface|MockObject $translationIdentifierFactory;
 
     private TemplateRendererFactoryInterface $templateRendererFactory;
 
@@ -31,7 +30,7 @@ class RequestHandlerTest extends TestCase
     {
         $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
         $this->templateRendererFactory = $this->createMock(TemplateRendererFactoryInterface::class);
-        $this->translationIdentifierFactory = $this->createMock(TranslationIdentifierFactory::class);
+        $this->translationIdentifierFactory = $this->createMock(TranslationIdentifierFactoryInterface::class);
         $this->requestHandler = new RequestHandler(
             $storedTokenValidator,
             $this->templateRendererFactory,
@@ -57,7 +56,7 @@ class RequestHandlerTest extends TestCase
     {
         $request = new Request();
         $request->attributes->set('language', 'en');
-        $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
+        $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
         $storedTokenValidator->expects($this->once())
             ->method('validate')
             ->willreturn(true);
@@ -73,7 +72,7 @@ class RequestHandlerTest extends TestCase
     {
         $request = new Request();
         $request->attributes->set('language', 'en');
-        $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
+        $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
         $storedTokenValidator->expects($this->once())
             ->method('validate')
             ->willreturn(false);
@@ -109,7 +108,7 @@ class RequestHandlerTest extends TestCase
     {
         $request = new Request();
         $request->attributes->set('language', 'en');
-        $storedTokenValidator = $this->createMock(StoredTokenValidator::class);
+        $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
         $storedTokenValidator->expects($this->once())
             ->method('validate')
             ->willreturn(false);

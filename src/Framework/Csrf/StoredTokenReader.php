@@ -7,7 +7,7 @@ namespace MyEspacio\Framework\Csrf;
 use Exception;
 use RuntimeException;
 
-final class StoredTokenReader
+final class StoredTokenReader implements StoredTokenReaderInterface
 {
     public function __construct(
         private readonly TokenStorage $tokenStorage

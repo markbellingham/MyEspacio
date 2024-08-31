@@ -15,13 +15,13 @@ class LanguageReader
     }
 
     /**
-     * @param TranslationIdentifier $identifier
+     * @param TranslationIdentifierInterface $identifier
      * @param string $key
      * @param array<string, string> $variables
      * @return string|null
      */
     public function getTranslationText(
-        TranslationIdentifier $identifier,
+        TranslationIdentifierInterface $identifier,
         string $key,
         array $variables = []
     ): ?string {

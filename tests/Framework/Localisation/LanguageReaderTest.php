@@ -7,7 +7,7 @@ namespace Tests\Framework\Localisation;
 use MyEspacio\Framework\Localisation\LanguageLoaderInterface;
 use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\Framework\Localisation\NestedArrayReaderInterface;
-use MyEspacio\Framework\Localisation\TranslationIdentifier;
+use MyEspacio\Framework\Localisation\TranslationIdentifierInterface;
 use PHPUnit\Framework\TestCase;
 
 final class LanguageReaderTest extends TestCase
@@ -16,7 +16,7 @@ final class LanguageReaderTest extends TestCase
     {
         $languageLoader = $this->createMock(LanguageLoaderInterface::class);
         $reader = $this->createMock(NestedArrayReaderInterface::class);
-        $identifier = $this->createMock(TranslationIdentifier::class);
+        $identifier = $this->createMock(TranslationIdentifierInterface::class);
 
         $reader->expects($this->once())
             ->method('hasData')
@@ -35,7 +35,7 @@ final class LanguageReaderTest extends TestCase
     {
         $languageLoader = $this->createMock(LanguageLoaderInterface::class);
         $reader = $this->createMock(NestedArrayReaderInterface::class);
-        $identifier = $this->createMock(TranslationIdentifier::class);
+        $identifier = $this->createMock(TranslationIdentifierInterface::class);
 
         $reader->expects($this->once())
             ->method('hasData')
@@ -54,7 +54,7 @@ final class LanguageReaderTest extends TestCase
     {
         $languageLoader = $this->createMock(LanguageLoaderInterface::class);
         $reader = $this->createMock(NestedArrayReaderInterface::class);
-        $identifier = $this->createMock(TranslationIdentifier::class);
+        $identifier = $this->createMock(TranslationIdentifierInterface::class);
 
         $reader->expects($this->once())
             ->method('hasData')
@@ -73,7 +73,7 @@ final class LanguageReaderTest extends TestCase
     {
         $languageLoader = $this->createMock(LanguageLoaderInterface::class);
         $reader = $this->createMock(NestedArrayReaderInterface::class);
-        $identifier = $this->createMock(TranslationIdentifier::class);
+        $identifier = $this->createMock(TranslationIdentifierInterface::class);
 
         $reader->expects($this->once())
             ->method('hasData')

@@ -9,6 +9,8 @@ use MyEspacio\Common\Domain\Repository\IconRepositoryInterface;
 use MyEspacio\Common\Domain\Repository\TagRepositoryInterface;
 use MyEspacio\Common\Infrastructure\MySql\IconRepository;
 use MyEspacio\Common\Infrastructure\MySql\TagRepository;
+use MyEspacio\Framework\Csrf\StoredTokenReader;
+use MyEspacio\Framework\Csrf\StoredTokenReaderInterface;
 use MyEspacio\Framework\Csrf\SymfonySessionTokenStorage;
 use MyEspacio\Framework\Csrf\TokenStorage;
 use MyEspacio\Framework\Database\Connection;
@@ -22,12 +24,17 @@ use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Localisation\LanguagesDirectoryInterface;
 use MyEspacio\Framework\Localisation\NestedArrayReader;
 use MyEspacio\Framework\Localisation\NestedArrayReaderInterface;
+use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
+use MyEspacio\Framework\Localisation\TranslationIdentifierFactoryInterface;
 use MyEspacio\Framework\Logger\LoggerInterface;
 use MyEspacio\Framework\Logger\MonologAdapter;
 use MyEspacio\Framework\Messages\EmailInterface;
 use MyEspacio\Framework\Messages\PhpMailerEmail;
 use MyEspacio\Framework\Rendering\TemplateDirectory;
+use MyEspacio\Framework\Rendering\TemplateDirectoryInterface;
 use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
+use MyEspacio\Framework\Rendering\TranslatorFactory;
+use MyEspacio\Framework\Rendering\TranslatorFactoryInterface;
 use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
@@ -55,13 +62,17 @@ $injector = new Injector();
 
 $injector->define(TemplateDirectory::class, [':rootDirectory' => ROOT_DIR]);
 $injector->alias(TemplateRendererFactoryInterface::class, TwigTemplateRendererFactory::class);
+$injector->alias(TranslatorFactoryInterface::class, TranslatorFactory::class);
+$injector->alias(TemplateDirectoryInterface::class, TemplateDirectory::class);
 
 $injector->alias(LanguagesDirectoryInterface::class, LanguagesDirectory::class);
 $injector->define(LanguagesDirectory::class, [':rootDirectory' => ROOT_DIR]);
 $injector->alias(LanguageLoaderInterface::class, LanguageLoader::class);
 $injector->alias(NestedArrayReaderInterface::class, NestedArrayReader::class);
+$injector->alias(TranslationIdentifierFactoryInterface::class, TranslationIdentifierFactory::class);
 //
 $injector->alias(TokenStorage::class, SymfonySessionTokenStorage::class);
+$injector->alias(StoredTokenReaderInterface::class, StoredTokenReader::class);
 
 $injector->alias(SessionInterface::class, Session::class);
 
