@@ -106,7 +106,7 @@ final class Photo extends Model
         return $array;
     }
 
-    public static function createFromDataSet(DataSet $data): Model
+    public static function createFromDataSet(DataSet $data): Photo
     {
         return new Photo(
             country: Country::createFromDataSet($data),

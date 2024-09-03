@@ -7,6 +7,7 @@ namespace Tests\User\Domain;
 use DateTimeImmutable;
 use Exception;
 use InvalidArgumentException;
+use MyEspacio\Framework\DataSet;
 use MyEspacio\User\Domain\User;
 use PHPUnit\Framework\TestCase;
 
@@ -185,5 +186,35 @@ final class UserTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Could not create date instance');
         $user->setLoginDate('Invalid date');
+    }
+
+    public function testCreateFromDataset(): void
+    {
+        $data = new DataSet([
+            'email' => 'mail@example.com',
+            'uuid' => 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            'name' => 'Mark',
+            'phone' => '01234567890',
+            'login_attempts' => '1',
+            'login_date' => '2024-03-02 15:26:00',
+            'magic_link' => '550e8400-e29b-41d4-a716-446655440000',
+            'phone_code' => '9bR3xZ',
+            'passcode_route' => 'email',
+            'id' => '1'
+        ]);
+        $user = User::createFromDataSet($data);
+
+        $this->assertEquals('mail@example.com', $user->getEmail());
+        $this->assertEquals('Mark', $user->getName());
+        $this->assertEquals('f47ac10b-58cc-4372-a567-0e02b2c3d479', $user->getUuid());
+        $this->assertSame(1, $user->getLoginAttempts());
+        $this->assertInstanceOf(DateTimeImmutable::class, $user->getLoginDate());
+        $this->assertEquals('2024-03-02 15:26:00', $user->getLoginDateString());
+        $this->assertEquals('02-03-2024 @ 15:26', $user->getLoginDateString('d-m-Y @ H:i'));
+        $this->assertEquals('550e8400-e29b-41d4-a716-446655440000', $user->getMagicLink());
+        $this->assertEquals('9bR3xZ', $user->getPhoneCode());
+        $this->assertEquals('email', $user->getPasscodeRoute());
+        $this->assertEquals('01234567890', $user->getPhone());
+        $this->assertSame(1, $user->getId());
     }
 }

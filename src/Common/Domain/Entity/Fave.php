@@ -5,7 +5,7 @@ namespace MyEspacio\Common\Domain\Entity;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 
-final class Fave extends Model
+class Fave extends Model
 {
     public function __construct(
         private int $userId,

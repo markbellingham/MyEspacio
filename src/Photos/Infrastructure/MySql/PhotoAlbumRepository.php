@@ -10,6 +10,7 @@ use MyEspacio\Photos\Domain\Collection\PhotoAlbumCollection;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
+use MyEspacio\Photos\Infrastructure\MySql\Queries\PhotoQueryService;
 
 class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
 {
@@ -54,7 +55,7 @@ class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
     public function fetchAlbumPhotos(PhotoAlbum $album): PhotoCollection
     {
         $result = $this->db->fetchAll(
-            PhotoRepository::PHOTO_PROPERTIES .
+            PhotoQueryService::PHOTO_PROPERTIES .
             ' WHERE photo_album.album_id = :albumId',
             [
                 'albumId' => $album->getAlbumId()
@@ -67,7 +68,7 @@ class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
     public function searchAlbumPhotos(int $albumId, string $searchTerm): PhotoCollection
     {
         $results = $this->db->fetchAll(
-            PhotoRepository::PHOTO_MATCH_PROPERTIES .
+            PhotoQueryService::PHOTO_MATCH_PROPERTIES .
             ' WHERE album.album_id = :albumId AND 
             MATCH (photo.title, photo.description photo.town AGAINST (:searchTerm) > 0',
             [
