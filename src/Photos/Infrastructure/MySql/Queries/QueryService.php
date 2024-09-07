@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Photos\Infrastructure\MySql\Queries;
 
-final class PhotoQueryService
+final class QueryService
 {
     public const PHOTO_PROPERTIES = 'SELECT photos.id AS photo_id,
         photos.date_taken,
@@ -71,4 +71,17 @@ final class PhotoQueryService
         FROM pictures.photo_faves
         GROUP BY photo_id
     ) AS fv ON fv.photo_id = photos.id';
+
+    /**
+     * @param array<int, string> $searchTerms
+     */
+    public static function prepareSearchTerms(array $searchTerms): ?string
+    {
+        $cleanedStrings = array_map(fn($str) => preg_replace('/[^a-zA-Z0-9]/', '', $str), $searchTerms);
+        $filteredStrings = array_filter($cleanedStrings, fn($term) => strlen(trim($term)) >= 3);
+        if (empty($filteredStrings)) {
+            return null;
+        }
+        return '+' . implode('* +', $filteredStrings) . '*';
+    }
 }
