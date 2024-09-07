@@ -298,6 +298,18 @@ class PhotoAlbumRepositoryTest extends TestCase
 
     public function testSearchAlbumPhotos(): void
     {
+        $photoAlbum = new PhotoAlbum(
+            title: 'MyAlbum',
+            albumId: 1,
+            description: 'My favourite photos',
+            country: new Country(
+                id: 1,
+                name: 'United Kingdom',
+                twoCharCode: 'GB',
+                threeCharCode: 'GBR'
+            )
+        );
+
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchAll')
@@ -336,7 +348,7 @@ class PhotoAlbumRepositoryTest extends TestCase
             );
 
         $repository = new PhotoAlbumRepository($db);
-        $result = $repository->searchAlbumPhotos(1, '+dance*');
+        $result = $repository->searchAlbumPhotos($photoAlbum, ['dance']);
 
         $this->assertInstanceOf(PhotoCollection::class, $result);
         $this->assertCount(1, $result);
@@ -344,6 +356,18 @@ class PhotoAlbumRepositoryTest extends TestCase
 
     public function testSearchAlbumPhotosNoneFound(): void
     {
+        $photoAlbum = new PhotoAlbum(
+            title: 'MyAlbum',
+            albumId: 1,
+            description: 'My favourite photos',
+            country: new Country(
+                id: 1,
+                name: 'United Kingdom',
+                twoCharCode: 'GB',
+                threeCharCode: 'GBR'
+            )
+        );
+
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchAll')
@@ -358,7 +382,7 @@ class PhotoAlbumRepositoryTest extends TestCase
             ->willReturn([]);
 
         $repository = new PhotoAlbumRepository($db);
-        $result = $repository->searchAlbumPhotos(1, '+dance*');
+        $result = $repository->searchAlbumPhotos($photoAlbum, ['dance']);
 
         $this->assertInstanceOf(PhotoCollection::class, $result);
         $this->assertCount(0, $result);

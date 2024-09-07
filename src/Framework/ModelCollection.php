@@ -25,7 +25,6 @@ abstract class ModelCollection implements Iterator
 
     /**
      * @param array<int, mixed> $data
-     * @throws CollectionException
      */
     final public function __construct(array $data)
     {
