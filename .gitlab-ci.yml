@@ -1,6 +1,7 @@
 stages:
   - test
   - security
+  - deploy
 
 include:
   - template: Security/SAST.gitlab-ci.yml
@@ -31,4 +32,12 @@ test:
   coverage: /^\s*Lines:\s*\d+.\d+\%/
   only:
     - merge_requests
+    - master
+
+deploy_to_github:
+  stage: deploy
+  script:
+    - git remote add github https://markbellingham:${GITHUB_TOKEN}@github.com/markbellingham/MyEspacio.git
+    - git push github master
+  only:
     - master
