@@ -56,8 +56,8 @@ final class QueryService
         geo.longitude,
         IFNULL(cmt.cmt_count, 0) AS comment_count, 
         IFNULL(fv.fave_count, 0) AS fave_count,
-        MATCH(photos.title, photos.description, photos.town) AGAINST(:searchTerm) AS pscore,
-        MATCH(countries.name) AGAINST(:searchTerm) AS cscore
+        MATCH(photos.title, photos.description, photos.town) AGAINST(:searchTerms IN BOOLEAN MODE) AS pscore,
+        MATCH(countries.name) AGAINST(:searchTerms IN BOOLEAN MODE) AS cscore
     FROM pictures.photos
     LEFT JOIN pictures.countries ON countries.id = photos.country
     LEFT JOIN pictures.geo ON photos.id = geo.photo_id
@@ -74,14 +74,12 @@ final class QueryService
 
     /**
      * @param array<int, string> $searchTerms
+     * @return array<int, string>
      */
-    public static function prepareSearchTerms(array $searchTerms): ?string
+    public static function prepare(array $searchTerms): array
     {
         $cleanedStrings = array_map(fn($str) => preg_replace('/[^a-zA-Z0-9]/', '', $str), $searchTerms);
-        $filteredStrings = array_filter($cleanedStrings, fn($term) => strlen(trim($term)) >= 3);
-        if (empty($filteredStrings)) {
-            return null;
-        }
-        return '+' . implode('* +', $filteredStrings) . '*';
+        $filteredStrings = array_filter($cleanedStrings, fn($term) => strlen($term) >= 3);
+        return array_values(array_map(fn($str) => $str . '*', $filteredStrings));
     }
 }

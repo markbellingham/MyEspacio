@@ -10,6 +10,7 @@ use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoAlbumRepository;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class PhotoAlbumRepositoryTest extends TestCase
@@ -64,8 +65,8 @@ class PhotoAlbumRepositoryTest extends TestCase
         geo.longitude,
         IFNULL(cmt.cmt_count, 0) AS comment_count, 
         IFNULL(fv.fave_count, 0) AS fave_count,
-        MATCH(photos.title, photos.description, photos.town) AGAINST(:searchTerm) AS pscore,
-        MATCH(countries.name) AGAINST(:searchTerm) AS cscore
+        MATCH(photos.title, photos.description, photos.town) AGAINST(:searchTerms IN BOOLEAN MODE) AS pscore,
+        MATCH(countries.name) AGAINST(:searchTerms IN BOOLEAN MODE) AS cscore
     FROM pictures.photos
     LEFT JOIN pictures.countries ON countries.id = photos.country
     LEFT JOIN pictures.geo ON photos.id = geo.photo_id
@@ -296,32 +297,64 @@ class PhotoAlbumRepositoryTest extends TestCase
         $this->assertCount(0, $result);
     }
 
-    public function testSearchAlbumPhotos(): void
-    {
-        $photoAlbum = new PhotoAlbum(
-            title: 'MyAlbum',
-            albumId: 1,
-            description: 'My favourite photos',
-            country: new Country(
-                id: 1,
-                name: 'United Kingdom',
-                twoCharCode: 'GB',
-                threeCharCode: 'GBR'
-            )
-        );
-
+    /**
+     * @dataProvider searchAlbumPhotosDataProvider
+     * @param array<int, mixed> $queryTerms
+     * @param array<int, mixed> $searchTerms
+     * @param array<int, array<string, string>> $searchResults
+     * @throws Exception
+     */
+    public function testSearchAlbumPhotos(
+        PhotoAlbum $photoAlbum,
+        int $albumId,
+        array $queryTerms,
+        array $searchTerms,
+        string $expectedSearchString,
+        array $searchResults,
+        int $searchCount
+    ): void {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchAll')
             ->with(
-                self::PHOTO_MATCH_PROPERTIES . ' WHERE album.album_id = :albumId AND 
-            MATCH (photo.title, photo.description photo.town AGAINST (:searchTerm) > 0',
+                self::PHOTO_MATCH_PROPERTIES . ' WHERE photo_album.album_id = :albumId AND ' . $expectedSearchString,
+                $searchTerms
+            )
+            ->willReturn($searchResults);
+
+        $repository = new PhotoAlbumRepository($db);
+        $actualResult = $repository->searchAlbumPhotos($photoAlbum, $queryTerms);
+
+        $this->assertInstanceOf(PhotoCollection::class, $actualResult);
+        $this->assertCount($searchCount, $actualResult);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function searchAlbumPhotosDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                new PhotoAlbum(
+                    title: 'MyAlbum',
+                    albumId: 1,
+                    description: 'My favourite photos',
+                    country: new Country(
+                        id: 1,
+                        name: 'United Kingdom',
+                        twoCharCode: 'GB',
+                        threeCharCode: 'GBR'
+                    )
+                ),
+                1,
+                ['dance'],
                 [
                     'albumId' => 1,
-                    'searchTerm' => '+dance*'
-                ]
-            )
-            ->willReturn(
+                    'searchTerms' => 'dance*',
+                    'term0' => 'dance*'
+                ],
+                "(MATCH (photos.title, photos.description, photos.town) AGAINST (:term0 IN BOOLEAN MODE) OR MATCH (countries.name) AGAINST (:term0 IN BOOLEAN MODE))",
                 [
                     [
                         'country_id' => '45',
@@ -344,18 +377,34 @@ class PhotoAlbumRepositoryTest extends TestCase
                         'comment_count' => '1',
                         'fave_count' => '1'
                     ]
-                ]
-            );
-
-        $repository = new PhotoAlbumRepository($db);
-        $result = $repository->searchAlbumPhotos($photoAlbum, ['dance']);
-
-        $this->assertInstanceOf(PhotoCollection::class, $result);
-        $this->assertCount(1, $result);
+                ],
+                1
+            ],
+            'test_2' => [
+                new PhotoAlbum(
+                    title: 'BigAlbum',
+                    albumId: 2,
+                    description: 'Loads of photos',
+                    country: null
+                ),
+                2,
+                ['dance','carnival'],
+                [
+                    'albumId' => 2,
+                    'searchTerms' => 'dance* carnival*',
+                    'term0' => 'dance*',
+                    'term1' => 'carnival*'
+                ],
+                "(MATCH (photos.title, photos.description, photos.town) AGAINST (:term0 IN BOOLEAN MODE) OR MATCH (countries.name) AGAINST (:term0 IN BOOLEAN MODE)) AND (MATCH (photos.title, photos.description, photos.town) AGAINST (:term1 IN BOOLEAN MODE) OR MATCH (countries.name) AGAINST (:term1 IN BOOLEAN MODE))",
+                [],
+                0
+            ]
+        ];
     }
 
-    public function testSearchAlbumPhotosNoneFound(): void
+    public function testSearchAlbumPhotosNotParams(): void
     {
+        $queryTerms = ['ab'];
         $photoAlbum = new PhotoAlbum(
             title: 'MyAlbum',
             albumId: 1,
@@ -367,24 +416,159 @@ class PhotoAlbumRepositoryTest extends TestCase
                 threeCharCode: 'GBR'
             )
         );
-
         $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchAll')
-            ->with(
-                self::PHOTO_MATCH_PROPERTIES . ' WHERE album.album_id = :albumId AND 
-            MATCH (photo.title, photo.description photo.town AGAINST (:searchTerm) > 0',
-                [
-                    'albumId' => 1,
-                    'searchTerm' => '+dance*'
-                ]
-            )
-            ->willReturn([]);
+        $db->expects($this->never())
+            ->method('fetchAll');
 
         $repository = new PhotoAlbumRepository($db);
-        $result = $repository->searchAlbumPhotos($photoAlbum, ['dance']);
+        $actualResult = $repository->searchAlbumPhotos($photoAlbum, $queryTerms);
 
-        $this->assertInstanceOf(PhotoCollection::class, $result);
-        $this->assertCount(0, $result);
+        $this->assertInstanceOf(PhotoCollection::class, $actualResult);
+        $this->assertCount(0, $actualResult);
+    }
+
+    /**
+     * @dataProvider fetchByNameDataProvider
+     * @param null|array<string, string> $queryResult
+     * @throws Exception
+     */
+    public function testFetchByName(
+        string $requestAlbumName,
+        string $paramAlbumName,
+        ?array $queryResult,
+        ?PhotoAlbum $album
+    ): void {
+        $db = $this->createMock(Connection::class);
+        $db->expects($this->once())
+            ->method('fetchOne')
+            ->with(
+                'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
+                countries.name AS country_name, countries.two_char_code, countries.three_char_code
+            FROM pictures.albums
+            LEFT JOIN pictures.countries ON albums.country_id = countries.id
+            WHERE LOWER(title) LIKE :albumName',
+                [
+                    'albumName' => $paramAlbumName
+                ]
+            )
+            ->willReturn($queryResult);
+
+        $repository = new PhotoAlbumRepository($db);
+        $actualResult = $repository->fetchByName($requestAlbumName);
+        $this->assertEquals($album, $actualResult);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function fetchByNameDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                'Tulum',
+                '%tulum%',
+                [
+                    'title' => 'Tulum',
+                    'album_id' => '86',
+                    'description' => null,
+                    'country_id' => '142',
+                    'country_name' => 'Mexico',
+                    'two_char_code' => 'MX',
+                    'three_char_code' => 'MEX'
+                ],
+                new PhotoAlbum(
+                    title: 'Tulum',
+                    albumId: 86,
+                    description: '',
+                    country: new Country(
+                        id: 142,
+                        name: 'Mexico',
+                        twoCharCode: 'MX',
+                        threeCharCode: 'MEX'
+                    )
+                )
+            ],
+            'test_2' => [
+                'Mexico',
+                '%mexico%',
+                null,
+                null
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider fetchMyFavouritesDataProvider
+     * @param null|array<string, string> $queryResult
+     * @throws Exception
+     */
+    public function testFetchMyFavourites(
+        int $albumId,
+        ?array $queryResult,
+        ?PhotoAlbum $album
+    ): void {
+        $db = $this->createMock(Connection::class);
+        $db->expects($this->once())
+            ->method('fetchOne')
+            ->with(
+                'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
+                countries.name AS country_name, countries.two_char_code, countries.three_char_code
+            FROM pictures.albums
+            LEFT JOIN pictures.countries ON albums.country_id = countries.id
+            WHERE albums.album_id = :albumId',
+                [
+                    'albumId' => $albumId
+                ]
+            )
+            ->willReturn($queryResult);
+
+        if ($album) {
+            $db->expects($this->once())
+                ->method('fetchAll')
+                ->with(
+                    self::PHOTO_PROPERTIES . ' WHERE photo_album.album_id = :albumId',
+                    [
+                        'albumId' => $albumId
+                    ]
+                )
+                ->willReturn([]);
+        }
+
+        $repository = new PhotoAlbumRepository($db);
+        $actualResult = $repository->fetchMyFavourites();
+        $this->assertEquals($album, $actualResult);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function fetchMyFavouritesDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                2,
+                [
+                    'title' => 'My Favourites',
+                    'album_id' => '2',
+                    'description' => null,
+                    'country_id' => null,
+                    'country_name' => null,
+                    'two_char_code' => null,
+                    'three_char_code' => null
+                ],
+                new PhotoAlbum(
+                    title: 'My Favourites',
+                    albumId: 2,
+                    description: '',
+                    country: null,
+                    photos: new PhotoCollection([])
+                )
+            ],
+            'test_2' => [
+                2,
+                null,
+                null
+            ]
+        ];
     }
 }

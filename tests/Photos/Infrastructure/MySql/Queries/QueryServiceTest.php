@@ -68,8 +68,8 @@ final class QueryServiceTest extends TestCase
         geo.longitude,
         IFNULL(cmt.cmt_count, 0) AS comment_count, 
         IFNULL(fv.fave_count, 0) AS fave_count,
-        MATCH(photos.title, photos.description, photos.town) AGAINST(:searchTerm) AS pscore,
-        MATCH(countries.name) AGAINST(:searchTerm) AS cscore
+        MATCH(photos.title, photos.description, photos.town) AGAINST(:searchTerms IN BOOLEAN MODE) AS pscore,
+        MATCH(countries.name) AGAINST(:searchTerms IN BOOLEAN MODE) AS cscore
     FROM pictures.photos
     LEFT JOIN pictures.countries ON countries.id = photos.country
     LEFT JOIN pictures.geo ON photos.id = geo.photo_id
@@ -89,61 +89,62 @@ final class QueryServiceTest extends TestCase
 
     /**
      * @param array<int, string> $searchTerms
+     * @param array<int, string> $expectedResult
      * @dataProvider preparedSearchTermsDataProvider
      */
     public function testPrepareSearchTerms(
         array $searchTerms,
-        ?string $expectedResult
+        array $expectedResult
     ): void {
-        $actualResult = QueryService::prepareSearchTerms($searchTerms);
+        $actualResult = QueryService::prepare($searchTerms);
         $this->assertEquals($expectedResult, $actualResult);
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, array<int, array<int, string>>>
      */
     public static function preparedSearchTermsDataProvider(): array
     {
         return [
             'test_1' => [
                 [],
-                null
+                []
             ],
             'test_2' => [
                 ['sunset'],
-                '+sunset*'
+                ['sunset*']
             ],
             'test_3' => [
                 ['mexico', 'sunset'],
-                '+mexico* +sunset*'
+                ['mexico*', 'sunset*']
             ],
             'test_4' => [
                 ['', 'sunset'],
-                '+sunset*'
+                ['sunset*']
             ],
             'test_5' => [
                 ['','',''],
-                null
+                []
             ],
             'test_6' => [
                 ['12','34','ab','cd'],
-                null
+                []
             ],
             'test_7' => [
                 ['ab','valid','cd'],
-                '+valid*'
+                ['valid*']
             ],
             'test_8' => [
                 ['hello!', '@world$', '%foo#'],
-                '+hello* +world* +foo*'
+                ['hello*', 'world*', 'foo*']
             ],
             'test_9' => [
                 [' ', ' sunset '],
-                '+sunset*'
+                ['sunset*']
             ],
             'test_10' => [
                 ['@12', 'world+'],
-                '+world*'
+                ['world*']
             ]
         ];
     }

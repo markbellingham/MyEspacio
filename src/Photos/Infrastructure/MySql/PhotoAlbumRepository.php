@@ -69,40 +69,53 @@ class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
 
     public function searchAlbumPhotos(PhotoAlbum $album, array $searchTerms): PhotoCollection
     {
-        $queryString = QueryService::prepareSearchTerms($searchTerms);
-        if ($queryString === null) {
+        $filteredSearchTerms = QueryService::prepare($searchTerms);
+        if (empty($filteredSearchTerms)) {
             return new PhotoCollection([]);
         }
+
+        $params = [
+            'albumId' => $album->getAlbumId(),
+            'searchTerms' => implode(' ', $filteredSearchTerms)
+        ];
+        $whereClauses = [];
+        foreach ($filteredSearchTerms as $index => $term) {
+            $paramKey = 'term' . $index;
+            $params[$paramKey] = $term;
+            $whereClauses[] = "(MATCH (photos.title, photos.description, photos.town) AGAINST (:$paramKey IN BOOLEAN MODE) OR MATCH (countries.name) AGAINST (:$paramKey IN BOOLEAN MODE))";
+        }
         $results = $this->db->fetchAll(
-            QueryService::PHOTO_MATCH_PROPERTIES .
-            ' WHERE album.album_id = :albumId AND 
-            MATCH (photo.title, photo.description photo.town AGAINST (:searchTerm) > 0',
-            [
-                'albumId' => $album->getAlbumId(),
-                'searchTerm' => $queryString
-            ]
+            QueryService::PHOTO_MATCH_PROPERTIES . ' WHERE photo_album.album_id = :albumId AND ' .
+            implode(' AND ', $whereClauses),
+            $params
         );
         return new PhotoCollection($results);
     }
 
-    public function albumExists(string $albumName): ?int
+    public function fetchByName(string $albumName): ?PhotoAlbum
     {
         $result = $this->db->fetchOne(
-            'SELECT album_id FROM pictures.albums WHERE LOWER(title) LIKE :albumName',
+            'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
+                countries.name AS country_name, countries.two_char_code, countries.three_char_code
+            FROM pictures.albums
+            LEFT JOIN pictures.countries ON albums.country_id = countries.id
+            WHERE LOWER(title) LIKE :albumName',
             [
                 'albumName' => '%' . strtolower($albumName) . '%'
             ]
         );
-        if ($result) {
-            return (int) $result['album_id'];
+        if ($result === null) {
+            return null;
         }
-        return null;
+        return PhotoAlbum::createFromDataSet(
+            new DataSet($result)
+        );
     }
 
-    public function fetchMyFavourites(): PhotoAlbum
+    public function fetchMyFavourites(): ?PhotoAlbum
     {
         $album = $this->fetchById(self::MY_FAVOURITES);
-        $album->setPhotos(
+        $album?->setPhotos(
             $this->fetchAlbumPhotos($album)
         );
         return $album;

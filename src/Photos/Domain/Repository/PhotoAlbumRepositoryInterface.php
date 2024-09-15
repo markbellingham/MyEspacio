@@ -21,7 +21,7 @@ interface PhotoAlbumRepositoryInterface
      */
     public function searchAlbumPhotos(PhotoAlbum $album, array $searchTerms): PhotoCollection;
 
-    public function albumExists(string $albumName): ?int;
+    public function fetchByName(string $albumName): ?PhotoAlbum;
 
-    public function fetchMyFavourites(): PhotoAlbum;
+    public function fetchMyFavourites(): ?PhotoAlbum;
 }

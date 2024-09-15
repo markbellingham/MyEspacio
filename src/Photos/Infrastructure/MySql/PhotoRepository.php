@@ -64,14 +64,26 @@ final class PhotoRepository implements PhotoRepositoryInterface
         return new PhotoCollection($result);
     }
 
-    public function searchAllPhotos(array $searchTerms): PhotoCollection
+    public function search(array $searchTerms): PhotoCollection
     {
-        $results = $this->db->fetchAll(
-            QueryService::PHOTO_MATCH_PROPERTIES .
-            'WHERE MATCH (photos.title, photos.description, photos.town) AGAINST (:searchTerm IN BOOLEAN MODE)',
-            [
+        $filteredSearchTerms = QueryService::prepare($searchTerms);
+        if (empty($filteredSearchTerms)) {
+            return new PhotoCollection([]);
+        }
 
-            ]
+        $params = [
+            'searchTerms' => implode(' ', $filteredSearchTerms)
+        ];
+        $whereClauses = [];
+        foreach ($filteredSearchTerms as $index => $term) {
+            $paramKey = 'term' . $index;
+            $params[$paramKey] = $term;
+            $whereClauses[] = "(MATCH (photos.title, photos.description, photos.town) AGAINST (:$paramKey IN BOOLEAN MODE) OR MATCH (countries.name) AGAINST (:$paramKey IN BOOLEAN MODE))";
+        }
+        $results = $this->db->fetchAll(
+            QueryService::PHOTO_MATCH_PROPERTIES . ' WHERE ' .
+            implode(' AND ', $whereClauses),
+            $params
         );
         return new PhotoCollection($results);
     }

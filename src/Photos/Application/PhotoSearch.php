@@ -11,7 +11,7 @@ use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 
 final class PhotoSearch implements PhotoSearchInterface
 {
-    private ?int $albumId;
+    private ?PhotoAlbum $album;
     private int $paramCount;
     /** @var array<int, string> */
     private array $params;
@@ -27,13 +27,13 @@ final class PhotoSearch implements PhotoSearchInterface
         $this->parseSearchParams($params['searchPhotos'] ?? '');
         $this->isAlbum(urldecode($this->params[0]));
 
-        if ($this->albumId && $this->paramCount === 1) {
+        if ($this->album && $this->paramCount === 1) {
             return $this->albumPhotos();
         }
-        if ($this->albumId && $this->paramCount > 1) {
+        if ($this->album && $this->paramCount > 1) {
             return $this->searchAlbumPhotos();
         }
-        if ($this->albumId === null && $this->paramCount === 1) {
+        if ($this->album === null && $this->paramCount === 1) {
             return $this->popularSearchTypes();
         }
         return $this->photoRepository->randomSelection();
@@ -48,25 +48,23 @@ final class PhotoSearch implements PhotoSearchInterface
 
     private function isAlbum(string $arg): void
     {
-        $this->albumId = $this->photoAlbumRepository->albumExists(trim($arg));
+        $this->album = $this->photoAlbumRepository->fetchByName(trim($arg));
     }
 
     private function albumPhotos(): PhotoAlbum
     {
-        $album = $this->photoAlbumRepository->fetchById($this->albumId);
-        $album->setPhotos(
-            $this->photoAlbumRepository->fetchAlbumPhotos($album)
+        $this->album->setPhotos(
+            $this->photoAlbumRepository->fetchAlbumPhotos($this->album)
         );
-        return $album;
+        return $this->album;
     }
 
     private function searchAlbumPhotos(): PhotoAlbum
     {
-        $album = $this->photoAlbumRepository->fetchById($this->albumId);
-        $album->setPhotos(
-            $this->photoAlbumRepository->searchAlbumPhotos($album, $this->params)
+        $this->album->setPhotos(
+            $this->photoAlbumRepository->searchAlbumPhotos($this->album, $this->params)
         );
-        return $album;
+        return $this->album;
     }
 
     private function popularSearchTypes(): PhotoCollection
@@ -74,7 +72,7 @@ final class PhotoSearch implements PhotoSearchInterface
         return match ($this->params[0]) {
             'most-popular' => $this->photoRepository->topPhotos(),
             'my-favourites' => $this->photoAlbumRepository->fetchMyFavourites(),
-            default => $this->photoRepository->searchAllPhotos($this->params)
+            default => $this->photoRepository->search($this->params)
         };
     }
 }

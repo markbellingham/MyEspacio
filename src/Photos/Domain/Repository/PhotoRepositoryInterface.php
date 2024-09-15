@@ -18,5 +18,5 @@ interface PhotoRepositoryInterface
     /**
      * @param array<int, string> $searchTerms
      */
-    public function searchAllPhotos(array $searchTerms): PhotoCollection;
+    public function search(array $searchTerms): PhotoCollection;
 }
