@@ -22,10 +22,10 @@ final class PhotoSearch implements PhotoSearchInterface
     ) {
     }
 
-    public function search(array $params): PhotoCollection|PhotoAlbum
+    public function search(string $searchTerms): PhotoCollection|PhotoAlbum
     {
-        $this->parseSearchParams($params['searchPhotos'] ?? '');
-        $this->isAlbum(urldecode($this->params[0]));
+        $this->parseSearchParams($searchTerms);
+        $this->isAlbum();
 
         if ($this->album && $this->paramCount === 1) {
             return $this->albumPhotos();
@@ -33,7 +33,7 @@ final class PhotoSearch implements PhotoSearchInterface
         if ($this->album && $this->paramCount > 1) {
             return $this->searchAlbumPhotos();
         }
-        if ($this->album === null && $this->paramCount === 1) {
+        if ($this->album === null && $this->paramCount > 0) {
             return $this->popularSearchTypes();
         }
         return $this->photoRepository->randomSelection();
@@ -44,11 +44,17 @@ final class PhotoSearch implements PhotoSearchInterface
         $this->params = explode('/', $requestParams);
         $this->params = array_filter($this->params);
         $this->paramCount = count($this->params);
+        if ($this->paramCount > 0) {
+            $this->params = array_map(fn($param) => trim(urldecode($param)), $this->params);
+        }
     }
 
-    private function isAlbum(string $arg): void
+    private function isAlbum(): void
     {
-        $this->album = $this->photoAlbumRepository->fetchByName(trim($arg));
+        $this->album = $this->photoAlbumRepository->fetchByName(trim($this->params[0] ?? ''));
+        if ($this->album) {
+            array_shift($this->params);
+        }
     }
 
     private function albumPhotos(): PhotoAlbum
@@ -67,7 +73,7 @@ final class PhotoSearch implements PhotoSearchInterface
         return $this->album;
     }
 
-    private function popularSearchTypes(): PhotoCollection
+    private function popularSearchTypes(): PhotoCollection|PhotoAlbum
     {
         return match ($this->params[0]) {
             'most-popular' => $this->photoRepository->topPhotos(),

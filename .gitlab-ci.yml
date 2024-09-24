@@ -38,7 +38,6 @@ deploy_to_github:
   stage: deploy
   script:
     - git checkout master
-    - git remote add github https://markbellingham:${GITHUB_TOKEN}@github.com/markbellingham/MyEspacio.git
-    - git push github master:main
+    - git push https://markbellingham:${GITHUB_TOKEN}@github.com/markbellingham/MyEspacio.git master:main
   only:
     - master
