@@ -21,15 +21,15 @@ interface RequestHandlerInterface
 
     /**
      * @param array<string, mixed> $data
-     * @param string $template
-     * @param int $statusCode
-     * @return Response
+     * @param array<string, mixed> $translationVariables
      */
-    public function sendResponse(array $data = [], string $template = '', int $statusCode = Response::HTTP_OK): Response;
+    public function sendResponse(
+        array $data = [],
+        int $statusCode = Response::HTTP_OK,
+        string $template = '',
+        string $translationKey = '',
+        array $translationVariables = []
+    ): Response;
 
-    public function setResponseType(string $responseType): void;
-
-    public function getResponseType(): ?string;
-
-    public function getTranslationIdentifier(Request $request, string $languageFile): TranslationIdentifier;
+    public function getTranslationIdentifier(string $languageFile): TranslationIdentifier;
 }

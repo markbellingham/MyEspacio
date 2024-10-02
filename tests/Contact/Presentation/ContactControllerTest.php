@@ -9,9 +9,6 @@ use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 use MyEspacio\Contact\Presentation\ContactController;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
-use MyEspacio\Framework\Localisation\LanguageReader;
-use MyEspacio\Framework\Localisation\LanguagesDirectory;
-use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Messages\EmailInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,7 +24,6 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $languageReader = $this->createMock(LanguageReader::class);
 
         $captchaIcons = new CaptchaIconCollection([
             [
@@ -68,12 +64,13 @@ final class ContactControllerTest extends TestCase
                     'captcha1' => $selectedIcon,
                     'captcha2' => ''
                 ],
+                Response::HTTP_OK,
                 'contact/Contact.html.twig'
             )
             ->willReturn(new Response($expectedResponse));
 
         $request = new Request();
-        $controller = new ContactController($requestHandler, $session, $email, $captcha, $languageReader);
+        $controller = new ContactController($requestHandler, $session, $email, $captcha);
 
         $response = $controller->show($request, []);
 
@@ -87,7 +84,6 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $languageReader = $this->createMock(LanguageReader::class);
 
         $expectedResponse = 'Rendered HTML Root Content';
 
@@ -99,7 +95,7 @@ final class ContactControllerTest extends TestCase
             ->willReturn(new Response($expectedResponse));
 
         $request = new Request();
-        $controller = new ContactController($requestHandler, $session, $email, $captcha, $languageReader);
+        $controller = new ContactController($requestHandler, $session, $email, $captcha);
         $response = $controller->show($request, []);
 
         $this->assertInstanceOf(Response::class, $response);
@@ -112,7 +108,6 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
         $expectedResponse = 'Rendered HTML Root Content';
@@ -127,7 +122,7 @@ final class ContactControllerTest extends TestCase
             ->method('showRoot')
             ->willReturn(new Response($expectedResponse));
 
-        $controller = new ContactController($requestHandler, $session, $email, $captcha, $languageReader);
+        $controller = new ContactController($requestHandler, $session, $email, $captcha);
         $response = $controller->sendMessage($request);
 
         $this->assertInstanceOf(Response::class, $response);
@@ -140,7 +135,6 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
         $request->expects($this->once())
@@ -153,21 +147,13 @@ final class ContactControllerTest extends TestCase
             ->method('validate')
             ->willReturn(false);
         $requestHandler->expects($this->once())
-            ->method('getTranslationIdentifier')
-            ->willReturn(
-                new TranslationIdentifier('en', 'messages', new LanguagesDirectory(ROOT_DIR))
-            );
-        $languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('Invalid Message');
-        $requestHandler->expects($this->once())
             ->method('sendResponse')
             ->willReturn(new JsonResponse(
                 ['error' => 'Invalid Message'],
                 Response::HTTP_BAD_REQUEST
             ));
 
-        $controller = new ContactController($requestHandler, $session, $email, $captcha, $languageReader);
+        $controller = new ContactController($requestHandler, $session, $email, $captcha);
         $response = $controller->sendMessage($request);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -181,7 +167,6 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
         $request->expects($this->once())
@@ -197,7 +182,7 @@ final class ContactControllerTest extends TestCase
             ->method('sendResponse')
             ->willReturn(new JsonResponse(['error' => 'Invalid Message - emailAddress: , message: , name: , subject: , captchaIconId: , description:'], Response::HTTP_BAD_REQUEST));
 
-        $controller = new ContactController($requestHandler, $session, $email, $captcha, $languageReader);
+        $controller = new ContactController($requestHandler, $session, $email, $captcha);
         $response = $controller->sendMessage($request);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -211,7 +196,6 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
         $request->expects($this->once())
@@ -230,7 +214,7 @@ final class ContactControllerTest extends TestCase
             ->method('sendResponse')
             ->willReturn(new JsonResponse(['error' => 'Invalid Message'], Response::HTTP_BAD_REQUEST));
 
-        $controller = new ContactController($requestHandler, $session, $email, $captcha, $languageReader);
+        $controller = new ContactController($requestHandler, $session, $email, $captcha);
         $response = $controller->sendMessage($request);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -244,7 +228,6 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $languageReader = $this->createMock(LanguageReader::class);
         $request = $this->createMock(Request::class);
 
         $request->expects($this->once())
@@ -269,7 +252,7 @@ final class ContactControllerTest extends TestCase
                 Response::HTTP_OK
             ));
 
-        $controller = new ContactController($requestHandler, $session, $email, $captcha, $languageReader);
+        $controller = new ContactController($requestHandler, $session, $email, $captcha);
         $response = $controller->sendMessage($request);
 
         $this->assertInstanceOf(JsonResponse::class, $response);

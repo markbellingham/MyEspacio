@@ -7,7 +7,6 @@ namespace Tests\User\Presentation;
 use DateTimeImmutable;
 use Exception;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
-use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\User\Application\SendLoginCodeInterface;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
@@ -16,11 +15,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class LoginControllerTest extends TestCase
 {
-    private const LOGIN_CODE_EXPIRY_TIME = 15;
+    private const int LOGIN_CODE_EXPIRY_TIME = 15;
 
     /** @var MockObject|RequestHandlerInterface */
     private MockObject|RequestHandlerInterface $requestHandler;
@@ -34,9 +34,6 @@ final class LoginControllerTest extends TestCase
     /** @var MockObject|UserRepositoryInterface */
     private MockObject|UserRepositoryInterface $userRepository;
 
-    /** @var MockObject|LanguageReader */
-    private LanguageReader|MockObject $languageReader;
-
     /**
      * @return void
      * @throws \PHPUnit\Framework\MockObject\Exception
@@ -49,20 +46,15 @@ final class LoginControllerTest extends TestCase
         $this->loginCode = $this->createMock(SendLoginCodeInterface::class);
         $this->session = $this->createMock(SessionInterface::class);
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
-        $this->languageReader = $this->createMock(LanguageReader::class);
 
         $this->requestHandler->expects($this->once())
             ->method('validate');
-
-        $this->requestHandler->expects($this->once())
-            ->method('sendResponse')
-            ->willReturnCallback(function ($responseData, $template, $statusCode) {
-                return new JsonResponse($responseData, $statusCode);
-            });
     }
 
     public function testProcessLoginFormUserAlreadyLoggedIn(): void
     {
+        $expectedResponse = ['error' => 'You are already logged in.'];
+
         $request = Request::createFromGlobals();
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -72,22 +64,28 @@ final class LoginControllerTest extends TestCase
             ->with('user')
             ->willReturn(['user_id' => 123]);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('You are already logged in.');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_CONFLICT,
+                '',
+                'login.already_logged_in',
+                []
+            )
+            ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_CONFLICT));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['error' => 'You are already logged in.'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(409, $response->getStatusCode());
@@ -95,6 +93,8 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormUserAlreadyLoggedInSpanish(): void
     {
+        $expectedResponse = ['error' => 'Ya has iniciado sesión'];
+
         $request = Request::createFromGlobals();
         $request->attributes->set('language', 'es');
         $request->headers->set('Accept', 'application/json');
@@ -104,22 +104,28 @@ final class LoginControllerTest extends TestCase
             ->with('user')
             ->willReturn(['user_id' => 123]);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('Ya has iniciado sesión');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_CONFLICT,
+                '',
+                'login.already_logged_in',
+                []
+            )
+            ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_CONFLICT));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['error' => 'Ya has iniciado sesión'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(409, $response->getStatusCode());
@@ -127,6 +133,8 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormUserNotFound(): void
     {
+        $expectedResponse = ['error' => 'User not found'];
+
         $request = Request::create(
             '/login',
             'POST',
@@ -149,22 +157,28 @@ final class LoginControllerTest extends TestCase
             ->with('test@example.tld')
             ->willReturn(null);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('User not found');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_NOT_FOUND,
+                '',
+                'login.user_not_found',
+                []
+            )
+            ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_NOT_FOUND));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['error' => 'User not found'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(404, $response->getStatusCode());
@@ -172,6 +186,8 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormCodeSentByEmail(): void
     {
+        $expectedResponse = ['message' => 'Please check your email for the login code'];
+
         $request = Request::create(
             '/login',
             'POST',
@@ -216,22 +232,28 @@ final class LoginControllerTest extends TestCase
             ->method('sendTo')
             ->willReturn(true);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('Please check your email for the login code');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_OK,
+                '',
+                'login.code_sent',
+                ['passcode_route' => 'email']
+            )
+            ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_OK));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['message' => 'Please check your email for the login code'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(200, $response->getStatusCode());
@@ -240,6 +262,8 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormCodeSentByPhone(): void
     {
+        $expectedResponse = ['message' => 'Please check your phone for the login code'];
+
         $request = Request::create(
             '/login',
             'POST',
@@ -284,22 +308,28 @@ final class LoginControllerTest extends TestCase
             ->method('sendTo')
             ->willReturn(true);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('Please check your phone for the login code');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_OK,
+                '',
+                'login.code_sent',
+                ['passcode_route' => 'phone']
+            )
+            ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_OK));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['message' => 'Please check your phone for the login code'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(200, $response->getStatusCode());
@@ -308,6 +338,8 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormLoginCodeThrewException(): void
     {
+        $expectedResponse = ['error' => 'Something went wrong, please contact the website administrator'];
+
         $request = Request::create(
             '/login',
             'POST',
@@ -347,22 +379,28 @@ final class LoginControllerTest extends TestCase
             ->method('generateCode')
             ->willThrowException(new Exception('Not enough entropy available to satisfy your key length requirement'));
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('Something went wrong, please contact the website administrator');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                '',
+                'login.generic_error',
+                []
+            )
+            ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_INTERNAL_SERVER_ERROR));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['error' => 'Something went wrong, please contact the website administrator'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(500, $response->getStatusCode());
@@ -371,6 +409,8 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormLoginDetailsNotSaved(): void
     {
+        $expectedResponse = ['error' => 'Something went wrong, please contact the website administrator'];
+
         $request = Request::create(
             '/login',
             'POST',
@@ -411,22 +451,28 @@ final class LoginControllerTest extends TestCase
             ->with($user)
             ->willReturn(false);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('Something went wrong, please contact the website administrator');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                '',
+                'login.generic_error',
+                []
+            )
+            ->willreturn(new JsonResponse($expectedResponse, Response::HTTP_INTERNAL_SERVER_ERROR));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['error' => 'Something went wrong, please contact the website administrator'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(500, $response->getStatusCode());
@@ -435,6 +481,8 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormEmailCodeNotSent(): void
     {
+        $expectedResponse = ['error' => 'Something went wrong, please contact the website administrator'];
+
         $request = Request::create(
             '/login',
             'POST',
@@ -479,22 +527,28 @@ final class LoginControllerTest extends TestCase
             ->method('sendTo')
             ->willReturn(false);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('Something went wrong, please contact the website administrator');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                '',
+                'login.generic_error',
+                []
+            )
+            ->willreturn(new JsonResponse($expectedResponse, Response::HTTP_INTERNAL_SERVER_ERROR));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['error' => 'Something went wrong, please contact the website administrator'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(500, $response->getStatusCode());
@@ -503,6 +557,8 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormLogUserInOutOfTime(): void
     {
+        $expectedResponse = ['error' => 'Could not log you in.'];
+
         $request = Request::create(
             '/login',
             'POST',
@@ -542,22 +598,28 @@ final class LoginControllerTest extends TestCase
             ->with('test@example.tld')
             ->willReturn($user);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('Could not log you in.');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_BAD_REQUEST,
+                '',
+                'login.error',
+                []
+            )
+            ->willreturn(new JsonResponse($expectedResponse, Response::HTTP_BAD_REQUEST));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['error' => 'Could not log you in.'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(400, $response->getStatusCode());
@@ -566,6 +628,8 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormLogUserInWrongCode(): void
     {
+        $expectedResponse = ['error' => 'Could not log you in.'];
+
         $request = Request::create(
             '/login',
             'POST',
@@ -605,22 +669,28 @@ final class LoginControllerTest extends TestCase
             ->with('test@example.tld')
             ->willReturn($user);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('Could not log you in.');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_BAD_REQUEST,
+                '',
+                'login.error',
+                []
+            )
+            ->willreturn(new JsonResponse($expectedResponse, Response::HTTP_BAD_REQUEST));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
         $this->assertEquals(
-            ['error' => 'Could not log you in.'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(400, $response->getStatusCode());
@@ -629,6 +699,11 @@ final class LoginControllerTest extends TestCase
 
     public function testProcessLoginFormLogUserIn(): void
     {
+        $expectedResponse = [
+            'message' => 'You are now logged in',
+            'username' => 'Mark'
+        ];
+
         $request = Request::create(
             '/login',
             'POST',
@@ -668,24 +743,26 @@ final class LoginControllerTest extends TestCase
             ->with('test@example.tld')
             ->willReturn($user);
 
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('You are now logged in');
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                ['username' => 'Mark'],
+                Response::HTTP_OK,
+                '',
+                'login.logged_in',
+                []
+            )
+            ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_OK));
 
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->processLoginForm($request);
 
-        $expectedResponse = [
-            'message' => 'You are now logged in',
-            'username' => 'Mark'
-        ];
         $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
         $this->assertSame(200, $response->getStatusCode());
         $this->assertTrue($user->isLoggedIn());
@@ -693,30 +770,38 @@ final class LoginControllerTest extends TestCase
 
     public function testLogOut(): void
     {
+        $expectedResponse = ['message' => 'You are now logged out'];
+
         $request = Request::create('/logout');
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
-
-        $this->languageReader->expects($this->once())
-            ->method('getTranslationText')
-            ->willReturn('You are now logged out');
 
         $this->session->expects($this->once())
             ->method('remove')
             ->with('user');
 
+        $this->requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(
+                [],
+                Response::HTTP_OK,
+                '',
+                'login.logged_out',
+                []
+            )
+            ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_OK));
+
         $loginController = new LoginController(
             $this->requestHandler,
             $this->loginCode,
             $this->session,
-            $this->userRepository,
-            $this->languageReader
+            $this->userRepository
         );
 
         $response = $loginController->logout($request);
 
         $this->assertEquals(
-            ['message' => 'You are now logged out'],
+            $expectedResponse,
             json_decode($response->getContent(), true)
         );
         $this->assertSame(200, $response->getStatusCode());

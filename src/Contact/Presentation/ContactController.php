@@ -9,7 +9,6 @@ use MyEspacio\Contact\Domain\ContactMeMessage;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
-use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\Framework\Messages\EmailInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,14 +16,13 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class ContactController
 {
-    public const CAPTCHA_ICONS_QUANTITY = 7;
+    public const int CAPTCHA_ICONS_QUANTITY = 7;
 
     public function __construct(
         private readonly RequestHandlerInterface $requestHandler,
         private readonly SessionInterface $session,
         private readonly EmailInterface $email,
-        private readonly CaptchaInterface $captcha,
-        private readonly LanguageReader $languageReader,
+        private readonly CaptchaInterface $captcha
     ) {
     }
 
@@ -44,12 +42,12 @@ final class ContactController
         $this->session->set('contactIcons', $icons->toArray());
 
         return $this->requestHandler->sendResponse(
-            [
+            data: [
                 'icons' => $icons,
                 'captcha1' => $this->captcha->getSelectedIcon(),
                 'captcha2' => $this->captcha->getEncryptedIcon()
             ],
-            'contact/Contact.html.twig',
+            template: 'contact/Contact.html.twig',
         );
     }
 
@@ -64,13 +62,8 @@ final class ContactController
 
         if ($this->captcha->validate($vars->intNull('captcha1'), $vars->stringNull('captcha2')) === false) {
             return $this->requestHandler->sendResponse(
-                data: [
-                    'error' => $this->languageReader->getTranslationText(
-                        $this->requestHandler->getTranslationIdentifier($request, 'messages'),
-                        'contact.bad_message'
-                    ),
-                ],
-                statusCode: Response::HTTP_BAD_REQUEST
+                statusCode: Response::HTTP_BAD_REQUEST,
+                translationKey: 'contact.bad_message'
             );
         }
 
@@ -85,30 +78,23 @@ final class ContactController
             );
         } catch (InvalidEmailException $e) {
             return $this->requestHandler->sendResponse(
-                data: ['error' => $this->languageReader->getTranslationText(
-                    $this->requestHandler->getTranslationIdentifier($request, 'messages'),
-                    'contact.form_fail'
-                )],
-                statusCode: Response::HTTP_BAD_REQUEST
+                statusCode: Response::HTTP_BAD_REQUEST,
+                translationKey: 'contact.form_fail'
             );
         }
 
         if ($this->email->send($emailMessage) === false) {
             return $this->requestHandler->sendResponse(
-                data: ['error' => $this->languageReader->getTranslationText(
-                    $this->requestHandler->getTranslationIdentifier($request, 'messages'),
-                    'contact.email_fail'
-                )],
-                statusCode: Response::HTTP_INTERNAL_SERVER_ERROR
+                statusCode: Response::HTTP_INTERNAL_SERVER_ERROR,
+                translationKey: 'contact.email_fail'
             );
         }
 
-        return $this->requestHandler->sendResponse([
-            'captcha' => $this->captcha,
-            'message' => $this->languageReader->getTranslationText(
-                $this->requestHandler->getTranslationIdentifier($request, 'messages'),
-                'contact.email_success'
-            ),
-        ]);
+        return $this->requestHandler->sendResponse(
+            data: [
+                'captcha' => $this->captcha
+            ],
+            translationKey: 'contact.email_success'
+        );
     }
 }

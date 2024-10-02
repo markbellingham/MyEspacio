@@ -6,6 +6,7 @@ namespace MyEspacio\Framework\Http;
 
 use MyEspacio\Framework\Csrf\StoredTokenValidatorInterface;
 use MyEspacio\Framework\Csrf\Token;
+use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactoryInterface;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
@@ -16,10 +17,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RequestHandler implements RequestHandlerInterface
 {
+    private string $language = 'en';
     private ?string $responseType = null;
     private TemplateRenderer $templateRenderer;
 
     public function __construct(
+        private readonly LanguageReader $languageReader,
         private readonly StoredTokenValidatorInterface $storedTokenValidator,
         private readonly TemplateRendererFactoryInterface $templateRendererFactory,
         private readonly TranslationIdentifierFactoryInterface $translationIdentifierFactory
@@ -36,6 +39,7 @@ final class RequestHandler implements RequestHandlerInterface
          * If the response type is application/json we can skip this and send only raw data
          */
         $this->responseType = $request->headers->get('Accept');
+        $this->language = $request->attributes->get('language') ?? 'en';
         if ($this->responseType === 'application/json') {
             return true;
         }
@@ -57,31 +61,49 @@ final class RequestHandler implements RequestHandlerInterface
 
     public function sendResponse(
         array $data = [],
-        string $template = '',
-        int $statusCode = Response::HTTP_OK
+        int $statusCode = Response::HTTP_OK,
+        ?string $template = null,
+        ?string $translationKey = null,
+        array $translationVariables = []
     ): Response {
-        if ($this->responseType === 'application/json' || $template == '') {
-            return new JsonResponse($data, $statusCode);
+        if ($template) {
+            $content = $this->templateRenderer->render($template, $data);
+            return new Response($content, $statusCode);
         }
-        $content = $this->templateRenderer->render($template, $data);
-        return new Response($content, $statusCode);
+        if ($translationKey) {
+            $data['message'] = $this->languageReader->getTranslationText(
+                $this->getTranslationIdentifier('messages'),
+                $translationKey
+            );
+        }
+        switch ($this->responseType) {
+            case 'text/csv':
+                return new Response($this->formatToCsv($data), $statusCode, ['Content-Type' => 'text/csv']);
+            case 'application/xml':
+                return new Response($this->formatToXml($data), $statusCode, ['Content-Type' => 'application/xml']);
+            case 'application/json':
+            default:
+                return new JsonResponse($data, $statusCode);
+        }
     }
 
-    public function setResponseType(string $responseType): void
-    {
-        $this->responseType = $responseType;
-    }
-
-    public function getResponseType(): ?string
-    {
-        return $this->responseType;
-    }
-
-    public function getTranslationIdentifier(Request $request, string $languageFile): TranslationIdentifier
+    public function getTranslationIdentifier(string $languageFile): TranslationIdentifier
     {
         return $this->translationIdentifierFactory->create(
-            language: $request->attributes->get('language'),
+            language: $this->language,
             filename: $languageFile
         );
+    }
+
+    /** @param array<string, mixed> $data */
+    private function formatToCsv(array $data): string
+    {
+        return '';
+    }
+
+    /** @param array<string, mixed> $data */
+    private function formatToXml(array $data): string
+    {
+        return '';
     }
 }

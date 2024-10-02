@@ -6,6 +6,7 @@ namespace Tests\Framework\Http;
 
 use MyEspacio\Framework\Csrf\StoredTokenValidatorInterface;
 use MyEspacio\Framework\Http\RequestHandler;
+use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactoryInterface;
@@ -13,12 +14,13 @@ use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RequestHandlerTest extends TestCase
 {
+    private LanguageReader|MockObject $languageReader;
+
     /** @var TranslationIdentifierFactoryInterface|MockObject */
     private TranslationIdentifierFactoryInterface|MockObject $translationIdentifierFactory;
 
@@ -28,20 +30,16 @@ class RequestHandlerTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->languageReader = $this->createMock(LanguageReader::class);
         $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
         $this->templateRendererFactory = $this->createMock(TemplateRendererFactoryInterface::class);
         $this->translationIdentifierFactory = $this->createMock(TranslationIdentifierFactoryInterface::class);
         $this->requestHandler = new RequestHandler(
+            $this->languageReader,
             $storedTokenValidator,
             $this->templateRendererFactory,
             $this->translationIdentifierFactory
         );
-    }
-
-    public function testSetResponseType(): void
-    {
-        $this->requestHandler->setResponseType('text/html');
-        $this->assertEquals('text/html', $this->requestHandler->getResponseType());
     }
 
     public function testValidateRequestJsonResponse(): void
@@ -61,6 +59,7 @@ class RequestHandlerTest extends TestCase
             ->method('validate')
             ->willreturn(true);
         $requestHandler = new RequestHandler(
+            $this->languageReader,
             $storedTokenValidator,
             $this->templateRendererFactory,
             $this->translationIdentifierFactory
@@ -77,6 +76,7 @@ class RequestHandlerTest extends TestCase
             ->method('validate')
             ->willreturn(false);
         $requestHandler = new RequestHandler(
+            $this->languageReader,
             $storedTokenValidator,
             $this->templateRendererFactory,
             $this->translationIdentifierFactory
@@ -95,15 +95,6 @@ class RequestHandlerTest extends TestCase
         $this->assertInstanceOf(Response::class, $result);
     }
 
-    public function testSendResponseJson(): void
-    {
-        $this->requestHandler->setResponseType('application/json');
-        $response = $this->requestHandler->sendResponse(['key' => 'value']);
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertEquals('{"key":"value"}', $response->getContent());
-    }
-
     public function testSendResponseHtml(): void
     {
         $request = new Request();
@@ -113,12 +104,16 @@ class RequestHandlerTest extends TestCase
             ->method('validate')
             ->willreturn(false);
         $requestHandler = new RequestHandler(
+            $this->languageReader,
             $storedTokenValidator,
             $this->templateRendererFactory,
             $this->translationIdentifierFactory
         );
         $requestHandler->validate($request);
-        $response = $requestHandler->sendResponse(['key' => 'value'], 'template');
+        $response = $requestHandler->sendResponse(
+            data: ['key' => 'value'],
+            template: 'template'
+        );
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals('', $response->getContent());
@@ -133,7 +128,7 @@ class RequestHandlerTest extends TestCase
         $request = new Request();
         $request->attributes->set('language', 'en');
 
-        $result = $this->requestHandler->getTranslationIdentifier($request, 'messages');
+        $result = $this->requestHandler->getTranslationIdentifier('messages');
 
         $this->assertInstanceOf(TranslationIdentifier::class, $result);
     }
