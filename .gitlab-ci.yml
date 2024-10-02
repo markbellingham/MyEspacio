@@ -9,7 +9,7 @@ include:
 
 test:
   stage: test
-  image: php:8.1
+  image: php:8.3
   variables:
     XDEBUG_MODE: coverage
   before_script:
