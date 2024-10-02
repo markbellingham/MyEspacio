@@ -6,6 +6,7 @@ namespace Tests\User\Presentation;
 
 use DateTimeImmutable;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
+use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\User\Application\SendLoginCodeInterface;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
@@ -74,13 +75,13 @@ final class LoginControllerMagicLinkTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_NOT_FOUND,
                 '',
                 'login.invalid_link',
                 []
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_NOT_FOUND));
 
         $loginController = new LoginController(
@@ -136,13 +137,13 @@ final class LoginControllerMagicLinkTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_REQUEST_TIMEOUT,
                 '',
                 'login.error',
                 []
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_REQUEST_TIMEOUT));
 
         $loginController = new LoginController(

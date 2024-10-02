@@ -9,6 +9,7 @@ use MyEspacio\Contact\Domain\ContactMeMessage;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
+use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Framework\Messages\EmailInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,12 +43,14 @@ final class ContactController
         $this->session->set('contactIcons', $icons->toArray());
 
         return $this->requestHandler->sendResponse(
-            data: [
-                'icons' => $icons,
-                'captcha1' => $this->captcha->getSelectedIcon(),
-                'captcha2' => $this->captcha->getEncryptedIcon()
-            ],
-            template: 'contact/Contact.html.twig',
+            new ResponseData(
+                data: [
+                    'icons' => $icons,
+                    'captcha1' => $this->captcha->getSelectedIcon(),
+                    'captcha2' => $this->captcha->getEncryptedIcon()
+                ],
+                template: 'contact/Contact.html.twig',
+            )
         );
     }
 
@@ -62,8 +65,10 @@ final class ContactController
 
         if ($this->captcha->validate($vars->intNull('captcha1'), $vars->stringNull('captcha2')) === false) {
             return $this->requestHandler->sendResponse(
-                statusCode: Response::HTTP_BAD_REQUEST,
-                translationKey: 'contact.bad_message'
+                new ResponseData(
+                    statusCode: Response::HTTP_BAD_REQUEST,
+                    translationKey: 'contact.bad_message'
+                )
             );
         }
 
@@ -78,23 +83,29 @@ final class ContactController
             );
         } catch (InvalidEmailException $e) {
             return $this->requestHandler->sendResponse(
-                statusCode: Response::HTTP_BAD_REQUEST,
-                translationKey: 'contact.form_fail'
+                new ResponseData(
+                    statusCode: Response::HTTP_BAD_REQUEST,
+                    translationKey: 'contact.form_fail'
+                )
             );
         }
 
         if ($this->email->send($emailMessage) === false) {
             return $this->requestHandler->sendResponse(
-                statusCode: Response::HTTP_INTERNAL_SERVER_ERROR,
-                translationKey: 'contact.email_fail'
+                new ResponseData(
+                    statusCode: Response::HTTP_INTERNAL_SERVER_ERROR,
+                    translationKey: 'contact.email_fail'
+                )
             );
         }
 
         return $this->requestHandler->sendResponse(
-            data: [
-                'captcha' => $this->captcha
-            ],
-            translationKey: 'contact.email_success'
+            new ResponseData(
+                data: [
+                    'captcha' => $this->captcha
+                ],
+                translationKey: 'contact.email_success'
+            )
         );
     }
 }

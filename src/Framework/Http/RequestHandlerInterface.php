@@ -19,17 +19,7 @@ interface RequestHandlerInterface
      */
     public function showRoot(Request $request, array $vars): Response;
 
-    /**
-     * @param array<string, mixed> $data
-     * @param array<string, mixed> $translationVariables
-     */
-    public function sendResponse(
-        array $data = [],
-        int $statusCode = Response::HTTP_OK,
-        string $template = '',
-        string $translationKey = '',
-        array $translationVariables = []
-    ): Response;
+    public function sendResponse(ResponseData $responseData): Response;
 
     public function getTranslationIdentifier(string $languageFile): TranslationIdentifier;
 }

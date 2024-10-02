@@ -6,6 +6,7 @@ namespace Tests\Framework\Http;
 
 use MyEspacio\Framework\Csrf\StoredTokenValidatorInterface;
 use MyEspacio\Framework\Http\RequestHandler;
+use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
@@ -111,8 +112,10 @@ class RequestHandlerTest extends TestCase
         );
         $requestHandler->validate($request);
         $response = $requestHandler->sendResponse(
-            data: ['key' => 'value'],
-            template: 'template'
+            new ResponseData(
+                data: ['key' => 'value'],
+                template: 'template'
+            )
         );
 
         $this->assertInstanceOf(Response::class, $response);

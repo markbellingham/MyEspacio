@@ -59,31 +59,34 @@ final class RequestHandler implements RequestHandlerInterface
         return $controller->show($request, $vars);
     }
 
-    public function sendResponse(
-        array $data = [],
-        int $statusCode = Response::HTTP_OK,
-        ?string $template = null,
-        ?string $translationKey = null,
-        array $translationVariables = []
-    ): Response {
-        if ($template) {
-            $content = $this->templateRenderer->render($template, $data);
-            return new Response($content, $statusCode);
+    public function sendResponse(ResponseData $responseData): Response
+    {
+        if ($responseData->getTemplate()) {
+            $content = $this->templateRenderer->render($responseData->getTemplate(), $responseData->getData());
+            return new Response($content, $responseData->getStatusCode());
         }
-        if ($translationKey) {
+        if ($responseData->getTranslationKey()) {
             $data['message'] = $this->languageReader->getTranslationText(
                 $this->getTranslationIdentifier('messages'),
-                $translationKey
+                $responseData->getTranslationKey()
             );
         }
         switch ($this->responseType) {
             case 'text/csv':
-                return new Response($this->formatToCsv($data), $statusCode, ['Content-Type' => 'text/csv']);
+                return new Response(
+                    content: $this->formatToCsv($responseData->getData()),
+                    status: $responseData->getStatusCode(),
+                    headers: ['Content-Type' => 'text/csv']
+                );
             case 'application/xml':
-                return new Response($this->formatToXml($data), $statusCode, ['Content-Type' => 'application/xml']);
+                return new Response(
+                    content: $this->formatToXml($responseData->getData()),
+                    status: $responseData->getStatusCode(),
+                    headers: ['Content-Type' => 'application/xml']
+                );
             case 'application/json':
             default:
-                return new JsonResponse($data, $statusCode);
+                return new JsonResponse($responseData->getData(), $responseData->getStatusCode());
         }
     }
 

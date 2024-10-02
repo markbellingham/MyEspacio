@@ -7,6 +7,7 @@ namespace Tests\User\Presentation;
 use DateTimeImmutable;
 use Exception;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
+use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\User\Application\SendLoginCodeInterface;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
@@ -66,13 +67,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_CONFLICT,
                 '',
                 'login.already_logged_in',
                 []
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_CONFLICT));
 
         $loginController = new LoginController(
@@ -106,13 +107,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_CONFLICT,
                 '',
                 'login.already_logged_in',
                 []
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_CONFLICT));
 
         $loginController = new LoginController(
@@ -159,13 +160,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_NOT_FOUND,
                 '',
                 'login.user_not_found',
                 []
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_NOT_FOUND));
 
         $loginController = new LoginController(
@@ -234,13 +235,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_OK,
                 '',
                 'login.code_sent',
                 ['passcode_route' => 'email']
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_OK));
 
         $loginController = new LoginController(
@@ -310,13 +311,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_OK,
                 '',
                 'login.code_sent',
                 ['passcode_route' => 'phone']
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_OK));
 
         $loginController = new LoginController(
@@ -381,13 +382,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_INTERNAL_SERVER_ERROR,
                 '',
                 'login.generic_error',
                 []
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_INTERNAL_SERVER_ERROR));
 
         $loginController = new LoginController(
@@ -453,13 +454,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_INTERNAL_SERVER_ERROR,
                 '',
                 'login.generic_error',
                 []
-            )
+            ))
             ->willreturn(new JsonResponse($expectedResponse, Response::HTTP_INTERNAL_SERVER_ERROR));
 
         $loginController = new LoginController(
@@ -529,13 +530,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_INTERNAL_SERVER_ERROR,
                 '',
                 'login.generic_error',
                 []
-            )
+            ))
             ->willreturn(new JsonResponse($expectedResponse, Response::HTTP_INTERNAL_SERVER_ERROR));
 
         $loginController = new LoginController(
@@ -600,13 +601,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_BAD_REQUEST,
                 '',
                 'login.error',
                 []
-            )
+            ))
             ->willreturn(new JsonResponse($expectedResponse, Response::HTTP_BAD_REQUEST));
 
         $loginController = new LoginController(
@@ -671,13 +672,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_BAD_REQUEST,
                 '',
                 'login.error',
                 []
-            )
+            ))
             ->willreturn(new JsonResponse($expectedResponse, Response::HTTP_BAD_REQUEST));
 
         $loginController = new LoginController(
@@ -745,13 +746,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 ['username' => 'Mark'],
                 Response::HTTP_OK,
                 '',
                 'login.logged_in',
                 []
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_OK));
 
         $loginController = new LoginController(
@@ -782,13 +783,13 @@ final class LoginControllerTest extends TestCase
 
         $this->requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [],
                 Response::HTTP_OK,
                 '',
                 'login.logged_out',
                 []
-            )
+            ))
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_OK));
 
         $loginController = new LoginController(

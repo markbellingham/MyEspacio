@@ -9,6 +9,7 @@ use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 use MyEspacio\Contact\Presentation\ContactController;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
+use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Framework\Messages\EmailInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -58,15 +59,15 @@ final class ContactControllerTest extends TestCase
             ->with('contactIcons', $captchaIcons->toArray());
         $requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(
+            ->with(new ResponseData(
                 [
-                    'icons' => $captchaIcons,
-                    'captcha1' => $selectedIcon,
-                    'captcha2' => ''
-                ],
+                        'icons' => $captchaIcons,
+                        'captcha1' => $selectedIcon,
+                        'captcha2' => ''
+                    ],
                 Response::HTTP_OK,
                 'contact/Contact.html.twig'
-            )
+            ))
             ->willReturn(new Response($expectedResponse));
 
         $request = new Request();
