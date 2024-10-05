@@ -86,4 +86,43 @@ final class ResponseDataTest extends TestCase
             []
         );
     }
+
+    /**
+     * @dataProvider setDataDataProvider
+     */
+    public function testSetData(
+        string $key,
+        mixed $value
+    ): void {
+        $responseData = new ResponseData();
+
+        $responseData->setData($key, $value);
+
+        $this->assertArrayHasKey($key, $responseData->getData());
+        $this->assertSame($value, $responseData->getData()[$key]);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function setDataDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                'key1',
+                'value1'
+            ],
+            'test_2' => [
+                'key2',
+                2,
+            ],
+            'test_3' => [
+                'key3',
+                [
+                    '123',
+                    '456'
+                ]
+            ]
+        ];
+    }
 }

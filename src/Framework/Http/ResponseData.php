@@ -7,7 +7,7 @@ namespace MyEspacio\Framework\Http;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
 
-final readonly class ResponseData
+final class ResponseData
 {
     /**
      * @param array<string, mixed> $data
@@ -15,10 +15,10 @@ final readonly class ResponseData
      */
     public function __construct(
         private array $data = [],
-        private int $statusCode = Response::HTTP_OK,
-        private ?string $template = null,
-        private ?string $translationKey = null,
-        private array $translationVariables = []
+        private readonly int $statusCode = Response::HTTP_OK,
+        private readonly ?string $template = null,
+        private readonly ?string $translationKey = null,
+        private readonly array $translationVariables = []
     ) {
         if (in_array($this->statusCode, array_keys(Response::$statusTexts)) === false) {
             throw new InvalidArgumentException('Invalid HTTP status code ' . $this->statusCode);
@@ -50,5 +50,10 @@ final readonly class ResponseData
     public function getTranslationVariables(): array
     {
         return $this->translationVariables;
+    }
+
+    public function setData(string $key, mixed $value): void
+    {
+        $this->data[$key] = $value;
     }
 }

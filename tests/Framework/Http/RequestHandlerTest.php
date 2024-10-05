@@ -11,10 +11,12 @@ use MyEspacio\Framework\Localisation\LanguageReader;
 use MyEspacio\Framework\Localisation\LanguagesDirectory;
 use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactoryInterface;
+use MyEspacio\Framework\Rendering\TemplateRenderer;
 use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,10 +24,9 @@ class RequestHandlerTest extends TestCase
 {
     private LanguageReader|MockObject $languageReader;
 
-    /** @var TranslationIdentifierFactoryInterface|MockObject */
     private TranslationIdentifierFactoryInterface|MockObject $translationIdentifierFactory;
 
-    private TemplateRendererFactoryInterface $templateRendererFactory;
+    private TemplateRendererFactoryInterface|MockObject $templateRendererFactory;
 
     private RequestHandler|MockObject $requestHandler;
 
@@ -96,30 +97,126 @@ class RequestHandlerTest extends TestCase
         $this->assertInstanceOf(Response::class, $result);
     }
 
-    public function testSendResponseHtml(): void
-    {
+    /** @dataProvider sendResponseDataProvider */
+    public function testSendResponse(
+        string $language,
+        string $requestedFormat,
+        ?string $translatedText,
+        ResponseData $responseData,
+        string $expectedResponseClass,
+        int $expectedStatusCode,
+        string $expectedResponseContent
+    ): void {
         $request = new Request();
-        $request->attributes->set('language', 'en');
+        $request->attributes->set('language', $language);
+        $request->headers->set('Accept', $requestedFormat);
+
         $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
-        $storedTokenValidator->expects($this->once())
-            ->method('validate')
-            ->willreturn(false);
+
+        if ($responseData->getTemplate()) {
+            $templateRenderer = $this->createMock(TemplateRenderer::class);
+            $templateRenderer->expects($this->once())
+                ->method('render')
+                ->with($responseData->getTemplate(), $responseData->getData())
+                ->willReturn($expectedResponseContent);
+            $this->templateRendererFactory->expects($this->once())
+                ->method('create')
+                ->with($language)
+                ->willReturn($templateRenderer);
+        }
+
+        if ($responseData->getTranslationKey()) {
+            $this->languageReader->expects($this->once())
+                ->method('getTranslationText')
+                ->willReturn($translatedText);
+        }
+
         $requestHandler = new RequestHandler(
             $this->languageReader,
             $storedTokenValidator,
             $this->templateRendererFactory,
             $this->translationIdentifierFactory
         );
-        $requestHandler->validate($request);
-        $response = $requestHandler->sendResponse(
-            new ResponseData(
-                data: ['key' => 'value'],
-                template: 'template'
-            )
-        );
 
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals('', $response->getContent());
+        $requestHandler->validate($request);
+        $response = $requestHandler->sendResponse($responseData);
+
+        $this->assertInstanceOf($expectedResponseClass, $response);
+        $this->assertSame($expectedStatusCode, $response->getStatusCode());
+        $this->assertEquals($requestedFormat, $response->headers->get('Content-Type'));
+        $this->assertEquals($expectedResponseContent, $response->getContent());
+
+        if ($responseData->getTranslationKey()) {
+            $actualResponseContent = json_decode($response->getContent(), true);
+            $this->assertArrayHasKey('message', $actualResponseContent);
+            $this->assertEquals($translatedText, $actualResponseContent['message']);
+        }
+    }
+
+    /** @return array<string, array<int, mixed>> */
+    public static function sendResponseDataProvider(): array
+    {
+        return [
+            'simple_json' => [
+                'en',
+                'application/json',
+                null,
+                new ResponseData(
+                    data: ['key' => 'value'],
+                    statusCode: Response::HTTP_OK
+                ),
+                JsonResponse::class,
+                200,
+                '{"key":"value"}'
+            ],
+            'spanish_json' => [
+                'es',
+                'application/json',
+                'Ya has iniciado sesión',
+                new ResponseData(
+                    statusCode: Response::HTTP_CONFLICT,
+                    translationKey: 'login.logged_in'
+                ),
+                JsonResponse::class,
+                409,
+                '{"message":"Ya has iniciado sesi\u00f3n"}'
+            ],
+            'html' => [
+                'en',
+                '',
+                null,
+                new ResponseData(
+                    template: 'pictures.search'
+                ),
+                Response::class,
+                200,
+                '<div class="my-class">Some content</div>'
+            ],
+            'csv' => [
+                'en',
+                'text/csv',
+                null,
+                new ResponseData(
+                    data: ['key' => 'value'],
+                    statusCode: Response::HTTP_OK
+                ),
+                Response::class,
+                200,
+                ''
+            ],
+            'xml' => [
+                'en',
+                'application/xml',
+                null,
+                new ResponseData(
+                    data: ['key' => 'value'],
+                    statusCode: Response::HTTP_OK
+                ),
+                Response::class,
+                200,
+                ''
+            ]
+        ];
     }
 
     public function testGetTranslationIdentifier(): void

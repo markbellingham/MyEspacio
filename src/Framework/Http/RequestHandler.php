@@ -66,9 +66,12 @@ final class RequestHandler implements RequestHandlerInterface
             return new Response($content, $responseData->getStatusCode());
         }
         if ($responseData->getTranslationKey()) {
-            $data['message'] = $this->languageReader->getTranslationText(
-                $this->getTranslationIdentifier('messages'),
-                $responseData->getTranslationKey()
+            $responseData->setData(
+                key: 'message',
+                value: $this->languageReader->getTranslationText(
+                    $this->getTranslationIdentifier('messages'),
+                    $responseData->getTranslationKey()
+                )
             );
         }
         switch ($this->responseType) {
@@ -89,6 +92,7 @@ final class RequestHandler implements RequestHandlerInterface
                 return new JsonResponse($responseData->getData(), $responseData->getStatusCode());
         }
     }
+
 
     public function getTranslationIdentifier(string $languageFile): TranslationIdentifier
     {
