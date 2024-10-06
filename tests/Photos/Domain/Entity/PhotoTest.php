@@ -110,7 +110,6 @@ final class PhotoTest extends TestCase
 
         $jsonData = [
             'country' => [
-                'id' => 45,
                 'name' => 'Chile',
                 'twoCharCode' => 'CL',
                 'threeCharCode' => 'CHL',

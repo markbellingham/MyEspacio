@@ -39,7 +39,11 @@ final class Country extends Model
 
     public function jsonSerialize(): array
     {
-        return get_object_vars($this);
+        return [
+            'name' => $this->name,
+            'twoCharCode' => $this->twoCharCode,
+            'threeCharCode' => $this->threeCharCode
+        ];
     }
 
     public static function createFromDataSet(DataSet $data): Country

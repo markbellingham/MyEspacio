@@ -25,7 +25,6 @@ final class CountryTest extends TestCase
         $this->assertEquals('GBR', $country->getThreeCharCode());
         $this->assertEquals(
             [
-                'id' => 1,
                 'name' => 'United Kingdom',
                 'twoCharCode' => 'GB',
                 'threeCharCode' => 'GBR'

@@ -8,6 +8,7 @@ use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
+use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Presentation\PhotoController;
 use PHPUnit\Framework\TestCase;
@@ -88,7 +89,7 @@ final class PhotoControllerTest extends TestCase
                     data: [
                         'photos' => new PhotoCollection([])
                     ],
-                    template: 'photos/Photos.html.twig'
+                    template: 'photos/PhotoGrid.html.twig'
                 ),
                 new JsonResponse(
                     [
@@ -98,7 +99,7 @@ final class PhotoControllerTest extends TestCase
                 ),
                 new PhotoCollection([]),
                 JsonResponse::class,
-                '{"photos":{}}'
+                '{"photos":[]}'
             ],
             'test_2' => [
                 null,
@@ -107,7 +108,7 @@ final class PhotoControllerTest extends TestCase
                     data: [
                         'photos' => new PhotoCollection([])
                     ],
-                    template: 'photos/Photos.html.twig'
+                    template: 'photos/PhotoGrid.html.twig'
                 ),
                 new Response(
                     '<div class="my-class">Some Content</div>',
@@ -116,6 +117,55 @@ final class PhotoControllerTest extends TestCase
                 new PhotoCollection([]),
                 Response::class,
                 '<div class="my-class">Some Content</div>'
+            ],
+            'test_3' => [
+                'application/json',
+                'sunset',
+                new ResponseData(
+                    data: [
+                        'photos' => new PhotoAlbum(
+                            title: 'Singapore',
+                            albumId: 51,
+                            country: new Country(
+                                id: 199,
+                                name: 'Singapore',
+                                twoCharCode: 'SG',
+                                threeCharCode: 'SGP'
+                            ),
+                            photos: new PhotoCollection([])
+                        )
+                    ],
+                    template: 'photos/PhotoGrid.html.twig'
+                ),
+                new JsonResponse(
+                    [
+                        'photos' => new PhotoAlbum(
+                            title: 'Singapore',
+                            albumId: 51,
+                            country: new Country(
+                                id: 199,
+                                name: 'Singapore',
+                                twoCharCode: 'SG',
+                                threeCharCode: 'SGP'
+                            ),
+                            photos: new PhotoCollection([])
+                        )
+                    ],
+                    Response::HTTP_OK
+                ),
+                new PhotoAlbum(
+                    title: 'Singapore',
+                    albumId: 51,
+                    country: new Country(
+                        id: 199,
+                        name: 'Singapore',
+                        twoCharCode: 'SG',
+                        threeCharCode: 'SGP'
+                    ),
+                    photos: new PhotoCollection([])
+                ),
+                JsonResponse::class,
+                '{"photos":{"title":"Singapore","description":null,"country":{"name":"Singapore","twoCharCode":"SG","threeCharCode":"SGP"},"photos":[]}}'
             ]
         ];
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyEspacio\Framework;
 
 use Iterator;
+use JsonSerializable;
 use MyEspacio\Framework\Exceptions\CollectionException;
 
 /**
@@ -12,7 +13,7 @@ use MyEspacio\Framework\Exceptions\CollectionException;
  * @template TValue of Model
  * @implements Iterator<TKey, TValue>
  */
-abstract class ModelCollection implements Iterator
+abstract class ModelCollection implements Iterator, JsonSerializable
 {
     /** @var array<int, mixed> */
     protected array $data;
@@ -79,5 +80,11 @@ abstract class ModelCollection implements Iterator
     public function toArray(): array
     {
         return $this->data;
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

@@ -72,6 +72,16 @@ final class PhotoAlbum extends Model
         $this->photos = $photos;
     }
 
+    public function jsonSerialize(): array
+    {
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+            'country' => $this->country?->jsonSerialize(),
+            'photos' => $this->photos->jsonSerialize()
+        ];
+    }
+
     public static function createFromDataSet(DataSet $data): PhotoAlbum
     {
         $country = null;

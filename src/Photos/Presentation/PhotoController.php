@@ -31,7 +31,7 @@ final readonly class PhotoController
                 data: [
                     'photos' => $this->photoSearch->search($vars['searchPhotos'])
                 ],
-                template: 'photos/Photos.html.twig'
+                template: 'photos/PhotoGrid.html.twig'
             )
         );
     }
