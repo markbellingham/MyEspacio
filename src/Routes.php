@@ -31,27 +31,27 @@ return [
     [
         'GET',
         '/photos[/[{searchPhotos:.+}]]',
-        'MyEspacio\Photos\Presentation\PhotosController#photoGrid'
+        'MyEspacio\Photos\Presentation\PhotoController#photoGrid'
     ],
     [
         'GET',
-        '/photo/{id:\d+}',
-        'MyEspacio\Photos\Presentation\PhotosController#photoModal'
+        '/photo/{uuid:.+}',
+        'MyEspacio\Photos\Presentation\PhotoController#singlePhoto'
     ],
     [
         'GET',
-        '/photo/{photoId:\d+}/comments',
-        'MyEspacio\Photos\Presentation\PhotosController#getComments'
+        '/photo/{uuid:.+}/comments',
+        'MyEspacio\Photos\Presentation\PhotoController#getComments'
     ],
     [
         'POST',
-        '/photo/{id:\d+}/fave',
-        'MyEspacio\Photos\Presentation\PhotosController#addFave'
+        '/photo/{uuid:.+}/fave',
+        'MyEspacio\Photos\Presentation\PhotoController#addFave'
     ],
     [
         'POST',
-        '/photo/{id:\d+}/comment',
-        'MyEspacio\Photos\Presentation\PhotosController#addComment'
+        '/photo/{uuid:.+}/comment',
+        'MyEspacio\Photos\Presentation\PhotoController#addComment'
     ],
     [
         'GET',

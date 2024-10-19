@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace MyEspacio\Photos\Domain\Entity;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 
@@ -25,7 +26,8 @@ final class Photo extends Model
         private readonly string $title = '',
         private readonly string $town = '',
         private readonly ?int $commentCount = 0,
-        private readonly ?int $faveCount = 0
+        private readonly ?int $faveCount = 0,
+        private readonly string $uuid = ''
     ) {
     }
 
@@ -52,11 +54,6 @@ final class Photo extends Model
     public function getDateTaken(): ?DateTimeImmutable
     {
         return $this->dateTaken;
-    }
-
-    public function getDateTakenString(string $format = 'Y-m-d H:i:s'): ?string
-    {
-        return $this->dateTaken?->format($format);
     }
 
     public function getDescription(): ?string
@@ -102,7 +99,7 @@ final class Photo extends Model
     public function jsonSerialize(): array
     {
         $array = get_object_vars($this);
-        $array['dateTaken'] = $this->getDateTakenString();
+        $array['dateTaken'] = $this->dateTaken?->format(DateTimeInterface::ATOM);
         return $array;
     }
 
@@ -121,7 +118,8 @@ final class Photo extends Model
             title: $data->string('title'),
             town: $data->string('town'),
             commentCount: $data->int('comment_count'),
-            faveCount: $data->int('fave_count')
+            faveCount: $data->int('fave_count'),
+            uuid: $data->string('uu_id')
         );
     }
 }

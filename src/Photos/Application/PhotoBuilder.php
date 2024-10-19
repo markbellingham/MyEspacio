@@ -11,10 +11,10 @@ use MyEspacio\Photos\Domain\Entity\GeoCoordinates;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\Relevance;
 
-final class PhotoBuilder
+final readonly class PhotoBuilder
 {
     public function __construct(
-        private readonly DataSet $dataSet
+        private DataSet $dataSet
     ) {
     }
 
@@ -34,6 +34,7 @@ final class PhotoBuilder
             town: $this->dataSet->string('town'),
             commentCount: $this->dataSet->int('comment_count'),
             faveCount: $this->dataSet->int('fave_count'),
+            uuid: $this->dataSet->string('uu_id')
         );
     }
 

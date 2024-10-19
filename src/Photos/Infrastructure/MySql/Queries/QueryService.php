@@ -6,7 +6,7 @@ namespace MyEspacio\Photos\Infrastructure\MySql\Queries;
 
 final class QueryService
 {
-    public const PHOTO_PROPERTIES = 'SELECT photos.id AS photo_id,
+    public const string PHOTO_PROPERTIES = 'SELECT photos.id AS photo_id,
         photos.date_taken,
         photos.description,
         photos.directory,
@@ -15,6 +15,7 @@ final class QueryService
         photos.town,
         photos.height,
         photos.width,
+        photos.uu_id,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,
@@ -36,7 +37,7 @@ final class QueryService
     LEFT JOIN pictures.photo_faves ON photos.id = photo_faves.photo_id
     LEFT JOIN pictures.photo_album ON photos.id = photo_album.photo_id';
 
-    public const PHOTO_MATCH_PROPERTIES = 'SELECT 
+    public const string PHOTO_MATCH_PROPERTIES = 'SELECT 
         photos.id AS photo_id,
         photos.date_taken,
         photos.description,
@@ -46,6 +47,7 @@ final class QueryService
         photos.town,
         photos.height,
         photos.width,
+        photos.uu_id,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,

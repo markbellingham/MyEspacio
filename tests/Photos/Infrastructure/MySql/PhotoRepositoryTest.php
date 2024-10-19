@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Photos\Infrastructure\MySql;
 
 use MyEspacio\Framework\Database\Connection;
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoRepository;
@@ -13,8 +14,8 @@ use PHPUnit\Framework\TestCase;
 
 final class PhotoRepositoryTest extends TestCase
 {
-    public const MY_FAVOURITES = 2;
-    public const PHOTO_PROPERTIES = 'SELECT photos.id AS photo_id,
+    public const int MY_FAVOURITES = 2;
+    public const string PHOTO_PROPERTIES = 'SELECT photos.id AS photo_id,
         photos.date_taken,
         photos.description,
         photos.directory,
@@ -23,6 +24,7 @@ final class PhotoRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
+        photos.uu_id,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,
@@ -44,7 +46,7 @@ final class PhotoRepositoryTest extends TestCase
     LEFT JOIN pictures.photo_faves ON photos.id = photo_faves.photo_id
     LEFT JOIN pictures.photo_album ON photos.id = photo_album.photo_id';
 
-    public const PHOTO_MATCH_PROPERTIES = 'SELECT 
+    public const string PHOTO_MATCH_PROPERTIES = 'SELECT 
         photos.id AS photo_id,
         photos.date_taken,
         photos.description,
@@ -54,6 +56,7 @@ final class PhotoRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
+        photos.uu_id,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,
@@ -120,6 +123,94 @@ final class PhotoRepositoryTest extends TestCase
         $result = $repository->fetchById(1);
 
         $this->assertInstanceOf(Photo::class, $result);
+    }
+
+    /**
+     * @dataProvider fetchByUuidDataProvider
+     * @param array<string, string>|null $queryResult
+     * @throws Exception
+     */
+    public function testFetchByUuid(
+        ?array $queryResult,
+        string $uuid,
+        ?Photo $expectedResult
+    ): void {
+        $connection = $this->createMock(Connection::class);
+        $connection->expects($this->once())
+            ->method('fetchOne')
+            ->with(
+                self::PHOTO_PROPERTIES . ' WHERE photos.uu_id = :uuid',
+                [
+                    'uuid' => $uuid
+                ]
+            )
+            ->willReturn($queryResult);
+
+        $repository = new PhotoRepository($connection);
+        $actualResult = $repository->fetchByUuid($uuid);
+
+        $this->assertEquals($expectedResult, $actualResult);
+    }
+
+    /** @return array<string, array<int, mixed>> */
+    public static function fetchByUuidDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                [
+                    'country_id' => '45',
+                    'country_name' => 'Chile',
+                    'two_char_code' => 'CL',
+                    'three_char_code' => 'CHL',
+                    'geo_id' => '2559',
+                    'photo_id' => '2689',
+                    'latitude' => '-33438084',
+                    'longitude' => '-33438084',
+                    'accuracy' =>  '16',
+                    'width' => '456',
+                    'height' => '123',
+                    'cscore' => '4',
+                    'pscore' => '5',
+                    'date_taken' => "2012-10-21",
+                    'description' => "Note the spurs...",
+                    'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
+                    'filename' => "P1070237.JPG",
+                    'title' => "Getting ready to dance",
+                    'town' => "Valparaiso",
+                    'comment_count' => '1',
+                    'fave_count' => '1'
+                ],
+                '02175773-89e6-4ab6-b559-5c16998bd7cd',
+                Photo::createFromDataSet(new DataSet([
+                    'country_id' => '45',
+                    'country_name' => 'Chile',
+                    'two_char_code' => 'CL',
+                    'three_char_code' => 'CHL',
+                    'geo_id' => '2559',
+                    'photo_id' => '2689',
+                    'latitude' => '-33438084',
+                    'longitude' => '-33438084',
+                    'accuracy' =>  '16',
+                    'width' => '456',
+                    'height' => '123',
+                    'cscore' => '4',
+                    'pscore' => '5',
+                    'date_taken' => "2012-10-21",
+                    'description' => "Note the spurs...",
+                    'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
+                    'filename' => "P1070237.JPG",
+                    'title' => "Getting ready to dance",
+                    'town' => "Valparaiso",
+                    'comment_count' => '1',
+                    'fave_count' => '1'
+                ]))
+            ],
+            'not_found' => [
+                null,
+                '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61',
+                null
+            ]
+        ];
     }
 
     public function testFetchByIdNotFound(): void

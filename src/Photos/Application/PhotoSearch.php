@@ -22,7 +22,7 @@ final class PhotoSearch implements PhotoSearchInterface
     ) {
     }
 
-    public function search(string $searchTerms): PhotoCollection|PhotoAlbum
+    public function search(?string $searchTerms): PhotoCollection|PhotoAlbum
     {
         $this->parseSearchParams($searchTerms);
         $this->isAlbum();
@@ -39,9 +39,9 @@ final class PhotoSearch implements PhotoSearchInterface
         return $this->photoRepository->randomSelection();
     }
 
-    private function parseSearchParams(string $requestParams): void
+    private function parseSearchParams(?string $requestParams): void
     {
-        $this->params = explode('/', $requestParams);
+        $this->params = explode('/', $requestParams ?? '');
         $this->params = array_filter($this->params);
         $this->paramCount = count($this->params);
         if ($this->paramCount > 0) {

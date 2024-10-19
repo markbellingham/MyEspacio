@@ -11,6 +11,8 @@ use MyEspacio\Common\Infrastructure\MySql\IconRepository;
 use MyEspacio\Common\Infrastructure\MySql\TagRepository;
 use MyEspacio\Framework\Csrf\StoredTokenReader;
 use MyEspacio\Framework\Csrf\StoredTokenReaderInterface;
+use MyEspacio\Framework\Csrf\StoredTokenValidator;
+use MyEspacio\Framework\Csrf\StoredTokenValidatorInterface;
 use MyEspacio\Framework\Csrf\SymfonySessionTokenStorage;
 use MyEspacio\Framework\Csrf\TokenStorage;
 use MyEspacio\Framework\Database\Connection;
@@ -18,6 +20,8 @@ use MyEspacio\Framework\Database\PdoConnection;
 use MyEspacio\Framework\Database\PdoConnectionFactory;
 use MyEspacio\Framework\Http\ExternalHttpRequestInterface;
 use MyEspacio\Framework\Http\GuzzleHttpClient;
+use MyEspacio\Framework\Http\RequestHandler;
+use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Localisation\LanguageLoader;
 use MyEspacio\Framework\Localisation\LanguageLoaderInterface;
 use MyEspacio\Framework\Localisation\LanguagesDirectory;
@@ -36,6 +40,8 @@ use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use MyEspacio\Framework\Rendering\TranslatorFactory;
 use MyEspacio\Framework\Rendering\TranslatorFactoryInterface;
 use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
+use MyEspacio\Photos\Application\PhotoSearch;
+use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
@@ -73,6 +79,7 @@ $injector->alias(TranslationIdentifierFactoryInterface::class, TranslationIdenti
 //
 $injector->alias(TokenStorage::class, SymfonySessionTokenStorage::class);
 $injector->alias(StoredTokenReaderInterface::class, StoredTokenReader::class);
+$injector->alias(StoredTokenValidatorInterface::class, StoredTokenValidator::class);
 
 $injector->alias(SessionInterface::class, Session::class);
 
@@ -89,6 +96,7 @@ $injector->delegate(
 
 $injector->alias(LoggerInterface::class, MonologAdapter::class);
 
+$injector->alias(RequestHandlerInterface::class, RequestHandler::class);
 $injector->alias(ExternalHttpRequestInterface::class, GuzzleHttpClient::class);
 
 //$injector->alias(MusicRepository::class, MysqlMusicRepository::class);
@@ -97,6 +105,7 @@ $injector->alias(PhotoRepositoryInterface::class, PhotoRepository::class);
 $injector->alias(PhotoAlbumRepositoryInterface::class, PhotoAlbumRepository::class);
 $injector->alias(PhotoCommentRepositoryInterface::class, PhotoCommentRepository::class);
 $injector->alias(PhotoTagRepositoryInterface::class, PhotoTagRepository::class);
+$injector->alias(PhotoSearchInterface::class, PhotoSearch::class);
 //
 //$injector->alias(MusicHistory::class, LastFmMusicHistory::class);
 //

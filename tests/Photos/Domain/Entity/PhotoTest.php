@@ -59,6 +59,7 @@ final class PhotoTest extends TestCase
         $this->assertInstanceOf(Dimensions::class, $photo->getDimensions());
         $this->assertInstanceOf(Relevance::class, $photo->getRelevance());
         $this->assertInstanceOf(DateTimeImmutable::class, $photo->getDateTaken());
+        $this->assertEquals("2012-10-21", $photo->getDateTaken()->format('Y-m-d'));
         $this->assertEquals("Note the spurs...", $photo->getDescription());
         $this->assertEquals("RTW Trip\/16Chile\/03 - Valparaiso", $photo->getDirectory());
         $this->assertEquals("P1070237.JPG", $photo->getFilename());
@@ -105,7 +106,8 @@ final class PhotoTest extends TestCase
             title: "Getting ready to dance",
             town: "Valparaiso",
             commentCount: 1,
-            faveCount: 1
+            faveCount: 1,
+            uuid: '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
         );
 
         $jsonData = [
@@ -129,7 +131,7 @@ final class PhotoTest extends TestCase
                 'cScore' => 4,
                 'pScore' => 5,
             ],
-            'dateTaken' => '2012-10-21 00:00:00',
+            'dateTaken' => '2012-10-21T00:00:00+00:00',
             'description' => 'Note the spurs...',
             'directory' => 'RTW Trip\/16Chile\/03 - Valparaiso',
             'filename' => 'P1070237.JPG',
@@ -138,6 +140,7 @@ final class PhotoTest extends TestCase
             'town' => 'Valparaiso',
             'commentCount' => 1,
             'faveCount' => 1,
+            'uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
         ];
 
         $this->assertEquals(
@@ -179,7 +182,7 @@ final class PhotoTest extends TestCase
         $this->assertInstanceOf(Dimensions::class, $photo->getDimensions());
         $this->assertInstanceOf(Relevance::class, $photo->getRelevance());
         $this->assertInstanceOf(DateTimeImmutable::class, $photo->getDateTaken());
-        $this->assertEquals('2012-10-21 00:00:00', $photo->getDateTakenString());
+        $this->assertEquals('2012-10-21 00:00:00', $photo->getDateTaken()->format('Y-m-d H:i:s'));
         $this->assertEquals("Note the spurs...", $photo->getDescription());
         $this->assertEquals("RTW Trip\/16Chile\/03 - Valparaiso", $photo->getDirectory());
         $this->assertEquals("P1070237.JPG", $photo->getFilename());

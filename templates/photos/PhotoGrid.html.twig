@@ -6,7 +6,7 @@
                 <img loading="lazy" width="{{ photo.width }}" height="{{ photo.height }}" src="/resources/pictures/{{ photo.directory }}/thumbs_md/{{ photo.filename }}" alt="{{ photo.title }}" data-id="{{ photo.id }}"/>
                 <div class="img-overlay">
                     <h5 class="ml-2">{{ photo.title }}</h5>
-                    <p class="ml-2" style="float: left;">{{ photo.town }}, {{ photo.country }}</p>
+                    <p class="ml-2" style="float: left;">{{ photo.town }}, {{ photo.country.name }}</p>
                     <p class="mr-2" style="float: right;">
                     <span id="pcounts-{{ photo.id }}">
                     {% if photo.faveCount > 0 %}

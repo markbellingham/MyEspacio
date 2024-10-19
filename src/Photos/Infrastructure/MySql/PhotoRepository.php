@@ -6,7 +6,6 @@ namespace MyEspacio\Photos\Infrastructure\MySql;
 
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Framework\DataSet;
-use MyEspacio\Photos\Application\PhotoBuilder;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
@@ -14,7 +13,7 @@ use MyEspacio\Photos\Infrastructure\MySql\Queries\QueryService;
 
 final class PhotoRepository implements PhotoRepositoryInterface
 {
-    private const MY_FAVOURITES = 2;
+    private const int MY_FAVOURITES = 2;
 
     public function __construct(
         private readonly Connection $db
@@ -35,8 +34,23 @@ final class PhotoRepository implements PhotoRepositoryInterface
             return null;
         }
 
-        $dataset = new DataSet($result);
-        return (new PhotoBuilder($dataset))->build();
+        return Photo::createFromDataSet(new DataSet($result));
+    }
+
+    public function fetchByUuid(string $uuid): ?Photo
+    {
+        $result = $this->db->fetchOne(
+            QueryService::PHOTO_PROPERTIES . ' WHERE photos.uu_id = :uuid',
+            [
+                'uuid' => $uuid
+            ]
+        );
+
+        if ($result === null) {
+            return null;
+        }
+
+        return Photo::createFromDataSet(new DataSet($result));
     }
 
     public function topPhotos(): PhotoCollection

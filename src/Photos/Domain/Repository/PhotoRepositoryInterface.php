@@ -11,6 +11,8 @@ interface PhotoRepositoryInterface
 {
     public function fetchById(int $photoId): ?Photo;
 
+    public function fetchByUuid(string $uuid): ?Photo;
+
     public function topPhotos(): PhotoCollection;
 
     public function randomSelection(): PhotoCollection;
