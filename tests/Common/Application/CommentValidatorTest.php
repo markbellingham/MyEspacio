@@ -17,7 +17,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userId: 2,
+            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             username: 'Mark Bellingham'
         );
 
@@ -31,7 +31,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userId: 1,
+            userUuid: '',
             username: 'Mark Bellingham'
         );
 
@@ -45,7 +45,7 @@ final class CommentValidatorTest extends TestCase
             comment: '',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userId: 2,
+            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             username: 'Mark Bellingham'
         );
 
@@ -59,7 +59,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: 'Title',
-            userId: 2,
+            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             username: 'Mark Bellingham'
         );
 
@@ -73,7 +73,7 @@ final class CommentValidatorTest extends TestCase
             comment: '<div class="my-class">Hello</div>',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userId: 2,
+            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             username: 'Mark Bellingham'
         );
 
@@ -87,7 +87,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userId: 2,
+            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             username: 'Mark Bellingham'
         );
 
@@ -105,7 +105,7 @@ final class CommentValidatorTest extends TestCase
             comment: '01234567890',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userId: 2,
+            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             username: 'Mark Bellingham'
         );
 

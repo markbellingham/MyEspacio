@@ -40,7 +40,7 @@ final class PhotoRepository implements PhotoRepositoryInterface
     public function fetchByUuid(string $uuid): ?Photo
     {
         $result = $this->db->fetchOne(
-            QueryService::PHOTO_PROPERTIES . ' WHERE photos.uu_id = :uuid',
+            QueryService::PHOTO_PROPERTIES . ' WHERE photos.uuid = :uuid',
             [
                 'uuid' => $uuid
             ]

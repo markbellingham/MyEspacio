@@ -24,7 +24,8 @@ class PhotoAlbumRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
-        photos.uu_id,
+        photos.uuid,
+        photos.id AS photo_id,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,
@@ -56,7 +57,7 @@ class PhotoAlbumRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
-        photos.uu_id,
+        photos.uuid,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,
@@ -83,78 +84,118 @@ class PhotoAlbumRepositoryTest extends TestCase
         GROUP BY photo_id
     ) AS fv ON fv.photo_id = photos.id';
 
-    public function testFetchById(): void
-    {
+    /**
+     * @dataProvider fetchByIdDataProvider
+     * @param null|array<string, string> $queryResult
+     * @throws Exception
+     */
+    public function testFetchById(
+        int $albumId,
+        ?array $queryResult,
+        ?PhotoAlbum $expectedFunctionResult
+    ): void {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchOne')
             ->with(
-                'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
+                'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id
             WHERE albums.album_id = :albumId',
                 [
-                    'albumId' => 4
+                    'albumId' => $albumId
                 ]
             )
-            ->willReturn(
+            ->willReturn($queryResult);
+
+        $repository = new PhotoAlbumRepository($db);
+        $actualResult = $repository->fetchById($albumId);
+
+        $this->assertEquals($expectedFunctionResult, $actualResult);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function fetchByIdDataProvider(): array
+    {
+        return [
+            'test_found' => [
+                4,
                 [
-                    'album_id' => '4',
+                    'album_id' => 4,
+                    'uuid' => '3ad9590d-6bce-4eb3-a693-e06403178628',
                     'description' => null,
                     'title' => 'The Red Fort, Delhi',
                     'country_id' => '102',
                     'country_name' => 'India',
                     'three_char_code' => 'IND',
                     'two_char_code' => 'IN'
-                ]
-            );
-
-        $repository = new PhotoAlbumRepository($db);
-        $result = $repository->fetchById(4);
-
-        $this->assertInstanceOf(PhotoAlbum::class, $result);
-        $this->assertSame(4, $result->getAlbumId());
+                ],
+                new PhotoAlbum(
+                    title: 'The Red Fort, Delhi',
+                    albumId: 4,
+                    uuid: '3ad9590d-6bce-4eb3-a693-e06403178628',
+                    description: '',
+                    country: new Country(
+                        id: 102,
+                        name: 'India',
+                        twoCharCode: 'IN',
+                        threeCharCode:  'IND'
+                    ),
+                    photos: new PhotoCollection([])
+                )
+            ],
+            'test_not_found' => [
+                4,
+                null,
+                null
+            ]
+        ];
     }
 
-    public function testFetchByIdNotFound(): void
-    {
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchOne')
-            ->with(
-                'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
-                countries.name AS country_name, countries.two_char_code, countries.three_char_code
-            FROM pictures.albums
-            LEFT JOIN pictures.countries ON albums.country_id = countries.id
-            WHERE albums.album_id = :albumId',
-                [
-                    'albumId' => 4
-                ]
-            )
-            ->willReturn(null);
-
-        $repository = new PhotoAlbumRepository($db);
-        $result = $repository->fetchById(4);
-        $this->assertNull($result);
-    }
-
-    public function testFetchAll(): void
-    {
+    /**
+     * @dataProvider fetchAllDataProvider
+     * @param array<string, string> $databaseResult
+     * @throws Exception
+     */
+    public function testFetchAll(
+        array $databaseResult,
+        int $count,
+        PhotoAlbumCollection $expectedFunctionResult
+    ): void {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchAll')
             ->with(
-                'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
+                'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id',
                 []
             )
-            ->willReturn(
+            ->willReturn($databaseResult);
+
+        $repository = new PhotoAlbumRepository($db);
+        $actualResult = $repository->fetchAll();
+
+        $this->assertInstanceOf(PhotoAlbumCollection::class, $actualResult);
+        $this->assertCount($count, $actualResult);
+        $this->assertEquals($expectedFunctionResult, $actualResult);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function fetchAllDataProvider(): array
+    {
+        return [
+            'test_found' => [
                 [
                     [
                         'album_id' => '4',
+                        'uuid' => '7add56c3-ea9a-4c36-916e-a51a19c4bba1',
                         'description' => null,
                         'title' => 'The Red Fort, Delhi',
                         'country_id' => '102',
@@ -164,6 +205,7 @@ class PhotoAlbumRepositoryTest extends TestCase
                     ],
                     [
                         'album_id' => '5',
+                        'uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904',
                         'description' => null,
                         'title' => 'Qutab Minar, Delhi',
                         'country_id' => '102',
@@ -173,6 +215,7 @@ class PhotoAlbumRepositoryTest extends TestCase
                     ],
                     [
                         'album_id' => '7',
+                        'uuid' => '254b994d-fbb0-4f26-a99d-1da9f189df38',
                         'description' => null,
                         'title' => 'Mumbai',
                         'country_id' => '102',
@@ -180,61 +223,101 @@ class PhotoAlbumRepositoryTest extends TestCase
                         'three_char_code' => 'IND',
                         'two_char_code' => 'IN'
                     ]
-                ]
-            );
-
-        $repository = new PhotoAlbumRepository($db);
-        $result = $repository->fetchAll();
-
-        $this->assertInstanceOf(PhotoAlbumCollection::class, $result);
-        $this->assertCount(3, $result);
+                ],
+                3,
+                new PhotoAlbumCollection(
+                    [
+                        [
+                            'album_id' => '4',
+                            'uuid' => '7add56c3-ea9a-4c36-916e-a51a19c4bba1',
+                            'description' => null,
+                            'title' => 'The Red Fort, Delhi',
+                            'country_id' => '102',
+                            'country_name' => 'India',
+                            'three_char_code' => 'IND',
+                            'two_char_code' => 'IN'
+                        ],
+                        [
+                            'album_id' => '5',
+                            'uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904',
+                            'description' => null,
+                            'title' => 'Qutab Minar, Delhi',
+                            'country_id' => '102',
+                            'country_name' => 'India',
+                            'three_char_code' => 'IND',
+                            'two_char_code' => 'IN'
+                        ],
+                        [
+                            'album_id' => '7',
+                            'uuid' => '254b994d-fbb0-4f26-a99d-1da9f189df38',
+                            'description' => null,
+                            'title' => 'Mumbai',
+                            'country_id' => '102',
+                            'country_name' => 'India',
+                            'three_char_code' => 'IND',
+                            'two_char_code' => 'IN'
+                        ]
+                    ]
+                )
+            ],
+            'test_not_found' => [
+                [],
+                0,
+                new PhotoAlbumCollection([])
+            ]
+        ];
     }
 
-    public function testFetchAllDatabaseError(): void
-    {
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchAll')
-            ->with(
-                'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
-                countries.name AS country_name, countries.two_char_code, countries.three_char_code
-            FROM pictures.albums
-            LEFT JOIN pictures.countries ON albums.country_id = countries.id',
-                []
-            )
-            ->willReturn([]);
-
-        $repository = new PhotoAlbumRepository($db);
-        $result = $repository->fetchAll();
-
-        $this->assertInstanceOf(PhotoAlbumCollection::class, $result);
-        $this->assertCount(0, $result);
-    }
-
-    public function testFetchAlbumPhotos(): void
-    {
-        $photoAlbum = new PhotoAlbum(
-            title: 'MyAlbum',
-            albumId: 1,
-            description: 'My favourite photos',
-            country: new Country(
-                id: 1,
-                name: 'United Kingdom',
-                twoCharCode: 'GB',
-                threeCharCode: 'GBR'
-            )
-        );
-
+    /**
+     * @dataProvider fetchAlbumPhotosDataProvider
+     * @param array<int, array<string, string>> $databaseResult
+     * @throws Exception
+     */
+    public function testFetchAlbumPhotos(
+        PhotoAlbum $photoAlbum,
+        int $photoCount,
+        array $databaseResult,
+        PhotoCollection $expectedFunctionResult
+    ): void {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchAll')
             ->with(
                 self::PHOTO_PROPERTIES . ' WHERE photo_album.album_id = :albumId',
                 [
-                    'albumId' => 1
+                    'albumId' => '1'
                 ]
             )
-            ->willReturn(
+            ->willReturn($databaseResult);
+
+        $repository = new PhotoAlbumRepository($db);
+        $actualResult = $repository->fetchAlbumPhotos($photoAlbum);
+
+        $this->assertInstanceOf(PhotoCollection::class, $actualResult);
+        $this->assertCount($photoCount, $actualResult);
+        $this->assertEquals($expectedFunctionResult, $actualResult);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function fetchAlbumPhotosDataProvider(): array
+    {
+        return [
+            'test_found' => [
+                new PhotoAlbum(
+                    title: 'MyAlbum',
+                    albumId: 1,
+                    uuid: 'f133fede-65f5-4b68-aded-f8f0e9bfe3bb',
+                    description: 'My favourite photos',
+                    country: new Country(
+                        id: 1,
+                        name: 'United Kingdom',
+                        twoCharCode: 'GB',
+                        threeCharCode: 'GBR'
+                    )
+                ),
+                1,
                 [
                     [
                         'country_id' => '45',
@@ -255,48 +338,55 @@ class PhotoAlbumRepositoryTest extends TestCase
                         'title' => "Getting ready to dance",
                         'town' => "Valparaiso",
                         'comment_count' => '1',
-                        'fave_count' => '1'
+                        'fave_count' => '1',
+                        'uuid' => '2cb35615-f812-45b9-b552-88a116979d11'
                     ]
-                ]
-            );
-
-        $repository = new PhotoAlbumRepository($db);
-        $result = $repository->fetchAlbumPhotos($photoAlbum);
-
-        $this->assertInstanceOf(PhotoCollection::class, $result);
-        $this->assertCount(1, $result);
-    }
-
-    public function testFetchAlbumPhotosNoneFound(): void
-    {
-        $photoAlbum = new PhotoAlbum(
-            title: 'MyAlbum',
-            albumId: 1,
-            description: 'My favourite photos',
-            country: new Country(
-                id: 1,
-                name: 'United Kingdom',
-                twoCharCode: 'GB',
-                threeCharCode: 'GBR'
-            )
-        );
-
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchAll')
-            ->with(
-                self::PHOTO_PROPERTIES . ' WHERE photo_album.album_id = :albumId',
-                [
-                    'albumId' => 1
-                ]
-            )
-            ->willReturn([]);
-
-        $repository = new PhotoAlbumRepository($db);
-        $result = $repository->fetchAlbumPhotos($photoAlbum);
-
-        $this->assertInstanceOf(PhotoCollection::class, $result);
-        $this->assertCount(0, $result);
+                ],
+                new PhotoCollection(
+                    [
+                        [
+                            'country_id' => '45',
+                            'country_name' => 'Chile',
+                            'two_char_code' => 'CL',
+                            'three_char_code' => 'CHL',
+                            'geo_id' => '2559',
+                            'latitude' => '-33438084',
+                            'longitude' => '-33438084',
+                            'accuracy' =>  '16',
+                            'width' => '456',
+                            'height' => '123',
+                            'date_taken' => "2012-10-21",
+                            'description' => "Note the spurs...",
+                            'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
+                            'filename' => "P1070237.JPG",
+                            'photo_id' => '2689',
+                            'title' => "Getting ready to dance",
+                            'town' => "Valparaiso",
+                            'comment_count' => '1',
+                            'fave_count' => '1',
+                            'uuid' => '2cb35615-f812-45b9-b552-88a116979d11'
+                        ]
+                    ]
+                )
+            ],
+            'test_not_found' => [
+                new PhotoAlbum(
+                    title: 'MyAlbum',
+                    albumId: 1,
+                    uuid: 'f133fede-65f5-4b68-aded-f8f0e9bfe3bb',
+                    description: 'My favourite photos',
+                    country: new Country(
+                        id: 1,
+                        name: 'United Kingdom',
+                        twoCharCode: 'GB',
+                        threeCharCode: 'GBR'
+                    )
+                ),
+                0,
+                [],
+                new PhotoCollection([])
+            ]
+        ];
     }
 
     /**
@@ -341,6 +431,7 @@ class PhotoAlbumRepositoryTest extends TestCase
                 new PhotoAlbum(
                     title: 'MyAlbum',
                     albumId: 1,
+                    uuid: '72f997d2-1614-46f1-8396-434042ecd0b3',
                     description: 'My favourite photos',
                     country: new Country(
                         id: 1,
@@ -377,7 +468,8 @@ class PhotoAlbumRepositoryTest extends TestCase
                         'title' => "Getting ready to dance",
                         'town' => "Valparaiso",
                         'comment_count' => '1',
-                        'fave_count' => '1'
+                        'fave_count' => '1',
+                        'uuid' => '4fb5fe7d-41de-4b41-a5f9-1897221f4333'
                     ]
                 ],
                 1
@@ -409,7 +501,7 @@ class PhotoAlbumRepositoryTest extends TestCase
         $queryTerms = ['ab'];
         $photoAlbum = new PhotoAlbum(
             title: 'MyAlbum',
-            albumId: 1,
+            uuid: '',
             description: 'My favourite photos',
             country: new Country(
                 id: 1,
@@ -472,6 +564,7 @@ class PhotoAlbumRepositoryTest extends TestCase
                 [
                     'title' => 'Tulum',
                     'album_id' => '86',
+                    'uuid' => '120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211',
                     'description' => null,
                     'country_id' => '142',
                     'country_name' => 'Mexico',
@@ -481,6 +574,7 @@ class PhotoAlbumRepositoryTest extends TestCase
                 new PhotoAlbum(
                     title: 'Tulum',
                     albumId: 86,
+                    uuid: '120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211',
                     description: '',
                     country: new Country(
                         id: 142,
@@ -513,7 +607,7 @@ class PhotoAlbumRepositoryTest extends TestCase
         $db->expects($this->once())
             ->method('fetchOne')
             ->with(
-                'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
+                'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id
@@ -552,6 +646,7 @@ class PhotoAlbumRepositoryTest extends TestCase
                 [
                     'title' => 'My Favourites',
                     'album_id' => '2',
+                    'uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
                     'description' => null,
                     'country_id' => null,
                     'country_name' => null,
@@ -561,6 +656,7 @@ class PhotoAlbumRepositoryTest extends TestCase
                 new PhotoAlbum(
                     title: 'My Favourites',
                     albumId: 2,
+                    uuid: '9d0a6098-8e0e-4caf-9748-175518694fe4',
                     description: '',
                     country: null,
                     photos: new PhotoCollection([])

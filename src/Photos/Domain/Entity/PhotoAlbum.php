@@ -12,7 +12,8 @@ final class PhotoAlbum extends Model
 {
     public function __construct(
         private string $title = 'Unassigned',
-        private ?int $albumId = 0,
+        private ?int $albumId = null,
+        private string $uuid = '',
         private ?string $description = null,
         private ?Country $country = null,
         private ?PhotoCollection $photos = null
@@ -32,6 +33,11 @@ final class PhotoAlbum extends Model
         return $this->albumId;
     }
 
+    public function getUuid(): string
+    {
+        return $this->uuid;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
@@ -40,6 +46,11 @@ final class PhotoAlbum extends Model
     public function setAlbumId(int $albumId): void
     {
         $this->albumId = $albumId;
+    }
+
+    public function setUuid(string $uuid): void
+    {
+        $this->uuid = $uuid;
     }
 
     public function setTitle(string $title): void
@@ -77,6 +88,7 @@ final class PhotoAlbum extends Model
         return [
             'title' => $this->title,
             'description' => $this->description,
+            'uuid' => $this->uuid,
             'country' => $this->country?->jsonSerialize(),
             'photos' => $this->photos->jsonSerialize()
         ];
@@ -96,6 +108,7 @@ final class PhotoAlbum extends Model
         return new PhotoAlbum(
             title: $data->string('title'),
             albumId: $data->int('album_id'),
+            uuid: $data->string('uuid'),
             description: $data->string('description'),
             country: $country
         );

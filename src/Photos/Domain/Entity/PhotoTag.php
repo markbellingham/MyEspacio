@@ -10,7 +10,7 @@ use MyEspacio\Framework\DataSet;
 final class PhotoTag extends Tag
 {
     public function __construct(
-        private readonly int $photoId,
+        private readonly string $photoUuid,
         protected string $tag,
         protected ?int $id
     ) {
@@ -20,15 +20,15 @@ final class PhotoTag extends Tag
         );
     }
 
-    public function getPhotoId(): int
+    public function getPhotoUuid(): string
     {
-        return $this->photoId;
+        return $this->photoUuid;
     }
 
     public static function createFromDataSet(DataSet $data): PhotoTag
     {
         return new PhotoTag(
-            photoId: $data->int('photo_id'),
+            photoUuid: $data->string('photo_uuid'),
             tag: $data->string('tag'),
             id: $data->int('tag_id')
         );

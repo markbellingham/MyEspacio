@@ -15,12 +15,12 @@ final class PhotoTagCollectionTest extends TestCase
     {
         $data = [
             [
-                'photo_id' => 1,
+                'photo_uuid' => '72f997d2-1614-46f1-8396-434042ecd0b3',
                 'tag' => 'sunset',
                 'id' => 1
             ],
             [
-                'photo_id' => 1,
+                'photo_uuid' => 'f133fede-65f5-4b68-aded-f8f0e9bfe3bb',
                 'tag' => 'mexico',
                 'id' => 2
             ]
@@ -47,7 +47,7 @@ final class PhotoTagCollectionTest extends TestCase
     public function testRequiredKeys(): void
     {
         $this->expectException(CollectionException::class);
-        $this->expectExceptionMessage('Missing required keys: photo_id, tag, id');
+        $this->expectExceptionMessage('Missing required keys: photo_uuid, tag, id');
 
         $data = [
             [

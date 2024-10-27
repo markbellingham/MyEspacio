@@ -34,7 +34,8 @@ final class PhotoCollection extends ModelCollection
             'title',
             'town',
             'comment_count',
-            'fave_count'
+            'fave_count',
+            'uuid'
         ];
     }
 

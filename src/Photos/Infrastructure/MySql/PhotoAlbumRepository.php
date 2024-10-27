@@ -14,7 +14,7 @@ use MyEspacio\Photos\Infrastructure\MySql\Queries\QueryService;
 
 class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
 {
-    private const MY_FAVOURITES = 2;
+    private const int MY_FAVOURITES = 2;
 
     public function __construct(
         private readonly Connection $db
@@ -24,7 +24,7 @@ class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
     public function fetchById(int $albumId): ?PhotoAlbum
     {
         $result = $this->db->fetchOne(
-            'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
+            'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id
@@ -44,7 +44,7 @@ class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
     public function fetchAll(): PhotoAlbumCollection
     {
         $result = $this->db->fetchAll(
-            'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
+            'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id',

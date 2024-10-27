@@ -5,52 +5,54 @@ declare(strict_types=1);
 namespace MyEspacio\Photos\Domain\Entity;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use MyEspacio\Common\Domain\Entity\Comment;
 use MyEspacio\Framework\DataSet;
 
 final class PhotoComment extends Comment
 {
     public function __construct(
-        private readonly int $photoId,
+        private readonly string $photoUuid,
         private readonly string $comment,
         private readonly ?DateTimeImmutable $created,
         private readonly ?string $title,
-        private readonly int $userId,
+        private readonly string $userUuid,
         private readonly string $username
     ) {
         parent::__construct(
             $this->comment,
             $this->created,
             $this->title,
-            $this->userId,
+            $this->userUuid,
             $this->username
         );
     }
 
-    public function getPhotoId(): int
+    public function getPhotoUuid(): string
     {
-        return $this->photoId;
+        return $this->photoUuid;
     }
 
     /** @return array<string, mixed> */
     public function jsonSerialize(): array
     {
         return [
-            'photoId' => $this->photoId,
+            'photoUuid' => $this->photoUuid,
             'comment' => $this->comment,
-            'created' => $this->getCreatedString(),
-            'username' => $this->username
+            'created' => $this->getCreated()->format(DateTimeInterface::ATOM),
+            'username' => $this->username,
+            'userUuid' => $this->userUuid
         ];
     }
 
     public static function createFromDataSet(DataSet $data): Comment
     {
         return new PhotoComment(
-            photoId: $data->int('photo_id'),
+            photoUuid: $data->string('photo_uuid'),
             comment: $data->string('comment'),
             created: $data->dateTimeNull('created'),
             title: $data->stringNull('title'),
-            userId: $data->int('user_id'),
+            userUuid: $data->string('user_uuid'),
             username: $data->string('username')
         );
     }

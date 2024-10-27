@@ -4,16 +4,16 @@ namespace MyEspacio\Common\Application;
 
 use MyEspacio\Common\Domain\Entity\Comment;
 
-class CommentValidator
+readonly class CommentValidator
 {
     public function __construct(
-        private readonly Comment $comment,
+        private Comment $comment,
     ) {
     }
 
     public function validate(): bool
     {
-        if ($this->comment->getUserId() === 1) {
+        if ($this->comment->getUserUuid() === '') {
             // Anonymous user does not post comments
             return false;
         }

@@ -15,7 +15,7 @@ final class PhotoTagCollection extends ModelCollection
     public function requiredKeys(): array
     {
         return [
-            'photo_id',
+            'photo_uuid',
             'tag',
             'id'
         ];
@@ -26,7 +26,7 @@ final class PhotoTagCollection extends ModelCollection
         $data = $this->currentDataSet();
 
         return new PhotoTag(
-            photoId: $data->int('photo_id'),
+            photoUuid: $data->string('photo_uuid'),
             tag: $data->string('tag'),
             id: $data->int('id')
         );

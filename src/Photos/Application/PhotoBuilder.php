@@ -34,7 +34,7 @@ final readonly class PhotoBuilder
             town: $this->dataSet->string('town'),
             commentCount: $this->dataSet->int('comment_count'),
             faveCount: $this->dataSet->int('fave_count'),
-            uuid: $this->dataSet->string('uu_id')
+            uuid: $this->dataSet->string('uuid')
         );
     }
 
@@ -52,7 +52,7 @@ final readonly class PhotoBuilder
     {
         return new GeoCoordinates(
             id: $this->dataSet->int('geo_id'),
-            photoId: $this->dataSet->int('photo_id'),
+            photoUuid: $this->dataSet->string('photo_uuid'),
             latitude: $this->dataSet->int('latitude'),
             longitude: $this->dataSet->int('longitude'),
             accuracy: $this->dataSet->int('accuracy')

@@ -17,9 +17,9 @@ final class PhotoCommentCollection extends ModelCollection
         return [
             'comment',
             'created',
-            'photo_id',
+            'photo_uuid',
             'title',
-            'user_id',
+            'user_uuid',
             'username'
         ];
     }
@@ -29,11 +29,11 @@ final class PhotoCommentCollection extends ModelCollection
         $data = $this->currentDataSet();
 
         return new PhotoComment(
-            photoId: $data->int('photo_id'),
+            photoUuid: $data->string('photo_uuid'),
             comment: $data->string('comment'),
             created: $data->dateTimeNull('created'),
             title: $data->string('title'),
-            userId: $data->int('user_id'),
+            userUuid: $data->string('user_uuid'),
             username: $data->string('username')
         );
     }

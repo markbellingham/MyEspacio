@@ -18,7 +18,7 @@ final class User extends Model
 {
     private bool $isLoggedIn = false;
 
-    private const VALID_PASSCODE_ROUTES = [
+    private const array VALID_PASSCODE_ROUTES = [
         'email',
         'phone'
     ];

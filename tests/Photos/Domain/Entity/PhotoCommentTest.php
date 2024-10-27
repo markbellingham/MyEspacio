@@ -17,29 +17,30 @@ final class PhotoCommentTest extends TestCase
         $created = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-20 16:23:00');
 
         $photoComment = new PhotoComment(
-            photoId: 1,
+            photoUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             comment: 'Nice photo!',
             created: $created,
             title: 'Some Title',
-            userId: 2,
+            userUuid: '2a8b2a67-867e-4eaf-9102-2cf1cdf691c9',
             username: 'Mark Bellingham'
         );
 
         $this->assertInstanceOf(Comment::class, $photoComment);
-        $this->assertInstanceOf(\MyEspacio\Photos\Domain\Entity\PhotoComment::class, $photoComment);
+        $this->assertInstanceOf(PhotoComment::class, $photoComment);
 
-        $this->assertSame(1, $photoComment->getPhotoId());
+        $this->assertSame('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea', $photoComment->getPhotoUuid());
         $this->assertSame('Nice photo!', $photoComment->getComment());
         $this->assertEquals($created, $photoComment->getCreated());
         $this->assertSame('Some Title', $photoComment->getTitle());
-        $this->assertSame(2, $photoComment->getUserId());
+        $this->assertSame('2a8b2a67-867e-4eaf-9102-2cf1cdf691c9', $photoComment->getUserUuid());
         $this->assertSame('Mark Bellingham', $photoComment->getUsername());
         $this->assertEquals(
             [
-                'photoId' => 1,
                 'comment' => 'Nice photo!',
-                'created' => '2024-07-20 16:23:00',
-                'username' => 'Mark Bellingham'
+                'created' => '2024-07-20T16:23:00+00:00',
+                'username' => 'Mark Bellingham',
+                'photoUuid' => '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
+                'userUuid' => '2a8b2a67-867e-4eaf-9102-2cf1cdf691c9'
             ],
             $photoComment->jsonSerialize()
         );
@@ -48,11 +49,11 @@ final class PhotoCommentTest extends TestCase
     public function testNullValues(): void
     {
         $photoComment = new PhotoComment(
-            photoId: 1,
+            photoUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             comment: 'Nice photo!',
             created: null,
             title: null,
-            userId: 2,
+            userUuid: '2a8b2a67-867e-4eaf-9102-2cf1cdf691c9',
             username: 'Mark Bellingham'
         );
 
@@ -63,22 +64,22 @@ final class PhotoCommentTest extends TestCase
     public function testCreateFromDataset(): void
     {
         $data = new DataSet([
-            'photo_id' => '17',
+            'photo_uuid' => '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             'comment' => 'Nice photo!',
             'created' => '2024-07-20 16:23:00',
             'title' => null,
-            'user_id' => '2',
+            'user_uuid' => '2a8b2a67-867e-4eaf-9102-2cf1cdf691c9',
             'username' => 'Mark Bellingham'
         ]);
 
         $photoComment = PhotoComment::createFromDataSet($data);
         $this->assertInstanceOf(PhotoComment::class, $photoComment);
-        $this->assertSame(17, $photoComment->getPhotoId());
+        $this->assertSame('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea', $photoComment->getPhotoUuid());
         $this->assertSame('Nice photo!', $photoComment->getComment());
         $this->assertInstanceOf(DateTimeImmutable::class, $photoComment->getCreated());
-        $this->assertEquals('2024-07-20 16:23:00', $photoComment->getCreatedString());
+        $this->assertEquals('2024-07-20 16:23:00', $photoComment->getCreated()->format('Y-m-d H:i:s'));
         $this->assertNull($photoComment->getTitle());
-        $this->assertSame(2, $photoComment->getUserId());
+        $this->assertSame('2a8b2a67-867e-4eaf-9102-2cf1cdf691c9', $photoComment->getUserUuid());
         $this->assertSame('Mark Bellingham', $photoComment->getUsername());
     }
 }

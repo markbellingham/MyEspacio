@@ -96,9 +96,15 @@ final class Photo extends Model
         return $this->faveCount;
     }
 
+    public function getUuid(): string
+    {
+        return $this->uuid;
+    }
+
     public function jsonSerialize(): array
     {
         $array = get_object_vars($this);
+        unset($array['id']);
         $array['dateTaken'] = $this->dateTaken?->format(DateTimeInterface::ATOM);
         return $array;
     }
@@ -119,7 +125,7 @@ final class Photo extends Model
             town: $data->string('town'),
             commentCount: $data->int('comment_count'),
             faveCount: $data->int('fave_count'),
-            uuid: $data->string('uu_id')
+            uuid: $data->string('uuid')
         );
     }
 }

@@ -25,7 +25,7 @@ final class PhotoTest extends TestCase
         );
         $geo = new GeoCoordinates(
             id: 2559,
-            photoId: 2559,
+            photoUuid: '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71',
             latitude: -33438084,
             longitude: -33438084,
             accuracy:  16
@@ -51,7 +51,8 @@ final class PhotoTest extends TestCase
             title: "Getting ready to dance",
             town: "Valparaiso",
             commentCount: 1,
-            faveCount: 1
+            faveCount: 1,
+            uuid: '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
         );
 
         $this->assertInstanceOf(Country::class, $photo->getCountry());
@@ -68,6 +69,7 @@ final class PhotoTest extends TestCase
         $this->assertEquals("Valparaiso", $photo->getTown());
         $this->assertSame(1, $photo->getCommentCount());
         $this->assertSame(1, $photo->getFaveCount());
+        $this->assertEquals('8d7fb4b9-b496-478b-bd9e-14dc30a1ca71', $photo->getUuid());
     }
 
     public function testJsonSerialize(): void
@@ -80,7 +82,7 @@ final class PhotoTest extends TestCase
         );
         $geo = new GeoCoordinates(
             id: 2559,
-            photoId: 2689,
+            photoUuid: '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71',
             latitude: -33438084,
             longitude: -33438084,
             accuracy:  16
@@ -118,7 +120,7 @@ final class PhotoTest extends TestCase
             ],
             'geoCoordinates' => [
                 'id' => 2559,
-                'photoId' => 2689,
+                'photoUuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71',
                 'latitude' => -33438084,
                 'longitude' => -33438084,
                 'accuracy' => 16,
@@ -135,7 +137,6 @@ final class PhotoTest extends TestCase
             'description' => 'Note the spurs...',
             'directory' => 'RTW Trip\/16Chile\/03 - Valparaiso',
             'filename' => 'P1070237.JPG',
-            'id' => 2689,
             'title' => 'Getting ready to dance',
             'town' => 'Valparaiso',
             'commentCount' => 1,

@@ -9,10 +9,10 @@ use MyEspacio\Photos\Domain\Collection\PhotoCommentCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoComment;
 use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
 
-final class PhotoCommentRepository implements PhotoCommentRepositoryInterface
+final readonly class PhotoCommentRepository implements PhotoCommentRepositoryInterface
 {
     public function __construct(
-        private readonly Connection $db
+        private Connection $db
     ) {
     }
 
@@ -33,12 +33,16 @@ final class PhotoCommentRepository implements PhotoCommentRepositoryInterface
     {
         $stmt = $this->db->run(
             'INSERT INTO pictures.photo_comments (user_id, photo_id, comment, created)
-            VALUES (:userId, :photoId, :comment, :created)',
+          SELECT users.id, photos.id, :comment, :created
+          FROM project.users
+          JOIN pictures.photos
+          WHERE users.uuid = :userUuid
+          AND photos.uuid = :photoUuid',
             [
                 'comment' => $comment->getComment(),
-                'created' => $comment->getCreatedString(),
-                'photoId' => $comment->getPhotoId(),
-                'userId' => $comment->getUserId(),
+                'created' => $comment->getCreated()->format('Y-m-d H:i:s'),
+                'photoUuid' => $comment->getPhotoUuid(),
+                'userUuid' => $comment->getUserUuid(),
             ]
         );
         return $this->db->statementHasErrors($stmt) === false;

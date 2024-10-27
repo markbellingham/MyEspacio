@@ -10,12 +10,21 @@ use MyEspacio\Photos\Domain\Collection\PhotoCommentCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoComment;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoCommentRepository;
 use PDOStatement;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 final class PhotoCommentRepositoryTest extends TestCase
 {
-    public function testGetCommentCount(): void
-    {
+    /**
+     * @dataProvider getCommentCountDataProvider
+     * @param null|array<string, string> $databaseResult
+     * @throws Exception
+     */
+    public function testGetCommentCount(
+        int $photoId,
+        ?array $databaseResult,
+        int $expectedFunctionResult
+    ): void {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchOne')
@@ -24,129 +33,126 @@ final class PhotoCommentRepositoryTest extends TestCase
             FROM pictures.photo_comments 
             WHERE photo_id = :photoId',
                 [
-                    'photoId' => 1,
+                    'photoId' => $photoId,
                 ]
             )
-            ->willReturn(
+            ->willReturn($databaseResult);
+
+        $repository = new PhotoCommentRepository($db);
+        $actualResult = $repository->getCommentCount($photoId);
+        $this->assertSame($expectedFunctionResult, $actualResult);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function getCommentCountDataProvider(): array
+    {
+        return [
+            'test_found' => [
+                1,
                 [
                     'comment_count' => '2',
-                ]
-            );
-
-        $repository = new PhotoCommentRepository($db);
-        $result = $repository->getCommentCount(1);
-        $this->assertSame(2, $result);
+                ],
+                2
+            ],
+            'test_not_found' => [
+                2,
+                [
+                    'comment_count' => '0'
+                ],
+                0
+            ],
+            'test_error' => [
+                3,
+                null,
+                0
+            ]
+        ];
     }
 
-    public function testGetCommentCountNoRecordsFound(): void
-    {
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchOne')
-            ->with(
-                'SELECT COUNT(*) AS comment_count 
-            FROM pictures.photo_comments 
-            WHERE photo_id = :photoId',
-                [
-                    'photoId' => 1,
-                ]
-            )
-            ->willReturn(
-                [
-                    'comment_count' => '0',
-                ]
-            );
-
-        $repository = new PhotoCommentRepository($db);
-        $result = $repository->getCommentCount(1);
-        $this->assertSame(0, $result);
-    }
-
-    public function testGetCommentCountQueryFail(): void
-    {
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchOne')
-            ->with(
-                'SELECT COUNT(*) AS comment_count 
-            FROM pictures.photo_comments 
-            WHERE photo_id = :photoId',
-                [
-                    'photoId' => 1,
-                ]
-            )
-            ->willReturn(null);
-
-        $repository = new PhotoCommentRepository($db);
-        $result = $repository->getCommentCount(1);
-        $this->assertSame(0, $result);
-    }
-
-    public function testAddComment(): void
-    {
-        $comment = new PhotoComment(
-            photoId: 1,
-            comment: 'Great photo!',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
-            title: '',
-            userId: 2,
-            username: ''
-        );
+    /**
+     * @dataProvider addCommentDataProvider
+     * @throws Exception
+     */
+    public function testAddComment(
+        PhotoComment $photoComment,
+        string $comment,
+        string $date,
+        string $photoUuid,
+        string $userUuid,
+        bool $errors,
+        bool $expectedResult
+    ): void {
         $stmt = $this->createMock(PDOStatement::class);
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('run')
             ->with(
                 'INSERT INTO pictures.photo_comments (user_id, photo_id, comment, created)
-            VALUES (:userId, :photoId, :comment, :created)',
+          SELECT users.id, photos.id, :comment, :created
+          FROM project.users
+          JOIN pictures.photos
+          WHERE users.uuid = :userUuid
+          AND photos.uuid = :photoUuid',
                 [
-                    'comment' => $comment->getComment(),
-                    'created' => $comment->getCreatedString(),
-                    'photoId' => $comment->getPhotoId(),
-                    'userId' => $comment->getUserId(),
-                ]
-            )
-            ->willReturn($stmt);
-
-        $repository = new PhotoCommentRepository($db);
-        $result = $repository->addComment($comment);
-
-        $this->assertTrue($result);
-    }
-
-    public function testAddCommentQueryFail(): void
-    {
-        $comment = new PhotoComment(
-            photoId: 1,
-            comment: 'Great photo!',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
-            title: '',
-            userId: 2,
-            username: ''
-        );
-        $stmt = $this->createMock(PDOStatement::class);
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('run')
-            ->with(
-                'INSERT INTO pictures.photo_comments (user_id, photo_id, comment, created)
-            VALUES (:userId, :photoId, :comment, :created)',
-                [
-                    'comment' => $comment->getComment(),
-                    'created' => $comment->getCreatedString(),
-                    'photoId' => $comment->getPhotoId(),
-                    'userId' => $comment->getUserId(),
+                    'comment' => $comment,
+                    'created' => $date,
+                    'photoUuid' => $photoUuid,
+                    'userUuid' => $userUuid,
                 ]
             )
             ->willReturn($stmt);
         $db->expects($this->once())
             ->method('statementHasErrors')
-            ->willReturn(true);
+            ->with($stmt)
+            ->willReturn($errors);
 
         $repository = new PhotoCommentRepository($db);
-        $result = $repository->addComment($comment);
+        $actualResult = $repository->addComment($photoComment);
 
-        $this->assertFalse($result);
+        $this->assertSame($expectedResult, $actualResult);
+    }
+
+    /**
+     * @return array<string, array<int, mixed>>
+     */
+    public static function addCommentDataProvider(): array
+    {
+        return [
+            'test_success' => [
+                new PhotoComment(
+                    photoUuid: '3ad9590d-6bce-4eb3-a693-e06403178628',
+                    comment: 'Great photo!',
+                    created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
+                    title: '',
+                    userUuid: 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d',
+                    username: ''
+                ),
+                'Great photo!',
+                '2024-07-27 16:34:00',
+                '3ad9590d-6bce-4eb3-a693-e06403178628',
+                'b8cf4379-62f4-4f98-a57e-9811d1a7d07d',
+                false,
+                true
+            ],
+            'test_failure' => [
+                new PhotoComment(
+                    photoUuid: '3ad9590d-6bce-4eb3-a693-e06403178628',
+                    comment: 'Great photo!',
+                    created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
+                    title: '',
+                    userUuid: 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d',
+                    username: ''
+                ),
+                'Great photo!',
+                '2024-07-27 16:34:00',
+                '3ad9590d-6bce-4eb3-a693-e06403178628',
+                'b8cf4379-62f4-4f98-a57e-9811d1a7d07d',
+                true,
+                false
+            ]
+        ];
     }
 
     public function testGetPhotoComments(): void
@@ -172,19 +178,19 @@ final class PhotoCommentRepositoryTest extends TestCase
             ->willReturn(
                 [
                     [
-                        'photo_id' => '1',
+                        'photo_uuid' => 'f133fede-65f5-4b68-aded-f8f0e9bfe3bb',
                         'comment' => 'Nice photo!',
                         'created' => '2024-07-27 16:34:00',
                         'title' => 'Some Title',
-                        'user_id' => '2',
+                        'user_uuid' => '2cb35615-f812-45b9-b552-88a116979d11',
                         'username' => 'Mark Bellingham'
                     ],
                     [
-                        'photo_id' => '1',
+                        'photo_uuid' => '254b994d-fbb0-4f26-a99d-1da9f189df38',
                         'comment' => 'Nice photo!',
                         'created' => null,
                         'title' => null,
-                        'user_id' => '2',
+                        'user_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904',
                         'username' => 'Mark Bellingham'
                     ]
                 ]

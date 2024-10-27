@@ -24,7 +24,8 @@ final class PhotoRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
-        photos.uu_id,
+        photos.uuid,
+        photos.id AS photo_id,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,
@@ -56,7 +57,7 @@ final class PhotoRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
-        photos.uu_id,
+        photos.uuid,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,
@@ -139,7 +140,7 @@ final class PhotoRepositoryTest extends TestCase
         $connection->expects($this->once())
             ->method('fetchOne')
             ->with(
-                self::PHOTO_PROPERTIES . ' WHERE photos.uu_id = :uuid',
+                self::PHOTO_PROPERTIES . ' WHERE photos.uuid = :uuid',
                 [
                     'uuid' => $uuid
                 ]
@@ -264,7 +265,8 @@ final class PhotoRepositoryTest extends TestCase
                     'title' => "Getting ready to dance",
                     'town' => "Valparaiso",
                     'comment_count' => '1',
-                    'fave_count' => '1'
+                    'fave_count' => '1',
+                    'uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
                 ]
             ]);
 
@@ -330,7 +332,8 @@ final class PhotoRepositoryTest extends TestCase
                         'title' => "Getting ready to dance",
                         'town' => "Valparaiso",
                         'comment_count' => '1',
-                        'fave_count' => '1'
+                        'fave_count' => '1',
+                        'uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
                     ]
                 ]
             );
@@ -428,7 +431,8 @@ final class PhotoRepositoryTest extends TestCase
                         'title' => "Getting ready to dance",
                         'town' => "Valparaiso",
                         'comment_count' => '1',
-                        'fave_count' => '1'
+                        'fave_count' => '1',
+                        'uuid' => 'adf36769-8983-448d-b3ad-0ab1e5edb9c5'
                     ],
                     [
                         'country_id' => '45',
@@ -449,7 +453,8 @@ final class PhotoRepositoryTest extends TestCase
                         'title' => "Getting ready to dance",
                         'town' => "Valparaiso",
                         'comment_count' => '1',
-                        'fave_count' => '1'
+                        'fave_count' => '1',
+                        'uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30'
                     ]
                 ],
                 2

@@ -13,19 +13,19 @@ class Comment extends Model
         private string $comment = '',
         private ?DateTimeImmutable $created = null,
         private readonly ?string $title = '',
-        private int $userId = 0,
+        private string $userUuid = '',
         private string $username = ''
     ) {
     }
 
-    public function getUserId(): int
+    public function getUserUuid(): string
     {
-        return $this->userId;
+        return $this->userUuid;
     }
 
-    public function setUserId(int $userId): void
+    public function setUserUuid(string $userUuid): void
     {
-        $this->userId = $userId;
+        $this->userUuid = $userUuid;
     }
 
     public function getComment(): string
@@ -41,11 +41,6 @@ class Comment extends Model
     public function getCreated(): ?DateTimeImmutable
     {
         return $this->created;
-    }
-
-    public function getCreatedString(string $format = 'Y-m-d H:i:s'): string
-    {
-        return $this->created ? $this->created->format($format) : '';
     }
 
     public function getTitle(): ?string
@@ -75,8 +70,9 @@ class Comment extends Model
     {
         return [
             'comment' => $this->comment,
-            'created' => $this->getCreatedString(),
-            'username' => $this->username
+            'created' => $this->created?->format('Y-m-d H:i:s'),
+            'username' => $this->username,
+            'userUuid' => $this->userUuid
         ];
     }
 
@@ -86,7 +82,7 @@ class Comment extends Model
             comment: $data->string('comment'),
             created: $data->dateTimeNull('created'),
             title: $data->string('title'),
-            userId: $data->int('user_id'),
+            userUuid: $data->string('user_uuid'),
             username: $data->string('username')
         );
     }

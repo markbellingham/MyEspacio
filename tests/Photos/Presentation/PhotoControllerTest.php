@@ -138,6 +138,7 @@ final class PhotoControllerTest extends TestCase
                         'photos' => new PhotoAlbum(
                             title: 'Singapore',
                             albumId: 51,
+                            uuid: '4b9d0175-6d47-4460-b48b-6385db446a30',
                             country: new Country(
                                 id: 199,
                                 name: 'Singapore',
@@ -154,6 +155,7 @@ final class PhotoControllerTest extends TestCase
                         'photos' => new PhotoAlbum(
                             title: 'Singapore',
                             albumId: 51,
+                            uuid: '4b9d0175-6d47-4460-b48b-6385db446a30',
                             country: new Country(
                                 id: 199,
                                 name: 'Singapore',
@@ -168,6 +170,7 @@ final class PhotoControllerTest extends TestCase
                 new PhotoAlbum(
                     title: 'Singapore',
                     albumId: 51,
+                    uuid: '4b9d0175-6d47-4460-b48b-6385db446a30',
                     country: new Country(
                         id: 199,
                         name: 'Singapore',
@@ -177,7 +180,7 @@ final class PhotoControllerTest extends TestCase
                     photos: new PhotoCollection([])
                 ),
                 JsonResponse::class,
-                '{"photos":{"title":"Singapore","description":null,"country":{"name":"Singapore","twoCharCode":"SG","threeCharCode":"SGP"},"photos":[]}}'
+                '{"photos":{"title":"Singapore","description":null,"uuid":"4b9d0175-6d47-4460-b48b-6385db446a30","country":{"name":"Singapore","twoCharCode":"SG","threeCharCode":"SGP"},"photos":[]}}'
             ]
         ];
     }
@@ -268,7 +271,8 @@ final class PhotoControllerTest extends TestCase
                     'title' => "Getting ready to dance",
                     'town' => "Valparaiso",
                     'comment_count' => '1',
-                    'fave_count' => '1'
+                    'fave_count' => '1',
+                    'uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30'
                 ])),
                 JsonResponse::class,
                 new JsonResponse(['photo' => null]),
@@ -345,5 +349,38 @@ final class PhotoControllerTest extends TestCase
                 'text/html'
             ]
         ];
+    }
+
+    public function testSinglePhotoHtmlNoToken(): void
+    {
+        $request = new Request();
+        $expectedResult = '<html lang="en"><body>Some content</body></html>';
+
+        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
+        $photoSearch = $this->createMock(PhotoSearchInterface::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
+        $requestHandler->expects($this->once())
+            ->method('validate')
+            ->with($request)
+            ->willReturn(false);
+        $requestHandler->expects($this->once())
+            ->method('showRoot')
+            ->with($request, ['uuid' => 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d'])
+            ->willReturn(new Response(
+                $expectedResult,
+                Response::HTTP_OK,
+                ['Content-Type' => 'text/html']
+            ));
+
+        $controller = new PhotoController(
+            $photoRepository,
+            $photoSearch,
+            $requestHandler
+        );
+        $actualResult = $controller->singlePhoto($request, ['uuid' => 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d']);
+
+        $this->assertInstanceOf(Response::class, $actualResult);
+        $this->assertEquals($expectedResult, $actualResult->getContent());
+        $this->assertStringContainsString('text/html', $actualResult->headers->get('Content-Type'));
     }
 }

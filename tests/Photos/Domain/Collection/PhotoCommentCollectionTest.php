@@ -18,19 +18,19 @@ final class PhotoCommentCollectionTest extends TestCase
 
         $data = [
             [
-                'photo_id' => 1,
+                'photo_uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
                 'comment' => 'Nice photo!',
                 'created' => $created,
                 'title' => 'Some Title',
-                'user_id' => 2,
+                'user_uuid' => '120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211',
                 'username' => 'Mark Bellingham'
             ],
             [
-                'photo_id' => 1,
+                'photo_uuid' => '4fb5fe7d-41de-4b41-a5f9-1897221f4333',
                 'comment' => 'Nice photo!',
                 'created' => null,
                 'title' => null,
-                'user_id' => 2,
+                'user_uuid' => '72f997d2-1614-46f1-8396-434042ecd0b3',
                 'username' => 'Mark Bellingham'
             ]
         ];
@@ -55,7 +55,7 @@ final class PhotoCommentCollectionTest extends TestCase
     public function testMissingRequiredKeys(): void
     {
         $this->expectException(CollectionException::class);
-        $this->expectExceptionMessage('Missing required keys: comment, created, photo_id, title, user_id, username');
+        $this->expectExceptionMessage('Missing required keys: comment, created, photo_uuid, title, user_uuid, username');
 
         $data = [
             [

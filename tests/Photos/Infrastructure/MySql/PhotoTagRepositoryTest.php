@@ -30,7 +30,7 @@ final class PhotoTagRepositoryTest extends TestCase
         );
         $geo = new GeoCoordinates(
             id: 2559,
-            photoId: 2559,
+            photoUuid: '78eda1f2-a6f8-48d8-af30-3907f5f9e534',
             latitude: -33438084,
             longitude: -33438084,
             accuracy:  16
@@ -80,12 +80,12 @@ final class PhotoTagRepositoryTest extends TestCase
             ->willReturn(
                 [
                     [
-                        'photo_id' => 2689,
+                        'photo_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904',
                         'tag' => 'sunset',
                         'id' => 1
                     ],
                     [
-                        'photo_id' => 2689,
+                        'photo_uuid' => '7add56c3-ea9a-4c36-916e-a51a19c4bba1',
                         'tag' => 'mexico',
                         'id' => 2
                     ]

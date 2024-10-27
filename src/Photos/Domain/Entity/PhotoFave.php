@@ -14,8 +14,8 @@ final class PhotoFave extends Fave
         private readonly User $user
     ) {
         parent::__construct(
-            userId: $this->user->getId(),
-            itemId: $this->photo->getId()
+            userUuid: $this->user->getUuid(),
+            itemUuid: $this->photo->getUuid()
         );
     }
 

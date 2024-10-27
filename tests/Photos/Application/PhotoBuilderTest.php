@@ -37,7 +37,8 @@ final class PhotoBuilderTest extends TestCase
             'title' => "Getting ready to dance",
             'town' => "Valparaiso",
             'comment_count' => '1',
-            'fave_count' => '1'
+            'fave_count' => '1',
+            'uuid' => '39fa7943-6fa7-4412-97c8-c6cec6a44e0b'
         ]);
 
         $builder = new PhotoBuilder($dataset);

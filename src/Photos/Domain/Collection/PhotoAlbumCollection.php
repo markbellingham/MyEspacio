@@ -17,6 +17,7 @@ class PhotoAlbumCollection extends ModelCollection
     {
         return [
             'album_id',
+            'uuid',
             'description',
             'title',
             'country_id',
@@ -33,6 +34,7 @@ class PhotoAlbumCollection extends ModelCollection
         return new PhotoAlbum(
             title: $data->string('title'),
             albumId: $data->int('album_id'),
+            uuid: $data->string('uuid'),
             description: $data->string('description'),
             country: Country::createFromDataSet($data)
         );

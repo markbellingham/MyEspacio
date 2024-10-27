@@ -8,36 +8,36 @@ use MyEspacio\Framework\Model;
 class Fave extends Model
 {
     public function __construct(
-        private int $userId,
-        private int $itemId
+        private string $userUuid,
+        private string $itemUuid
     ) {
     }
 
-    public function getUserId(): int
+    public function getUserUuid(): string
     {
-        return $this->userId;
+        return $this->userUuid;
     }
 
-    public function setUserId(int $userId): void
+    public function setUserUuid(string $userUuid): void
     {
-        $this->userId = $userId;
+        $this->userUuid = $userUuid;
     }
 
-    public function getItemId(): int
+    public function getItemUuid(): string
     {
-        return $this->itemId;
+        return $this->itemUuid;
     }
 
-    public function setItemId(int $itemId): void
+    public function setItemUuid(string $itemUuid): void
     {
-        $this->itemId = $itemId;
+        $this->itemUuid = $itemUuid;
     }
 
     public static function createFromDataSet(DataSet $data): Fave
     {
         return new Fave(
-            userId: $data->int('user_id'),
-            itemId: $data->int('item_id')
+            userUuid: $data->string('user_uuid'),
+            itemUuid: $data->string('item_uuid')
         );
     }
 }

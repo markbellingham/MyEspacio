@@ -11,7 +11,7 @@ final class GeoCoordinates extends Model
 {
     public function __construct(
         private readonly int $id,
-        private readonly int $photoId,
+        private readonly string $photoUuid,
         private readonly int $latitude,
         private readonly int $longitude,
         private readonly int $accuracy,
@@ -23,9 +23,9 @@ final class GeoCoordinates extends Model
         return $this->id;
     }
 
-    public function getPhotoId(): int
+    public function getPhotoUuid(): string
     {
-        return $this->photoId;
+        return $this->photoUuid;
     }
 
     public function getLatitude(): int
@@ -52,7 +52,7 @@ final class GeoCoordinates extends Model
     {
         return new GeoCoordinates(
             id: $data->int('geo_id'),
-            photoId: $data->int('photo_id'),
+            photoUuid: $data->string('photo_uuid'),
             latitude: $data->int('latitude'),
             longitude: $data->int('longitude'),
             accuracy: $data->int('accuracy')
