@@ -71,6 +71,7 @@ class PhotoAlbumRepositoryTest extends TestCase
         MATCH(photos.title, photos.description, photos.town) AGAINST(:searchTerms IN BOOLEAN MODE) AS pscore,
         MATCH(countries.name) AGAINST(:searchTerms IN BOOLEAN MODE) AS cscore
     FROM pictures.photos
+    LEFT JOIN pictures.photo_album ON photos.id = photo_album.photo_id
     LEFT JOIN pictures.countries ON countries.id = photos.country
     LEFT JOIN pictures.geo ON photos.id = geo.photo_id
     LEFT JOIN (

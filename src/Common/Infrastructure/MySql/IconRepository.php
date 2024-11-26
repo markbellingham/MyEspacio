@@ -15,16 +15,15 @@ final class IconRepository implements IconRepositoryInterface
     ) {
     }
 
-    public function getIcons(int $qty): CaptchaIconCollection
+    public function getIcons(int $quantity): CaptchaIconCollection
     {
+        $quantity = max(3, $quantity);
         $result = $this->db->fetchAll(
             'SELECT icon_id, icon, name
             FROM project.icons
             ORDER BY RAND()
-            LIMIT :quantity',
-            [
-                'quantity' => $qty
-            ]
+            LIMIT ' . $quantity,
+            []
         );
         return new CaptchaIconCollection($result);
     }

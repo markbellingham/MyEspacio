@@ -8,5 +8,5 @@ use MyEspacio\Common\Domain\Collection;
 
 interface IconRepositoryInterface
 {
-    public function getIcons(int $qty): Collection\CaptchaIconCollection;
+    public function getIcons(int $quantity): Collection\CaptchaIconCollection;
 }
