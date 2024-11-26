@@ -8,7 +8,6 @@ vendor
 # Config file
 /config/config.php
 
-composer.lock
 package-lock.json
 
 /public/phpinfo.php
