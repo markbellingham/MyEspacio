@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class RequestHandler implements RequestHandlerInterface
 {
     private string $language = 'en';
+    private Request $request;
     private ?string $responseType = null;
     private TemplateRenderer $templateRenderer;
 
@@ -31,6 +32,7 @@ final class RequestHandler implements RequestHandlerInterface
 
     public function validate(Request $request): bool
     {
+        $this->request = $request;
         $this->templateRenderer = $this->templateRendererFactory->create($request->attributes->get('language') ?? 'en');
 
         /**
@@ -61,10 +63,6 @@ final class RequestHandler implements RequestHandlerInterface
 
     public function sendResponse(ResponseData $responseData): Response
     {
-        if ($responseData->getTemplate()) {
-            $content = $this->templateRenderer->render($responseData->getTemplate(), $responseData->getData());
-            return new Response($content, $responseData->getStatusCode());
-        }
         if ($responseData->getTranslationKey()) {
             $responseData->setData(
                 key: 'message',
@@ -88,11 +86,14 @@ final class RequestHandler implements RequestHandlerInterface
                     headers: ['Content-Type' => 'application/xml']
                 );
             case 'application/json':
-            default:
                 return new JsonResponse($responseData->getData(), $responseData->getStatusCode());
         }
+        if ($responseData->getTemplate()) {
+            $content = $this->templateRenderer->render($responseData->getTemplate(), $responseData->getData());
+            return new Response($content, $responseData->getStatusCode());
+        }
+        return $this->showRoot($this->request, []);
     }
-
 
     public function getTranslationIdentifier(string $languageFile): TranslationIdentifier
     {

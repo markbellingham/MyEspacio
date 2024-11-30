@@ -18,7 +18,7 @@ final class PdoConnectionFactory
     {
         $dbConfig = Settings::getConfig($dbName);
         $defaultOptions = [
-            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_EMULATE_PREPARES => true,
             PDO:: ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ];
         $options = array_replace($defaultOptions, $options);
