@@ -44,6 +44,39 @@ final class PhotoCollectionTest extends TestCase
         foreach ($collection as $photo) {
             $this->assertInstanceOf(Photo::class, $photo);
         }
+
+        $this->assertEquals(
+            [
+                [
+                    'country' => [
+                        'name' => 'Chile',
+                        'twoCharCode' => 'CL',
+                        'threeCharCode' => 'CHL',
+                    ],
+                    'geoCoordinates' => [
+                        'latitude' => '-33438084',
+                        'longitude' => '-33438084',
+                        'accuracy' =>  '16',
+                    ],
+                    'dimensions' => [
+                        'width' => '456',
+                        'height' => '123',
+                    ],
+                    'relevance' => [
+                        'cScore' => 0,
+                        'pScore' => 0
+                    ],
+                    'dateTaken' => "2012-10-21T00:00:00+00:00",
+                    'description' => "Note the spurs...",
+                    'title' => "Getting ready to dance",
+                    'town' => "Valparaiso",
+                    'commentCount' => '1',
+                    'faveCount' => '1',
+                    'uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4'
+                ]
+            ],
+            $collection->jsonSerialize()
+        );
     }
 
     public function testCollectionEmpty(): void

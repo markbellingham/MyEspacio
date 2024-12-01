@@ -51,6 +51,44 @@ class PhotoAlbumCollectionTest extends TestCase
         foreach ($collection as $album) {
             $this->assertInstanceOf(PhotoAlbum::class, $album);
         }
+        $this->assertEquals(
+            [
+                [
+                    'country' => [
+                        'name' => 'India',
+                        'threeCharCode' => 'IND',
+                        'twoCharCode' => 'IN'
+                    ],
+                    'uuid' => '78eda1f2-a6f8-48d8-af30-3907f5f9e534',
+                    'description' => null,
+                    'title' => 'The Red Fort, Delhi',
+                    'photos' => []
+                ],
+                [
+                    'country' => [
+                        'name' => 'India',
+                        'threeCharCode' => 'IND',
+                        'twoCharCode' => 'IN'
+                    ],
+                    'uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30',
+                    'description' => null,
+                    'title' => 'Qutab Minar, Delhi',
+                    'photos' => []
+                ],
+                [
+                    'country' => [
+                        'name' => 'India',
+                        'threeCharCode' => 'IND',
+                        'twoCharCode' => 'IN'
+                    ],
+                    'uuid' => 'adf36769-8983-448d-b3ad-0ab1e5edb9c5',
+                    'description' => null,
+                    'title' => 'Mumbai',
+                    'photos' => []
+                ]
+            ],
+            $collection->jsonSerialize()
+        );
     }
 
     public function testCollectionEmpty(): void

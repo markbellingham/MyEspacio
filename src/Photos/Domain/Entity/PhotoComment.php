@@ -14,7 +14,7 @@ final class PhotoComment extends Comment
     public function __construct(
         private readonly string $photoUuid,
         private readonly string $comment,
-        private readonly ?DateTimeImmutable $created,
+        private readonly DateTimeImmutable $created,
         private readonly ?string $title,
         private readonly string $userUuid,
         private readonly string $username

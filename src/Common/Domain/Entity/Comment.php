@@ -3,6 +3,7 @@
 namespace MyEspacio\Common\Domain\Entity;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use Exception;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
@@ -70,7 +71,7 @@ class Comment extends Model
     {
         return [
             'comment' => $this->comment,
-            'created' => $this->created?->format('Y-m-d H:i:s'),
+            'created' => $this->created?->format(DateTimeInterface::ATOM),
             'username' => $this->username,
             'userUuid' => $this->userUuid
         ];

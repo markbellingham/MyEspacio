@@ -20,7 +20,7 @@ final class PhotoCommentCollectionTest extends TestCase
             [
                 'photo_uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
                 'comment' => 'Nice photo!',
-                'created' => $created,
+                'created' => '2024-07-20 16:23:00',
                 'title' => 'Some Title',
                 'user_uuid' => '120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211',
                 'username' => 'Mark Bellingham'
@@ -28,7 +28,7 @@ final class PhotoCommentCollectionTest extends TestCase
             [
                 'photo_uuid' => '4fb5fe7d-41de-4b41-a5f9-1897221f4333',
                 'comment' => 'Nice photo!',
-                'created' => null,
+                'created' => '2024-07-20 16:23:00',
                 'title' => null,
                 'user_uuid' => '72f997d2-1614-46f1-8396-434042ecd0b3',
                 'username' => 'Mark Bellingham'
@@ -42,6 +42,26 @@ final class PhotoCommentCollectionTest extends TestCase
         foreach ($collection as $comment) {
             $this->assertInstanceOf(PhotoComment::class, $comment);
         }
+
+        $this->assertEquals(
+            [
+                [
+                    'photoUuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
+                    'comment' => 'Nice photo!',
+                    'created' => '2024-07-20T16:23:00+00:00',
+                    'userUuid' => '120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211',
+                    'username' => 'Mark Bellingham'
+                ],
+                [
+                    'photoUuid' => '4fb5fe7d-41de-4b41-a5f9-1897221f4333',
+                    'comment' => 'Nice photo!',
+                    'created' => '2024-07-20T16:23:00+00:00',
+                    'userUuid' => '72f997d2-1614-46f1-8396-434042ecd0b3',
+                    'username' => 'Mark Bellingham'
+                ]
+            ],
+            $collection->jsonSerialize()
+        );
     }
 
     public function testCollectionEmpty(): void
@@ -62,6 +82,6 @@ final class PhotoCommentCollectionTest extends TestCase
                 'bad_key' => 'bad_value',
             ]
         ];
-        $collection = new PhotoCommentCollection($data);
+        new PhotoCommentCollection($data);
     }
 }

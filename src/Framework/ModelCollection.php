@@ -85,6 +85,12 @@ abstract class ModelCollection implements Iterator, JsonSerializable
     /** @return array<int, array<string, mixed>> */
     public function jsonSerialize(): array
     {
-        return $this->toArray();
+        $results = [];
+        foreach ($this->data as $index => $element) {
+            $this->position = $index;
+            $model = $this->current();
+            $results[] = $model->jsonSerialize();
+        }
+        return $results;
     }
 }

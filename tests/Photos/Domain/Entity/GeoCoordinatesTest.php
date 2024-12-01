@@ -27,8 +27,6 @@ final class GeoCoordinatesTest extends TestCase
         $this->assertSame(16, $geo->getAccuracy());
         $this->assertEquals(
             [
-                'id' => 17,
-                'photoUuid' => '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
                 'latitude' => 32240065,
                 'longitude' => 77187860,
                 'accuracy' => 16

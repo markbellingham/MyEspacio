@@ -25,6 +25,14 @@ final class PhotoTagTest extends TestCase
         $this->assertSame('98951d80-139a-4745-adc8-2f15cb600fb1', $photoTag->getPhotoUuid());
         $this->assertEquals('Sunset', $photoTag->getTag());
         $this->assertSame(1, $photoTag->getId());
+
+        $this->assertEquals(
+            [
+                'photoUuid' => '98951d80-139a-4745-adc8-2f15cb600fb1',
+                'tag' => 'Sunset',
+            ],
+            $photoTag->jsonSerialize()
+        );
     }
 
     public function testCreateFromDataset(): void

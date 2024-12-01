@@ -95,7 +95,7 @@ class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
     public function fetchByName(string $albumName): ?PhotoAlbum
     {
         $result = $this->db->fetchOne(
-            'SELECT albums.album_id, albums.title, albums.description, albums.country_id, 
+            'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id

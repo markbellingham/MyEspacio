@@ -48,16 +48,17 @@ final class PhotoCommentTest extends TestCase
 
     public function testNullValues(): void
     {
+        $created = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-20 16:23:00');
+
         $photoComment = new PhotoComment(
             photoUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
             comment: 'Nice photo!',
-            created: null,
+            created: $created,
             title: null,
             userUuid: '2a8b2a67-867e-4eaf-9102-2cf1cdf691c9',
             username: 'Mark Bellingham'
         );
 
-        $this->assertNull($photoComment->getCreated());
         $this->assertNull($photoComment->getTitle());
     }
 

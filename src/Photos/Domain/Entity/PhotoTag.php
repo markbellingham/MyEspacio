@@ -25,6 +25,14 @@ final class PhotoTag extends Tag
         return $this->photoUuid;
     }
 
+    public function jsonSerialize(): array
+    {
+        return [
+            'photoUuid' => $this->photoUuid,
+            'tag' => $this->tag,
+        ];
+    }
+
     public static function createFromDataSet(DataSet $data): PhotoTag
     {
         return new PhotoTag(

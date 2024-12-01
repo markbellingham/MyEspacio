@@ -32,6 +32,20 @@ final class PhotoTagCollectionTest extends TestCase
         foreach ($collection as $photoTag) {
             $this->assertInstanceOf(PhotoTag::class, $photoTag);
         }
+
+        $this->assertEquals(
+            [
+                [
+                    'photoUuid' => '72f997d2-1614-46f1-8396-434042ecd0b3',
+                    'tag' => 'sunset'
+                ],
+                [
+                    'photoUuid' => 'f133fede-65f5-4b68-aded-f8f0e9bfe3bb',
+                    'tag' => 'mexico'
+                ]
+            ],
+            $collection->jsonSerialize()
+        );
     }
 
     public function testCollectionEmpty(): void

@@ -45,7 +45,9 @@ final class GeoCoordinates extends Model
 
     public function jsonSerialize(): array
     {
-        return get_object_vars($this);
+        $vars = get_object_vars($this);
+        unset($vars['photoUuid'], $vars['id']);
+        return $vars;
     }
 
     public static function createFromDataSet(DataSet $data): GeoCoordinates

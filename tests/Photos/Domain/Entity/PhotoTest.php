@@ -119,8 +119,6 @@ final class PhotoTest extends TestCase
                 'threeCharCode' => 'CHL',
             ],
             'geoCoordinates' => [
-                'id' => 2559,
-                'photoUuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71',
                 'latitude' => -33438084,
                 'longitude' => -33438084,
                 'accuracy' => 16,
@@ -135,8 +133,6 @@ final class PhotoTest extends TestCase
             ],
             'dateTaken' => '2012-10-21T00:00:00+00:00',
             'description' => 'Note the spurs...',
-            'directory' => 'RTW Trip\/16Chile\/03 - Valparaiso',
-            'filename' => 'P1070237.JPG',
             'title' => 'Getting ready to dance',
             'town' => 'Valparaiso',
             'commentCount' => 1,

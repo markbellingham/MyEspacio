@@ -30,7 +30,7 @@ final class CommentTest extends TestCase
         $this->assertEquals(
             [
                 'comment' => 'Hello',
-                'created' => '2023-12-30 12:13:14',
+                'created' => '2023-12-30T12:13:14+00:00',
                 'username' => 'Mark Bellingham',
                 'userUuid' => '39fa7943-6fa7-4412-97c8-c6cec6a44e0b'
             ],
