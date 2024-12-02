@@ -135,7 +135,7 @@ final class PhotoControllerTest extends TestCase
                 'sunset',
                 new ResponseData(
                     data: [
-                        'photos' => new PhotoAlbum(
+                        'album' => new PhotoAlbum(
                             title: 'Singapore',
                             albumId: 51,
                             uuid: '4b9d0175-6d47-4460-b48b-6385db446a30',
@@ -152,7 +152,7 @@ final class PhotoControllerTest extends TestCase
                 ),
                 new JsonResponse(
                     [
-                        'photos' => new PhotoAlbum(
+                        'album' => new PhotoAlbum(
                             title: 'Singapore',
                             albumId: 51,
                             uuid: '4b9d0175-6d47-4460-b48b-6385db446a30',
@@ -180,7 +180,7 @@ final class PhotoControllerTest extends TestCase
                     photos: new PhotoCollection([])
                 ),
                 JsonResponse::class,
-                '{"photos":{"title":"Singapore","description":null,"uuid":"4b9d0175-6d47-4460-b48b-6385db446a30","country":{"name":"Singapore","twoCharCode":"SG","threeCharCode":"SGP"},"photos":[]}}'
+                '{"album":{"title":"Singapore","description":null,"uuid":"4b9d0175-6d47-4460-b48b-6385db446a30","country":{"name":"Singapore","twoCharCode":"SG","threeCharCode":"SGP"},"photos":[]}}'
             ]
         ];
     }

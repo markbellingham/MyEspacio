@@ -7,6 +7,7 @@ namespace MyEspacio\Photos\Presentation;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
+use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,10 +29,12 @@ final readonly class PhotoController
             return $this->requestHandler->showRoot($request, $vars);
         }
 
+        $results = $this->photoSearch->search($vars['searchPhotos']);
+        $key = is_a($results, PhotoAlbum::class) ? 'album' : 'photos';
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: [
-                    'photos' => $this->photoSearch->search($vars['searchPhotos'])
+                    $key => $results
                 ],
                 template: 'photos/PhotoGrid.html.twig'
             )
