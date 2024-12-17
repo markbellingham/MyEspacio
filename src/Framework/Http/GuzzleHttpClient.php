@@ -7,10 +7,10 @@ namespace MyEspacio\Framework\Http;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-class GuzzleHttpClient implements ExternalHttpRequestInterface
+final readonly class GuzzleHttpClient implements ExternalHttpRequestInterface
 {
     public function __construct(
-        private readonly Client $client
+        private Client $client
     ) {
     }
 

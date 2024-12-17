@@ -9,7 +9,7 @@ use MyEspacio\Framework\Csrf\Token;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class SymfonySessionTokenStorageTest extends TestCase
+final class SymfonySessionTokenStorageTest extends TestCase
 {
     public function testStoreAndRetrieveToken(): void
     {

@@ -6,10 +6,10 @@ namespace MyEspacio\Framework\Csrf;
 
 use Exception;
 
-class Token
+final readonly class Token
 {
     public function __construct(
-        private readonly string $token
+        private string $token
     ) {
     }
 

@@ -11,7 +11,7 @@ use MyEspacio\Framework\ModelCollection;
 /**
  * @template-extends ModelCollection<int, CaptchaIcon>
  */
-class CaptchaIconCollection extends ModelCollection
+final class CaptchaIconCollection extends ModelCollection
 {
     public function requiredKeys(): array
     {

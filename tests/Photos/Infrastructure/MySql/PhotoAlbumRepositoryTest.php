@@ -13,7 +13,7 @@ use MyEspacio\Photos\Infrastructure\MySql\PhotoAlbumRepository;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
-class PhotoAlbumRepositoryTest extends TestCase
+final class PhotoAlbumRepositoryTest extends TestCase
 {
     public const string PHOTO_PROPERTIES = 'SELECT photos.id AS photo_id,
         photos.date_taken,

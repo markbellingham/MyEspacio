@@ -9,10 +9,10 @@ use MyEspacio\Photos\Domain\Collection\PhotoTagCollection;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Repository\PhotoTagRepositoryInterface;
 
-final class PhotoTagRepository implements PhotoTagRepositoryInterface
+final readonly class PhotoTagRepository implements PhotoTagRepositoryInterface
 {
     public function __construct(
-        private readonly Connection $db
+        private Connection $db
     ) {
     }
 

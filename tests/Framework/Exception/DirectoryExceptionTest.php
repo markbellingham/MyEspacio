@@ -7,7 +7,7 @@ namespace Tests\Framework\Exception;
 use MyEspacio\Framework\Exceptions\DirectoryException;
 use PHPUnit\Framework\TestCase;
 
-class DirectoryExceptionTest extends TestCase
+final class DirectoryExceptionTest extends TestCase
 {
     public function testDirectoryDoesNotExist(): void
     {

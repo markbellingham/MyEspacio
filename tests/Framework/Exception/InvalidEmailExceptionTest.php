@@ -7,7 +7,7 @@ namespace Tests\Framework\Exception;
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
 use PHPUnit\Framework\TestCase;
 
-class InvalidEmailExceptionTest extends TestCase
+final class InvalidEmailExceptionTest extends TestCase
 {
     public function testInvalidEmailAddressException(): void
     {

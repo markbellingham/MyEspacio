@@ -9,7 +9,7 @@ use MyEspacio\Framework\Exceptions\DirectoryException;
 use PHPUnit\Framework\TestCase;
 use RecursiveIteratorIterator;
 
-class DirectoryReaderTest extends TestCase
+final class DirectoryReaderTest extends TestCase
 {
     public function testGetFilesReturnsIteratorForValidDirectory(): void
     {

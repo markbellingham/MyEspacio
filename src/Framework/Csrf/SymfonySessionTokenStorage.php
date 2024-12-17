@@ -6,10 +6,10 @@ namespace MyEspacio\Framework\Csrf;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-final class SymfonySessionTokenStorage implements TokenStorage
+final readonly class SymfonySessionTokenStorage implements TokenStorage
 {
     public function __construct(
-        private readonly SessionInterface $session
+        private SessionInterface $session
     ) {
     }
 

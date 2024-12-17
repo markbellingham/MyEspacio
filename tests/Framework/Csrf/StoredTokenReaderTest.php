@@ -9,7 +9,7 @@ use MyEspacio\Framework\Csrf\Token;
 use MyEspacio\Framework\Csrf\TokenStorage;
 use PHPUnit\Framework\TestCase;
 
-class StoredTokenReaderTest extends TestCase
+final class StoredTokenReaderTest extends TestCase
 {
     public function testReadExistingToken(): void
     {

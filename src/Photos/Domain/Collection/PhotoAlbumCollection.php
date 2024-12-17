@@ -11,7 +11,7 @@ use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 /**
  * @template-extends ModelCollection<int, PhotoAlbum>
  */
-class PhotoAlbumCollection extends ModelCollection
+final class PhotoAlbumCollection extends ModelCollection
 {
     public function requiredKeys(): array
     {

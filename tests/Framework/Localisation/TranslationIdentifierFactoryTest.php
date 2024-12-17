@@ -7,7 +7,7 @@ use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactory;
 use PHPUnit\Framework\TestCase;
 
-class TranslationIdentifierFactoryTest extends TestCase
+final class TranslationIdentifierFactoryTest extends TestCase
 {
     public function testCreate(): void
     {

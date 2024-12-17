@@ -28,26 +28,18 @@ VALUES ('<i class="bi bi-phone-vibrate"></i>', 'Mobile'),
        ('<i class="bi bi-cpu"></i>', 'CPU'),
        ('<i class="bi bi-pc-display-horizontal"></i>', 'Desktop Computer');
 
-CREATE TABLE IF NOT EXISTS users
-(
-    id             INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    name           VARCHAR(255) NOT NULL UNIQUE,
-    uuid           VARCHAR(40)  NOT NULL UNIQUE,
-    email          VARCHAR(255),
-    phone          VARCHAR(255),
-    login_attempts INT          NOT NULL DEFAULT 0,
-    login_date     DATETIME,
-    magiC_link     VARCHAR(255),
-    phone_code     VARCHAR(6)
+CREATE TABLE IF NOT EXISTS users(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    uuid VARCHAR(40) NOT NULL UNIQUE,
+    email VARCHAR(255) UNIQUE,
+    phone VARCHAR(255) UNIQUE,
+    passcode_route VARCHAR(5),
+    login_attempts INT NOT NULL DEFAULT 0,
+    login_date DATETIME,
+    magiC_link VARCHAR(255),
+    phone_code VARCHAR(6)
 );
-
-ALTER TABLE users
-    ADD COLUMN email          VARCHAR(255),
-    ADD COLUMN phone          VARCHAR(255),
-    ADD COLUMN login_attempts INT NOT NULL DEFAULT 0,
-    ADD COLUMN login_date     DATETIME,
-    ADD COLUMN magiC_link     VARCHAR(255),
-    ADD COLUMN phone_code     VARCHAR(6);
 
 INSERT INTO users (name, uuid, email, phone)
 VALUES ('Anonymous', '95c7cdac-6a6f-44ca-a28f-fc62ef61405d', NULL, NULL),

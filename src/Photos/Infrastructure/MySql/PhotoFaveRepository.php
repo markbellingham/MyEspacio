@@ -9,10 +9,10 @@ use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoFave;
 use MyEspacio\Photos\Domain\Repository\PhotoFaveRepositoryInterface;
 
-final class PhotoFaveRepository implements PhotoFaveRepositoryInterface
+final readonly class PhotoFaveRepository implements PhotoFaveRepositoryInterface
 {
     public function __construct(
-        private readonly Connection $db
+        private Connection $db
     ) {
     }
 

@@ -11,7 +11,7 @@ use MyEspacio\User\Domain\User;
 
 final class LoginEmailMessage extends EmailMessage implements LoginEmailMessageInterface
 {
-    private const EMAIL_SUBJECT = 'Your Activation Code';
+    private const string EMAIL_SUBJECT = 'Your Activation Code';
 
     public function __construct(
         private readonly TemplateRenderer $templateRenderer,

@@ -13,9 +13,9 @@ use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
 
-class PdoConnection implements Connection
+final class PdoConnection implements Connection
 {
-    private const STATEMENT_SUCCESS_CODE = '00000';
+    private const string STATEMENT_SUCCESS_CODE = '00000';
 
     public function __construct(
         private readonly PDO $pdo

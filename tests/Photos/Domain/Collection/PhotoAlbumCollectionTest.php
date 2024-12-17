@@ -9,7 +9,7 @@ use MyEspacio\Photos\Domain\Collection\PhotoAlbumCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use PHPUnit\Framework\TestCase;
 
-class PhotoAlbumCollectionTest extends TestCase
+final class PhotoAlbumCollectionTest extends TestCase
 {
     public function testCollection(): void
     {

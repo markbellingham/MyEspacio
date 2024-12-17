@@ -9,7 +9,7 @@ use MyEspacio\Framework\Exceptions\DirectoryException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class DirectoryReader
+final class DirectoryReader
 {
     /**
      * @param string $directory

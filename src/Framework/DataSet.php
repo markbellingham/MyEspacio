@@ -7,11 +7,11 @@ namespace MyEspacio\Framework;
 use DateTimeImmutable;
 use Throwable;
 
-final class DataSet
+final readonly class DataSet
 {
     /** @param array<string, mixed> $data */
     public function __construct(
-        private readonly array $data = []
+        private array $data = []
     ) {
     }
 

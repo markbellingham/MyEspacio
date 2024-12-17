@@ -6,10 +6,10 @@ namespace MyEspacio\Framework\Logger;
 
 use Monolog\Logger;
 
-final class MonologAdapter implements LoggerInterface
+final readonly class MonologAdapter implements LoggerInterface
 {
     public function __construct(
-        private readonly Logger $monolog
+        private Logger $monolog
     ) {
     }
 

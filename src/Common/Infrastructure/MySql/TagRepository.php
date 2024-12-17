@@ -8,10 +8,10 @@ use MyEspacio\Common\Domain\Entity\Tag;
 use MyEspacio\Common\Domain\Repository\TagRepositoryInterface;
 use MyEspacio\Framework\Database\Connection;
 
-final class TagRepository implements TagRepositoryInterface
+final readonly class TagRepository implements TagRepositoryInterface
 {
     public function __construct(
-        private readonly Connection $db
+        private Connection $db
     ) {
     }
 

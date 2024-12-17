@@ -10,12 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-final class RootPageController
+final readonly class RootPageController
 {
     public function __construct(
-        private readonly SessionInterface $session,
-        private readonly TemplateRendererFactoryInterface $templateRendererFactory,
-        private readonly UserRepositoryInterface $userRepository
+        private SessionInterface $session,
+        private TemplateRendererFactoryInterface $templateRendererFactory,
+        private UserRepositoryInterface $userRepository
     ) {
     }
 

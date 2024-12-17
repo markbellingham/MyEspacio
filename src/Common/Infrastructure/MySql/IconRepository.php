@@ -8,10 +8,10 @@ use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use MyEspacio\Common\Domain\Repository\IconRepositoryInterface;
 use MyEspacio\Framework\Database\Connection;
 
-final class IconRepository implements IconRepositoryInterface
+final readonly class IconRepository implements IconRepositoryInterface
 {
     public function __construct(
-        private readonly Connection $db
+        private Connection $db
     ) {
     }
 

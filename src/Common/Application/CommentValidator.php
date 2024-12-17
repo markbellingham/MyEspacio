@@ -4,7 +4,7 @@ namespace MyEspacio\Common\Application;
 
 use MyEspacio\Common\Domain\Entity\Comment;
 
-readonly class CommentValidator
+final readonly class CommentValidator
 {
     public function __construct(
         private Comment $comment,

@@ -7,7 +7,7 @@ namespace Tests\Framework\Csrf;
 use MyEspacio\Framework\Csrf\Token;
 use PHPUnit\Framework\TestCase;
 
-class TokenTest extends TestCase
+final class TokenTest extends TestCase
 {
     public function testTokenToString(): void
     {

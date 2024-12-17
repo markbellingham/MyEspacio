@@ -10,8 +10,8 @@ use MyEspacio\User\Domain\User;
 
 final class SendLoginCode implements SendLoginCodeInterface
 {
-    private const MAGIC_LINK_LENGTH = 20;
-    private const PHONE_CODE_LENGTH = 3;
+    private const int MAGIC_LINK_LENGTH = 20;
+    private const int PHONE_CODE_LENGTH = 3;
 
     public function __construct(
         private readonly LoginEmailMessageInterface $loginEmailMessage,

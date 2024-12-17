@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPUnit\Framework\TestCase;
 
-class PhpMailerEmailTest extends TestCase
+final class PhpMailerEmailTest extends TestCase
 {
     public function testSendEmail(): void
     {

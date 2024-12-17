@@ -8,9 +8,9 @@ use MyEspacio\Framework\Exceptions\InvalidEmailException;
 
 class EmailMessage implements EmailMessageInterface
 {
-    private const MINIMUM_MESSAGE_LENGTH = 20;
-    private const MINIMUM_NAME_LENGTH = 3;
-    private const MINIMUM_SUBJECT_LENGTH = 3;
+    private const int MINIMUM_MESSAGE_LENGTH = 20;
+    private const int MINIMUM_NAME_LENGTH = 3;
+    private const int MINIMUM_SUBJECT_LENGTH = 3;
 
     protected ?string $emailAddress;
     protected ?string $message;

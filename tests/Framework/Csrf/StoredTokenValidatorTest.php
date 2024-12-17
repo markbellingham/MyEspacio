@@ -9,7 +9,7 @@ use MyEspacio\Framework\Csrf\Token;
 use MyEspacio\Framework\Csrf\TokenStorage;
 use PHPUnit\Framework\TestCase;
 
-class StoredTokenValidatorTest extends TestCase
+final class StoredTokenValidatorTest extends TestCase
 {
     public function testValidateMatchingTokens(): void
     {

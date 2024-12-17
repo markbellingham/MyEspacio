@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RequestHandlerTest extends TestCase
+final class RequestHandlerTest extends TestCase
 {
     private LanguageReader|MockObject $languageReader;
 

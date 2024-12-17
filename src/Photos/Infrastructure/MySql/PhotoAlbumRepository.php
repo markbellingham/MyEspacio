@@ -12,7 +12,7 @@ use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Infrastructure\MySql\Queries\QueryService;
 
-class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
+final class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
 {
     private const int MY_FAVOURITES = 2;
 
