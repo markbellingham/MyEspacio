@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace MyEspacio\Framework;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Throwable;
 
 final readonly class DataSet
@@ -57,6 +60,28 @@ final readonly class DataSet
         } catch (Throwable) {
             return null;
         }
+    }
+
+    public function uuidNull(?string $key): ?UuidInterface
+    {
+        $value = $this->data[$key] ?? null;
+
+        if (is_string($value) === false) {
+            return null;
+        }
+
+        try {
+            if (strlen($value) === 16) {
+                return Uuid::fromBytes($value);
+            }
+
+            if (Uuid::isValid($value)) {
+                return Uuid::fromString($value);
+            }
+        } catch (InvalidArgumentException) {
+            return null;
+        }
+        return null;
     }
 
     public function stringNull(string|null $key): ?string

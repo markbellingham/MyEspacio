@@ -7,6 +7,7 @@ namespace Tests\Framework;
 use DateTimeImmutable;
 use MyEspacio\Framework\DataSet;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\UuidInterface;
 
 final class DataSetTest extends TestCase
 {
@@ -111,18 +112,54 @@ final class DataSetTest extends TestCase
     {
         $dataset = new DataSet([
             'one' => '2024-03-10 13:35:00',
-            'two' => 'bad data',
-            'three' => null,
-            'four' => [
+            'two' => '2024-06-17T12:34:56+00:00',
+            'three' => 'bad data',
+            'four' => null,
+            'five' => [
                 'abc' => 123
             ]
         ]);
 
         $this->assertInstanceOf(DateTimeImmutable::class, $dataset->dateTimeNull('one'));
-        $this->assertNull($dataset->dateTimeNull('two'));
+        $this->assertInstanceOf(DateTimeImmutable::class, $dataset->dateTimeNull('two'));
         $this->assertNull($dataset->dateTimeNull('three'));
         $this->assertNull($dataset->dateTimeNull('four'));
         $this->assertNull($dataset->dateTimeNull('five'));
+        $this->assertNull($dataset->dateTimeNull('six'));
+    }
+
+    public function testUuidNull(): void
+    {
+        $dataset = new DataSet([
+            'valid_string_1' => '9c001dd7-7921-4944-bc17-52b890aa51fb',
+            'valid_string_2' => '550e8400-e29b-41d4-a716-446655440000',
+            'valid_binary_1' => hex2bin('550e8400e29b41d4a716446655440000'),
+            'valid_binary_2' => hex2bin('123e4567e89b12d3a456426614174000'),
+            'invalid_string_1' => '550e8400-e29b-41d4-a716-44665544000',
+            'invalid_string_2' => '550e8400-e29b-41d4-a716-4466554400000',
+            'invalid_string_3' => '550e8400-e29b-41d4-a716-zzzzzzzzzzzz',
+            'invalid_binary_1' => hex2bin('550e8400e29b41d4a71644665544'),
+            'invalid_binary_2' => hex2bin('550e8400e29b41d4a71644665544000000'),
+            'invalid_binary_3' => hex2bin('abcd1234abcd1234abcd1234abcd12'),
+            'invalid_binary_4' => hex2bin('1234567890'),
+            'invalid_string' => 'random-string',
+            'null_value' => null
+        ]);
+
+        $this->assertInstanceOf(UuidInterface::class, $dataset->uuidNull('valid_string_1'));
+        $this->assertInstanceOf(UuidInterface::class, $dataset->uuidNull('valid_string_2'));
+        $this->assertInstanceOf(UuidInterface::class, $dataset->uuidNull('valid_binary_1'));
+        $this->assertInstanceOf(UuidInterface::class, $dataset->uuidNull('valid_binary_2'));
+
+        $this->assertNull($dataset->uuidNull('invalid_string_1'));
+        $this->assertNull($dataset->uuidNull('invalid_string_2'));
+        $this->assertNull($dataset->uuidNull('invalid_string_3'));
+        $this->assertNull($dataset->uuidNull('invalid_binary_1'));
+        $this->assertNull($dataset->uuidNull('invalid_binary_2'));
+        $this->assertNull($dataset->uuidNull('invalid_binary_3'));
+        $this->assertNull($dataset->uuidNull('invalid_binary_4'));
+        $this->assertNull($dataset->uuidNull('invalid_string'));
+        $this->assertNull($dataset->uuidNull('null_value'));
     }
 
     public function testStringNull(): void
