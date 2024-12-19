@@ -33,7 +33,7 @@ final class PhotoCommentCollection extends ModelCollection
             comment: $data->string('comment'),
             created: $data->dateTimeNull('created'),
             title: $data->string('title'),
-            userUuid: $data->string('user_uuid'),
+            userUuid: $data->uuidNull('user_uuid'),
             username: $data->string('username')
         );
     }

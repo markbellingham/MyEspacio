@@ -7,6 +7,7 @@ use DateTimeInterface;
 use Exception;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
+use Ramsey\Uuid\UuidInterface;
 
 class Comment extends Model
 {
@@ -14,17 +15,17 @@ class Comment extends Model
         private string $comment = '',
         private ?DateTimeImmutable $created = null,
         private readonly ?string $title = '',
-        private string $userUuid = '',
+        private ?UuidInterface $userUuid = null,
         private string $username = ''
     ) {
     }
 
-    public function getUserUuid(): string
+    public function getUserUuid(): ?UuidInterface
     {
         return $this->userUuid;
     }
 
-    public function setUserUuid(string $userUuid): void
+    public function setUserUuid(UuidInterface $userUuid): void
     {
         $this->userUuid = $userUuid;
     }
@@ -83,7 +84,7 @@ class Comment extends Model
             comment: $data->string('comment'),
             created: $data->dateTimeNull('created'),
             title: $data->string('title'),
-            userUuid: $data->string('user_uuid'),
+            userUuid: $data->uuidNull('user_uuid'),
             username: $data->string('username')
         );
     }

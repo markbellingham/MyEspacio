@@ -3,6 +3,7 @@
 namespace MyEspacio\Common\Application;
 
 use MyEspacio\Common\Domain\Entity\Comment;
+use Ramsey\Uuid\UuidInterface;
 
 final readonly class CommentValidator
 {
@@ -13,7 +14,7 @@ final readonly class CommentValidator
 
     public function validate(): bool
     {
-        if ($this->comment->getUserUuid() === '') {
+        if ($this->comment->getUserUuid() instanceof UuidInterface === false) {
             // Anonymous user does not post comments
             return false;
         }

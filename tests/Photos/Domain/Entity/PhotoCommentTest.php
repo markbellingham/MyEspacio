@@ -9,6 +9,7 @@ use MyEspacio\Common\Domain\Entity\Comment;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Photos\Domain\Entity\PhotoComment;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class PhotoCommentTest extends TestCase
 {
@@ -21,7 +22,7 @@ final class PhotoCommentTest extends TestCase
             comment: 'Nice photo!',
             created: $created,
             title: 'Some Title',
-            userUuid: '2a8b2a67-867e-4eaf-9102-2cf1cdf691c9',
+            userUuid: Uuid::fromString('2a8b2a67-867e-4eaf-9102-2cf1cdf691c9'),
             username: 'Mark Bellingham'
         );
 
@@ -32,7 +33,7 @@ final class PhotoCommentTest extends TestCase
         $this->assertSame('Nice photo!', $photoComment->getComment());
         $this->assertEquals($created, $photoComment->getCreated());
         $this->assertSame('Some Title', $photoComment->getTitle());
-        $this->assertSame('2a8b2a67-867e-4eaf-9102-2cf1cdf691c9', $photoComment->getUserUuid());
+        $this->assertSame('2a8b2a67-867e-4eaf-9102-2cf1cdf691c9', $photoComment->getUserUuid()->toString());
         $this->assertSame('Mark Bellingham', $photoComment->getUsername());
         $this->assertEquals(
             [
@@ -55,7 +56,7 @@ final class PhotoCommentTest extends TestCase
             comment: 'Nice photo!',
             created: $created,
             title: null,
-            userUuid: '2a8b2a67-867e-4eaf-9102-2cf1cdf691c9',
+            userUuid: Uuid::fromString('2a8b2a67-867e-4eaf-9102-2cf1cdf691c9'),
             username: 'Mark Bellingham'
         );
 
@@ -80,7 +81,7 @@ final class PhotoCommentTest extends TestCase
         $this->assertInstanceOf(DateTimeImmutable::class, $photoComment->getCreated());
         $this->assertEquals('2024-07-20 16:23:00', $photoComment->getCreated()->format('Y-m-d H:i:s'));
         $this->assertNull($photoComment->getTitle());
-        $this->assertSame('2a8b2a67-867e-4eaf-9102-2cf1cdf691c9', $photoComment->getUserUuid());
+        $this->assertSame('2a8b2a67-867e-4eaf-9102-2cf1cdf691c9', $photoComment->getUserUuid()->toString());
         $this->assertSame('Mark Bellingham', $photoComment->getUsername());
     }
 }

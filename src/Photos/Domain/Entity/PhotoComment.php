@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use MyEspacio\Common\Domain\Entity\Comment;
 use MyEspacio\Framework\DataSet;
+use Ramsey\Uuid\UuidInterface;
 
 final class PhotoComment extends Comment
 {
@@ -16,7 +17,7 @@ final class PhotoComment extends Comment
         private readonly string $comment,
         private readonly DateTimeImmutable $created,
         private readonly ?string $title,
-        private readonly string $userUuid,
+        private readonly UuidInterface $userUuid,
         private readonly string $username
     ) {
         parent::__construct(
@@ -41,7 +42,7 @@ final class PhotoComment extends Comment
             'comment' => $this->comment,
             'created' => $this->getCreated()->format(DateTimeInterface::ATOM),
             'username' => $this->username,
-            'userUuid' => $this->userUuid
+            'userUuid' => $this->userUuid->toString()
         ];
     }
 
@@ -52,7 +53,7 @@ final class PhotoComment extends Comment
             comment: $data->string('comment'),
             created: $data->dateTimeNull('created'),
             title: $data->stringNull('title'),
-            userUuid: $data->string('user_uuid'),
+            userUuid: $data->uuidNull('user_uuid'),
             username: $data->string('username')
         );
     }

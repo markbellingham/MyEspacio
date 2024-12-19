@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use MyEspacio\Common\Application\CommentValidator;
 use MyEspacio\Common\Domain\Entity\Comment;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Nonstandard\Uuid;
 
 final class CommentValidatorTest extends TestCase
 {
@@ -17,7 +18,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
+            userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
         );
 
@@ -31,7 +32,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userUuid: '',
+            userUuid: null,
             username: 'Mark Bellingham'
         );
 
@@ -45,7 +46,7 @@ final class CommentValidatorTest extends TestCase
             comment: '',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
+            userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
         );
 
@@ -59,7 +60,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: 'Title',
-            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
+            userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
         );
 
@@ -73,7 +74,7 @@ final class CommentValidatorTest extends TestCase
             comment: '<div class="my-class">Hello</div>',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
+            userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
         );
 
@@ -87,7 +88,7 @@ final class CommentValidatorTest extends TestCase
             comment: 'Hello',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
+            userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
         );
 
@@ -105,7 +106,7 @@ final class CommentValidatorTest extends TestCase
             comment: '01234567890',
             created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
             title: null,
-            userUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
+            userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
         );
 

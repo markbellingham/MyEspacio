@@ -12,6 +12,7 @@ use MyEspacio\Photos\Infrastructure\MySql\PhotoCommentRepository;
 use PDOStatement;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class PhotoCommentRepositoryTest extends TestCase
 {
@@ -126,7 +127,7 @@ final class PhotoCommentRepositoryTest extends TestCase
                     comment: 'Great photo!',
                     created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
                     title: '',
-                    userUuid: 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d',
+                    userUuid: Uuid::fromString('b8cf4379-62f4-4f98-a57e-9811d1a7d07d'),
                     username: ''
                 ),
                 'Great photo!',
@@ -142,7 +143,7 @@ final class PhotoCommentRepositoryTest extends TestCase
                     comment: 'Great photo!',
                     created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
                     title: '',
-                    userUuid: 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d',
+                    userUuid: Uuid::fromString('b8cf4379-62f4-4f98-a57e-9811d1a7d07d'),
                     username: ''
                 ),
                 'Great photo!',
