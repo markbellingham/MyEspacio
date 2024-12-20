@@ -105,13 +105,13 @@ final class Photo extends Model
     public function jsonSerialize(): array
     {
         $array = get_object_vars($this);
-        unset($array['id'], $array['directory'], $array['filename']);
         $array['dateTaken'] = $this->dateTaken?->format(DateTimeInterface::ATOM);
         $array['country'] = $this->getCountry()->jsonSerialize();
         $array['dimensions'] = $this->getDimensions()->jsonSerialize();
         $array['relevance'] = $this->getRelevance()->jsonSerialize();
         $array['geoCoordinates'] = $this->getGeoCoordinates()->jsonSerialize();
-        $array['uuid'] = $this->uuid->toString();
+        $array['photo_uuid'] = $this->uuid->toString();
+        unset($array['id'], $array['directory'], $array['filename'], $array['uuid']);
         return $array;
     }
 

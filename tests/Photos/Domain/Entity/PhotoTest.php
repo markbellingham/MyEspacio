@@ -138,7 +138,7 @@ final class PhotoTest extends TestCase
             'town' => 'Valparaiso',
             'commentCount' => 1,
             'faveCount' => 1,
-            'uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
+            'photo_uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
         ];
 
         $this->assertEquals(
@@ -171,8 +171,7 @@ final class PhotoTest extends TestCase
             'title' => "Getting ready to dance",
             'town' => "Valparaiso",
             'comment_count' => '1',
-            'fave_count' => '1',
-            'uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
+            'fave_count' => '1'
         ]);
 
         $photo = Photo::createFromDataSet($data);
