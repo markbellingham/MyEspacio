@@ -10,6 +10,7 @@ use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use MyEspacio\Photos\Infrastructure\MySql\Queries\QueryService;
+use Ramsey\Uuid\UuidInterface;
 
 final class PhotoRepository implements PhotoRepositoryInterface
 {
@@ -37,12 +38,12 @@ final class PhotoRepository implements PhotoRepositoryInterface
         return Photo::createFromDataSet(new DataSet($result));
     }
 
-    public function fetchByUuid(string $uuid): ?Photo
+    public function fetchByUuid(UuidInterface $uuid): ?Photo
     {
         $result = $this->db->fetchOne(
             QueryService::PHOTO_PROPERTIES . ' WHERE photos.uuid = :uuid',
             [
-                'uuid' => $uuid
+                'uuid' => $uuid->getBytes()
             ]
         );
 

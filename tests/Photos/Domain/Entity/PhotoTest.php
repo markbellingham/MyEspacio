@@ -26,7 +26,7 @@ final class PhotoTest extends TestCase
         );
         $geo = new GeoCoordinates(
             id: 2559,
-            photoUuid: '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71',
+            photoUuid: Uuid::fromString('8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'),
             latitude: -33438084,
             longitude: -33438084,
             accuracy:  16
@@ -83,7 +83,7 @@ final class PhotoTest extends TestCase
         );
         $geo = new GeoCoordinates(
             id: 2559,
-            photoUuid: '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71',
+            photoUuid: Uuid::fromString('8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'),
             latitude: -33438084,
             longitude: -33438084,
             accuracy:  16
@@ -155,6 +155,7 @@ final class PhotoTest extends TestCase
             'two_char_code' => 'CL',
             'three_char_code' => 'CHL',
             'geo_id' => '2559',
+            'photo_uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71',
             'photo_id' => '2689',
             'latitude' => '-33438084',
             'longitude' => '-33438084',
@@ -170,7 +171,8 @@ final class PhotoTest extends TestCase
             'title' => "Getting ready to dance",
             'town' => "Valparaiso",
             'comment_count' => '1',
-            'fave_count' => '1'
+            'fave_count' => '1',
+            'uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
         ]);
 
         $photo = Photo::createFromDataSet($data);

@@ -14,6 +14,7 @@ use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\Relevance;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoTagRepository;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class PhotoTagRepositoryTest extends TestCase
 {
@@ -30,7 +31,7 @@ final class PhotoTagRepositoryTest extends TestCase
         );
         $geo = new GeoCoordinates(
             id: 2559,
-            photoUuid: '78eda1f2-a6f8-48d8-af30-3907f5f9e534',
+            photoUuid: Uuid::fromString('78eda1f2-a6f8-48d8-af30-3907f5f9e534'),
             latitude: -33438084,
             longitude: -33438084,
             accuracy:  16

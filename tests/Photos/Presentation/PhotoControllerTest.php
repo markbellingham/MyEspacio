@@ -257,6 +257,7 @@ final class PhotoControllerTest extends TestCase
                     'three_char_code' => 'CHL',
                     'geo_id' => '2559',
                     'photo_id' => '2689',
+                    'photo_uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd',
                     'latitude' => '-33438084',
                     'longitude' => '-33438084',
                     'accuracy' =>  '16',
@@ -309,6 +310,7 @@ final class PhotoControllerTest extends TestCase
                     'three_char_code' => 'CHL',
                     'geo_id' => '2559',
                     'photo_id' => '2689',
+                    'photo_uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd',
                     'latitude' => '-33438084',
                     'longitude' => '-33438084',
                     'accuracy' =>  '16',
@@ -323,7 +325,8 @@ final class PhotoControllerTest extends TestCase
                     'title' => "Getting ready to dance",
                     'town' => "Valparaiso",
                     'comment_count' => '1',
-                    'fave_count' => '1'
+                    'fave_count' => '1',
+                    'uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd'
                 ])),
                 Response::class,
                 new Response(

@@ -20,6 +20,7 @@ final class PhotoCollectionTest extends TestCase
                 'two_char_code' => 'CL',
                 'three_char_code' => 'CHL',
                 'geo_id' => '2559',
+                'photo_uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
                 'latitude' => '-33438084',
                 'longitude' => '-33438084',
                 'accuracy' =>  '16',

@@ -6,12 +6,13 @@ namespace MyEspacio\Photos\Domain\Entity;
 
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
+use Ramsey\Uuid\UuidInterface;
 
 final class GeoCoordinates extends Model
 {
     public function __construct(
         private readonly int $id,
-        private readonly string $photoUuid,
+        private readonly UuidInterface $photoUuid,
         private readonly int $latitude,
         private readonly int $longitude,
         private readonly int $accuracy,
@@ -23,7 +24,7 @@ final class GeoCoordinates extends Model
         return $this->id;
     }
 
-    public function getPhotoUuid(): string
+    public function getPhotoUuid(): UuidInterface
     {
         return $this->photoUuid;
     }
@@ -54,7 +55,7 @@ final class GeoCoordinates extends Model
     {
         return new GeoCoordinates(
             id: $data->int('geo_id'),
-            photoUuid: $data->string('photo_uuid'),
+            photoUuid: $data->uuidNull('photo_uuid'),
             latitude: $data->int('latitude'),
             longitude: $data->int('longitude'),
             accuracy: $data->int('accuracy')

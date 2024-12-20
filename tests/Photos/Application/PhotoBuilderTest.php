@@ -24,6 +24,7 @@ final class PhotoBuilderTest extends TestCase
             'two_char_code' => 'CL',
             'three_char_code' => 'CHL',
             'geo_id' => '2559',
+            'photo_uuid' => '39fa7943-6fa7-4412-97c8-c6cec6a44e0b',
             'latitude' => '-33438084',
             'longitude' => '-33438084',
             'accuracy' =>  '16',

@@ -9,6 +9,7 @@ use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -49,10 +50,12 @@ final readonly class PhotoController
             return $this->requestHandler->showRoot($request, $vars);
         }
 
+        $uuid = Uuid::fromString($vars['uuid'] ?? '');
+
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: [
-                    'photo' => $this->photoRepository->fetchByUuid(($vars['uuid'] ?? ''))
+                    'photo' => $this->photoRepository->fetchByUuid($uuid)
                 ],
                 template: 'photos/SinglePhoto.html.twig'
             )

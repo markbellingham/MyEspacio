@@ -11,6 +11,7 @@ use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoRepository;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class PhotoRepositoryTest extends TestCase
 {
@@ -114,6 +115,7 @@ final class PhotoRepositoryTest extends TestCase
                     'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
                     'filename' => "P1070237.JPG",
                     'photo_id' => '2689',
+                    'photo_uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd',
                     'title' => "Getting ready to dance",
                     'town' => "Valparaiso",
                     'comment_count' => '1',
@@ -134,6 +136,7 @@ final class PhotoRepositoryTest extends TestCase
      */
     public function testFetchByUuid(
         ?array $queryResult,
+        string $binary,
         string $uuid,
         ?Photo $expectedResult
     ): void {
@@ -143,13 +146,13 @@ final class PhotoRepositoryTest extends TestCase
             ->with(
                 self::PHOTO_PROPERTIES . ' WHERE photos.uuid = :uuid',
                 [
-                    'uuid' => $uuid
+                    'uuid' => $binary
                 ]
             )
             ->willReturn($queryResult);
 
         $repository = new PhotoRepository($connection);
-        $actualResult = $repository->fetchByUuid($uuid);
+        $actualResult = $repository->fetchByUuid(Uuid::fromString($uuid));
 
         $this->assertEquals($expectedResult, $actualResult);
     }
@@ -166,6 +169,7 @@ final class PhotoRepositoryTest extends TestCase
                     'three_char_code' => 'CHL',
                     'geo_id' => '2559',
                     'photo_id' => '2689',
+                    'photo_uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd',
                     'latitude' => '-33438084',
                     'longitude' => '-33438084',
                     'accuracy' =>  '16',
@@ -182,6 +186,7 @@ final class PhotoRepositoryTest extends TestCase
                     'comment_count' => '1',
                     'fave_count' => '1'
                 ],
+                "\x02\x17\x57\x73\x89\xE6\x4A\xB6\xB5\x59\x5C\x16\x99\x8B\xD7\xCD",
                 '02175773-89e6-4ab6-b559-5c16998bd7cd',
                 Photo::createFromDataSet(new DataSet([
                     'country_id' => '45',
@@ -190,6 +195,7 @@ final class PhotoRepositoryTest extends TestCase
                     'three_char_code' => 'CHL',
                     'geo_id' => '2559',
                     'photo_id' => '2689',
+                    'photo_uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd',
                     'latitude' => '-33438084',
                     'longitude' => '-33438084',
                     'accuracy' =>  '16',
@@ -209,6 +215,7 @@ final class PhotoRepositoryTest extends TestCase
             ],
             'not_found' => [
                 null,
+                "\x38\xA0\xA2\x18\x9A\x5C\x4B\xB9\xAB\x30\xAA\xE6\xCA\x3F\xFC\x61",
                 '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61',
                 null
             ]

@@ -31,6 +31,7 @@ final class PhotoFaveRepositoryTest extends TestCase
                 'three_char_code' => 'CHL',
                 'geo_id' => '2559',
                 'photo_id' => '2689',
+                'photo_uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71',
                 'latitude' => '-33438084',
                 'longitude' => '-33438084',
                 'accuracy' =>  '16',
