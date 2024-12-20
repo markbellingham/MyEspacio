@@ -13,7 +13,7 @@ use Ramsey\Uuid\UuidInterface;
 final class PhotoComment extends Comment
 {
     public function __construct(
-        private readonly string $photoUuid,
+        private readonly UuidInterface $photoUuid,
         private readonly string $comment,
         private readonly DateTimeImmutable $created,
         private readonly ?string $title,
@@ -29,7 +29,7 @@ final class PhotoComment extends Comment
         );
     }
 
-    public function getPhotoUuid(): string
+    public function getPhotoUuid(): UuidInterface
     {
         return $this->photoUuid;
     }
@@ -38,7 +38,7 @@ final class PhotoComment extends Comment
     public function jsonSerialize(): array
     {
         return [
-            'photoUuid' => $this->photoUuid,
+            'photoUuid' => $this->photoUuid->toString(),
             'comment' => $this->comment,
             'created' => $this->getCreated()->format(DateTimeInterface::ATOM),
             'username' => $this->username,
@@ -49,7 +49,7 @@ final class PhotoComment extends Comment
     public static function createFromDataSet(DataSet $data): Comment
     {
         return new PhotoComment(
-            photoUuid: $data->string('photo_uuid'),
+            photoUuid: $data->uuidNull('photo_uuid'),
             comment: $data->string('comment'),
             created: $data->dateTimeNull('created'),
             title: $data->stringNull('title'),

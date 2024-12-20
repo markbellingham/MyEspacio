@@ -18,7 +18,7 @@ final class PhotoCommentTest extends TestCase
         $created = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-20 16:23:00');
 
         $photoComment = new PhotoComment(
-            photoUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
+            photoUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             comment: 'Nice photo!',
             created: $created,
             title: 'Some Title',
@@ -29,7 +29,7 @@ final class PhotoCommentTest extends TestCase
         $this->assertInstanceOf(Comment::class, $photoComment);
         $this->assertInstanceOf(PhotoComment::class, $photoComment);
 
-        $this->assertSame('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea', $photoComment->getPhotoUuid());
+        $this->assertSame('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea', $photoComment->getPhotoUuid()->toString());
         $this->assertSame('Nice photo!', $photoComment->getComment());
         $this->assertEquals($created, $photoComment->getCreated());
         $this->assertSame('Some Title', $photoComment->getTitle());
@@ -52,7 +52,7 @@ final class PhotoCommentTest extends TestCase
         $created = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-20 16:23:00');
 
         $photoComment = new PhotoComment(
-            photoUuid: '95e7a3b0-6b8a-41bc-bbe2-4efcea215aea',
+            photoUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             comment: 'Nice photo!',
             created: $created,
             title: null,
@@ -76,7 +76,7 @@ final class PhotoCommentTest extends TestCase
 
         $photoComment = PhotoComment::createFromDataSet($data);
         $this->assertInstanceOf(PhotoComment::class, $photoComment);
-        $this->assertSame('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea', $photoComment->getPhotoUuid());
+        $this->assertSame('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea', $photoComment->getPhotoUuid()->toString());
         $this->assertSame('Nice photo!', $photoComment->getComment());
         $this->assertInstanceOf(DateTimeImmutable::class, $photoComment->getCreated());
         $this->assertEquals('2024-07-20 16:23:00', $photoComment->getCreated()->format('Y-m-d H:i:s'));

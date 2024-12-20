@@ -123,7 +123,7 @@ final class PhotoCommentRepositoryTest extends TestCase
         return [
             'test_success' => [
                 new PhotoComment(
-                    photoUuid: '3ad9590d-6bce-4eb3-a693-e06403178628',
+                    photoUuid: Uuid::fromString('3ad9590d-6bce-4eb3-a693-e06403178628'),
                     comment: 'Great photo!',
                     created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
                     title: '',
@@ -139,7 +139,7 @@ final class PhotoCommentRepositoryTest extends TestCase
             ],
             'test_failure' => [
                 new PhotoComment(
-                    photoUuid: '3ad9590d-6bce-4eb3-a693-e06403178628',
+                    photoUuid: Uuid::fromString('3ad9590d-6bce-4eb3-a693-e06403178628'),
                     comment: 'Great photo!',
                     created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
                     title: '',

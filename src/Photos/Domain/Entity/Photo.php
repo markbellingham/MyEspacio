@@ -131,7 +131,7 @@ final class Photo extends Model
             town: $data->string('town'),
             commentCount: $data->int('comment_count'),
             faveCount: $data->int('fave_count'),
-            uuid: $data->uuidNull('uuid')
+            uuid: $data->uuidNull('photo_uuid')
         );
     }
 }

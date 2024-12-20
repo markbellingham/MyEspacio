@@ -8,13 +8,14 @@ use MyEspacio\Common\Domain\Entity\Tag;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Photos\Domain\Entity\PhotoTag;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class PhotoTagTest extends TestCase
 {
     public function testPhotoTag(): void
     {
         $photoTag = new PhotoTag(
-            photoUuid: '98951d80-139a-4745-adc8-2f15cb600fb1',
+            photoUuid: Uuid::fromString('98951d80-139a-4745-adc8-2f15cb600fb1'),
             tag: 'Sunset',
             id:1
         );
@@ -22,7 +23,7 @@ final class PhotoTagTest extends TestCase
         $this->assertInstanceOf(Tag::class, $photoTag);
         $this->assertInstanceOf(\MyEspacio\Photos\Domain\Entity\PhotoTag::class, $photoTag);
 
-        $this->assertSame('98951d80-139a-4745-adc8-2f15cb600fb1', $photoTag->getPhotoUuid());
+        $this->assertSame('98951d80-139a-4745-adc8-2f15cb600fb1', $photoTag->getPhotoUuid()->toString());
         $this->assertEquals('Sunset', $photoTag->getTag());
         $this->assertSame(1, $photoTag->getId());
 
@@ -44,7 +45,7 @@ final class PhotoTagTest extends TestCase
         ]);
         $photoTag = PhotoTag::createFromDataSet($data);
         $this->assertInstanceOf(PhotoTag::class, $photoTag);
-        $this->assertSame('98951d80-139a-4745-adc8-2f15cb600fb1', $photoTag->getPhotoUuid());
+        $this->assertSame('98951d80-139a-4745-adc8-2f15cb600fb1', $photoTag->getPhotoUuid()->toString());
         $this->assertEquals('birds', $photoTag->getTag());
         $this->assertSame(45, $photoTag->getId());
     }
