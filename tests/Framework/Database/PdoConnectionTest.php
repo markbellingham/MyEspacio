@@ -10,6 +10,7 @@ use MyEspacio\User\Domain\User;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class PdoConnectionTest extends TestCase
 {
@@ -151,7 +152,7 @@ final class PdoConnectionTest extends TestCase
 
         $expectedModel = new User(
             email: 'mail@example.com',
-            uuid: '9e94fd6f-b327-4493-b6cd-f08cbdf1dd83',
+            uuid: Uuid::fromString('9e94fd6f-b327-4493-b6cd-f08cbdf1dd83'),
             name: 'Anonymous'
         );
 

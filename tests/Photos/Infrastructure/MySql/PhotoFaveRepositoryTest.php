@@ -13,6 +13,7 @@ use MyEspacio\Photos\Infrastructure\MySql\PhotoFaveRepository;
 use MyEspacio\User\Domain\User;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class PhotoFaveRepositoryTest extends TestCase
 {
@@ -51,7 +52,7 @@ final class PhotoFaveRepositoryTest extends TestCase
             photo: $this->photo,
             user: new User(
                 email: 'mail@example.com',
-                uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+                uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
                 name: 'Mark',
                 phone: '01234567890',
                 loginAttempts: 1,

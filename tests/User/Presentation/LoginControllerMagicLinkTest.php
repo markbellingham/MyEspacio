@@ -13,6 +13,7 @@ use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Presentation\LoginController;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -119,7 +120,7 @@ final class LoginControllerMagicLinkTest extends TestCase
         $loginDate = new DateTimeImmutable();
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'ed459e09-0b90-4d57-b6b2-f5d70d0ff60c',
+            uuid: Uuid::fromString('ed459e09-0b90-4d57-b6b2-f5d70d0ff60c'),
             name: 'Mark',
             phone: '01234567890',
             loginAttempts: 0,
@@ -181,7 +182,7 @@ final class LoginControllerMagicLinkTest extends TestCase
         $loginDate = new DateTimeImmutable();
         $user = new User(
             email: 'test@example.tld',
-            uuid: 'ed459e09-0b90-4d57-b6b2-f5d70d0ff60c',
+            uuid: Uuid::fromString('ed459e09-0b90-4d57-b6b2-f5d70d0ff60c'),
             name: 'Mark',
             phone: '01234567890',
             loginAttempts: 0,

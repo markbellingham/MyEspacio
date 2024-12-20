@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @throws InvalidArgumentException
@@ -25,7 +26,7 @@ final class User extends Model
 
     public function __construct(
         private string $email,
-        private string $uuid,
+        private UuidInterface $uuid,
         private string $name,
         private ?string $phone = null,
         private ?int $loginAttempts = null,
@@ -35,7 +36,6 @@ final class User extends Model
         private string $passcodeRoute = 'email',
         private ?int $id = null
     ) {
-        $this->uuidIsValid($uuid);
         $this->emailIsValid($email);
         $this->passcodeRouteIsValid($passcodeRoute);
     }
@@ -100,16 +100,14 @@ final class User extends Model
         $this->id = $id;
     }
 
-    public function getUuid(): ?string
+    public function getUuid(): ?UuidInterface
     {
         return $this->uuid;
     }
 
-    public function setUuid(?string $uuid): void
+    public function setUuid(?UuidInterface $uuid): void
     {
-        if ($this->uuidIsValid($uuid)) {
-            $this->uuid = $uuid;
-        }
+        $this->uuid = $uuid;
     }
 
     public function getLoginAttempts(): ?int
@@ -173,13 +171,6 @@ final class User extends Model
         }
     }
 
-    private function uuidIsValid(?string $uuid): bool
-    {
-        if ($uuid !== null && Uuid::isValid($uuid) === false) {
-            throw new InvalidArgumentException('Invalid UUID');
-        }
-        return true;
-    }
     private function emailIsValid(string $email): bool
     {
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
@@ -199,7 +190,7 @@ final class User extends Model
     {
         return new User(
             email: $data->string('email'),
-            uuid: $data->string('uuid'),
+            uuid: $data->uuidNull('uuid'),
             name: $data->string('name'),
             phone: $data->stringNull('phone'),
             loginAttempts: $data->intNull('login_attempts'),

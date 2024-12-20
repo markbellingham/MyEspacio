@@ -9,6 +9,7 @@ use MyEspacio\Framework\Rendering\TemplateRenderer;
 use MyEspacio\User\Application\LoginEmailMessage;
 use MyEspacio\User\Domain\User;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class LoginEmailMessageTest extends TestCase
 {
@@ -16,7 +17,7 @@ final class LoginEmailMessageTest extends TestCase
     {
         $user = new User(
             email: 'website@mexample.com',
-            uuid: 'bfb1fd80-a41a-4b25-bcf9-3a4a3e108f92',
+            uuid: Uuid::fromString('bfb1fd80-a41a-4b25-bcf9-3a4a3e108f92'),
             name: 'Mark Bellingham',
             id: 1
         );
@@ -42,7 +43,7 @@ final class LoginEmailMessageTest extends TestCase
     {
         $user = new User(
             email: 'website@mexample.com',
-            uuid: 'bfb1fd80-a41a-4b25-bcf9-3a4a3e108f92',
+            uuid: Uuid::fromString('bfb1fd80-a41a-4b25-bcf9-3a4a3e108f92'),
             name: '',
             id: 1
         );

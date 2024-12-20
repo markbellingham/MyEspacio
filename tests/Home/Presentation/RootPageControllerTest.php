@@ -9,6 +9,7 @@ use MyEspacio\Home\Presentation\RootPageController;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -26,7 +27,7 @@ final class RootPageControllerTest extends TestCase
 
         $expectedUser = new User(
             email: 'mail@example.tld',
-            uuid: 'ebea9038-1b92-4af2-8f12-74fdc76dd92b',
+            uuid: Uuid::fromString('ebea9038-1b92-4af2-8f12-74fdc76dd92b'),
             name: 'Anonymous'
         );
 

@@ -8,6 +8,7 @@ use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
+use Ramsey\Uuid\Uuid;
 
 final readonly class UserRepository implements UserRepositoryInterface
 {
@@ -89,7 +90,7 @@ final readonly class UserRepository implements UserRepositoryInterface
     {
         return new User(
             email: 'website@markbellingham.uk',
-            uuid: '95c7cdac-6a6f-44ca-a28f-fc62ef61405d',
+            uuid: Uuid::fromString('95c7cdac-6a6f-44ca-a28f-fc62ef61405d'),
             name: 'Anonymous',
             phone: null,
             loginAttempts: null,

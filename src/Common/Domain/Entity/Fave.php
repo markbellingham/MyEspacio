@@ -4,21 +4,22 @@ namespace MyEspacio\Common\Domain\Entity;
 
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
+use Ramsey\Uuid\UuidInterface;
 
 class Fave extends Model
 {
     public function __construct(
-        private string $userUuid,
+        private UuidInterface $userUuid,
         private string $itemUuid
     ) {
     }
 
-    public function getUserUuid(): string
+    public function getUserUuid(): UuidInterface
     {
         return $this->userUuid;
     }
 
-    public function setUserUuid(string $userUuid): void
+    public function setUserUuid(UuidInterface $userUuid): void
     {
         $this->userUuid = $userUuid;
     }
@@ -36,7 +37,7 @@ class Fave extends Model
     public static function createFromDataSet(DataSet $data): Fave
     {
         return new Fave(
-            userUuid: $data->string('user_uuid'),
+            userUuid: $data->uuidNull('user_uuid'),
             itemUuid: $data->string('item_uuid')
         );
     }

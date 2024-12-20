@@ -7,33 +7,34 @@ namespace Tests\Common\Domain\Entity;
 use MyEspacio\Common\Domain\Entity\Fave;
 use MyEspacio\Framework\DataSet;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class FaveTest extends TestCase
 {
     public function testFave(): void
     {
         $fave = new Fave(
-            userUuid: 'c4f49300-a2af-40f5-b146-6c097a2d3f4d',
+            userUuid: Uuid::fromString('c4f49300-a2af-40f5-b146-6c097a2d3f4d'),
             itemUuid: '7add56c3-ea9a-4c36-916e-a51a19c4bba1'
         );
 
-        $this->assertSame('c4f49300-a2af-40f5-b146-6c097a2d3f4d', $fave->getUserUuid());
+        $this->assertSame('c4f49300-a2af-40f5-b146-6c097a2d3f4d', $fave->getUserUuid()->toString());
         $this->assertSame('7add56c3-ea9a-4c36-916e-a51a19c4bba1', $fave->getItemUuid());
     }
 
     public function testFaveSetters(): void
     {
         $fave = new Fave(
-            userUuid: 'c4f49300-a2af-40f5-b146-6c097a2d3f4d',
+            userUuid: Uuid::fromString('c4f49300-a2af-40f5-b146-6c097a2d3f4d'),
             itemUuid: '7add56c3-ea9a-4c36-916e-a51a19c4bba1'
         );
-        $this->assertSame('c4f49300-a2af-40f5-b146-6c097a2d3f4d', $fave->getUserUuid());
+        $this->assertSame('c4f49300-a2af-40f5-b146-6c097a2d3f4d', $fave->getUserUuid()->toString());
         $this->assertSame('7add56c3-ea9a-4c36-916e-a51a19c4bba1', $fave->getItemUuid());
 
-        $fave->setUserUuid('51812b8b-a878-4e21-bc9a-e27350c43904');
+        $fave->setUserUuid(Uuid::fromString('51812b8b-a878-4e21-bc9a-e27350c43904'));
         $fave->setItemUuid('254b994d-fbb0-4f26-a99d-1da9f189df38');
 
-        $this->assertSame('51812b8b-a878-4e21-bc9a-e27350c43904', $fave->getUserUuid());
+        $this->assertSame('51812b8b-a878-4e21-bc9a-e27350c43904', $fave->getUserUuid()->toString());
         $this->assertSame('254b994d-fbb0-4f26-a99d-1da9f189df38', $fave->getItemUuid());
     }
 
@@ -46,7 +47,7 @@ final class FaveTest extends TestCase
 
         $fave = Fave::createFromDataSet($data);
         $this->assertInstanceOf(Fave::class, $fave);
-        $this->assertSame('2cb35615-f812-45b9-b552-88a116979d11', $fave->getUserUuid());
+        $this->assertSame('2cb35615-f812-45b9-b552-88a116979d11', $fave->getUserUuid()->toString());
         $this->assertSame('f133fede-65f5-4b68-aded-f8f0e9bfe3bb', $fave->getItemUuid());
     }
 }

@@ -10,6 +10,7 @@ use MyEspacio\User\Application\LoginEmailMessageInterface;
 use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Domain\User;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class SendLoginCodeTest extends TestCase
 {
@@ -19,7 +20,7 @@ final class SendLoginCodeTest extends TestCase
     {
         $this->user = new User(
             email: 'mail@example.com',
-            uuid:'e762349c-a60e-4428-b781-a076e161f1e3',
+            uuid:Uuid::fromString('e762349c-a60e-4428-b781-a076e161f1e3'),
             name: 'Mark Bellingham',
             passcodeRoute: 'email'
         );
@@ -29,7 +30,7 @@ final class SendLoginCodeTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid:'e762349c-a60e-4428-b781-a076e161f1e3',
+            uuid:Uuid::fromString('e762349c-a60e-4428-b781-a076e161f1e3'),
             name: 'Mark Bellingham'
         );
 

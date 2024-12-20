@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\User\Domain\User;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class UserTest extends TestCase
 {
@@ -17,7 +18,7 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
             name: 'Mark',
             phone: '01234567890',
             loginAttempts: 1,
@@ -54,7 +55,7 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
             name: 'Anonymous'
         );
 
@@ -72,11 +73,11 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
             name: 'Anonymous'
         );
 
-        $user->setUuid('a84e4c4f-110d-4f7f-8362-1d592aa8433e');
+        $user->setUuid(Uuid::fromString('a84e4c4f-110d-4f7f-8362-1d592aa8433e'));
         $this->assertEquals(
             'a84e4c4f-110d-4f7f-8362-1d592aa8433e',
             $user->getUuid()
@@ -117,7 +118,7 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
             name: 'Mark',
             phone: '01234567890',
             loginAttempts: 1,
@@ -145,7 +146,7 @@ final class UserTest extends TestCase
 
         new User(
             email: 'mail@example.com',
-            uuid: 'Invalid UUID',
+            uuid: Uuid::fromString('Invalid UUID'),
             name: 'Anonymous'
         );
     }
@@ -157,7 +158,7 @@ final class UserTest extends TestCase
 
         $user = new User(
             email: 'Invalid email',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
             name: 'Anonymous'
         );
     }
@@ -166,7 +167,7 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
             name: 'Anonymous'
         );
 
@@ -179,7 +180,7 @@ final class UserTest extends TestCase
     {
         $user = new User(
             email: 'mail@example.com',
-            uuid: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
             name: 'Anonymous'
         );
 
@@ -206,7 +207,7 @@ final class UserTest extends TestCase
 
         $this->assertEquals('mail@example.com', $user->getEmail());
         $this->assertEquals('Mark', $user->getName());
-        $this->assertEquals('f47ac10b-58cc-4372-a567-0e02b2c3d479', $user->getUuid());
+        $this->assertEquals('f47ac10b-58cc-4372-a567-0e02b2c3d479', $user->getUuid()->toString());
         $this->assertSame(1, $user->getLoginAttempts());
         $this->assertInstanceOf(DateTimeImmutable::class, $user->getLoginDate());
         $this->assertEquals('2024-03-02 15:26:00', $user->getLoginDateString());
