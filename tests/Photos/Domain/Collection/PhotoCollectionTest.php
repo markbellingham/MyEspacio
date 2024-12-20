@@ -34,8 +34,7 @@ final class PhotoCollectionTest extends TestCase
                 'title' => "Getting ready to dance",
                 'town' => "Valparaiso",
                 'comment_count' => '1',
-                'fave_count' => '1',
-                'uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4'
+                'fave_count' => '1'
             ]
         ];
 
@@ -96,9 +95,9 @@ final class PhotoCollectionTest extends TestCase
             ]
         ];
 
-        $exceptionMessage = 'Missing required keys: country_id, country_name, two_char_code, three_char_code, geo_id, ' .
+        $exceptionMessage = 'Missing required keys: country_id, country_name, two_char_code, three_char_code, geo_id, photo_uuid, ' .
             'latitude, longitude, accuracy, width, height, date_taken, description, directory, filename, photo_id, title, ' .
-            'town, comment_count, fave_count, uuid';
+            'town, comment_count, fave_count';
 
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage($exceptionMessage);

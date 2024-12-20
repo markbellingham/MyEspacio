@@ -24,7 +24,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
-        photos.uuid,
+        photos.uuid AS photo_uuid,
         photos.id AS photo_id,
         countries.id AS country_id,
         countries.name AS country_name,
@@ -57,7 +57,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
-        photos.uuid,
+        photos.uuid AS photo_uuid,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,
@@ -340,7 +340,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                         'town' => "Valparaiso",
                         'comment_count' => '1',
                         'fave_count' => '1',
-                        'uuid' => '2cb35615-f812-45b9-b552-88a116979d11'
+                        'photo_uuid' => '2cb35615-f812-45b9-b552-88a116979d11'
                     ]
                 ],
                 new PhotoCollection(
@@ -365,7 +365,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                             'town' => "Valparaiso",
                             'comment_count' => '1',
                             'fave_count' => '1',
-                            'uuid' => '2cb35615-f812-45b9-b552-88a116979d11'
+                            'photo_uuid' => '2cb35615-f812-45b9-b552-88a116979d11'
                         ]
                     ]
                 )
@@ -470,7 +470,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                         'town' => "Valparaiso",
                         'comment_count' => '1',
                         'fave_count' => '1',
-                        'uuid' => '4fb5fe7d-41de-4b41-a5f9-1897221f4333'
+                        'photo_uuid' => '4fb5fe7d-41de-4b41-a5f9-1897221f4333'
                     ]
                 ],
                 1

@@ -21,6 +21,7 @@ final class PhotoCollection extends ModelCollection
             'two_char_code',
             'three_char_code',
             'geo_id',
+            'photo_uuid',
             'latitude',
             'longitude',
             'accuracy',
@@ -34,8 +35,7 @@ final class PhotoCollection extends ModelCollection
             'title',
             'town',
             'comment_count',
-            'fave_count',
-            'uuid'
+            'fave_count'
         ];
     }
 

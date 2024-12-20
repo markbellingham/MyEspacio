@@ -117,7 +117,7 @@ final class PhotoAlbumTest extends TestCase
                 'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
                 'filename' => "P1070237.JPG",
                 'photo_id' => '2689',
-                'uuid' => 'f133fede-65f5-4b68-aded-f8f0e9bfe3bb',
+                'photo_uuid' => 'f133fede-65f5-4b68-aded-f8f0e9bfe3bb',
                 'title' => "Getting ready to dance",
                 'town' => "Valparaiso",
                 'comment_count' => '1',

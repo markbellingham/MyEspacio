@@ -25,7 +25,7 @@ final class PhotoRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
-        photos.uuid,
+        photos.uuid AS photo_uuid,
         photos.id AS photo_id,
         countries.id AS country_id,
         countries.name AS country_name,
@@ -58,7 +58,7 @@ final class PhotoRepositoryTest extends TestCase
         photos.town,
         photos.height,
         photos.width,
-        photos.uuid,
+        photos.uuid AS photo_uuid,
         countries.id AS country_id,
         countries.name AS country_name,
         countries.two_char_code,
@@ -274,7 +274,7 @@ final class PhotoRepositoryTest extends TestCase
                     'town' => "Valparaiso",
                     'comment_count' => '1',
                     'fave_count' => '1',
-                    'uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
+                    'photo_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
                 ]
             ]);
 
@@ -341,7 +341,7 @@ final class PhotoRepositoryTest extends TestCase
                         'town' => "Valparaiso",
                         'comment_count' => '1',
                         'fave_count' => '1',
-                        'uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
+                        'photo_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
                     ]
                 ]
             );
@@ -440,7 +440,7 @@ final class PhotoRepositoryTest extends TestCase
                         'town' => "Valparaiso",
                         'comment_count' => '1',
                         'fave_count' => '1',
-                        'uuid' => 'adf36769-8983-448d-b3ad-0ab1e5edb9c5'
+                        'photo_uuid' => 'adf36769-8983-448d-b3ad-0ab1e5edb9c5'
                     ],
                     [
                         'country_id' => '45',
@@ -462,7 +462,7 @@ final class PhotoRepositoryTest extends TestCase
                         'town' => "Valparaiso",
                         'comment_count' => '1',
                         'fave_count' => '1',
-                        'uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30'
+                        'photo_uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30'
                     ]
                 ],
                 2
