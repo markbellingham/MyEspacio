@@ -16,7 +16,7 @@ final class PhotoAlbumCollectionTest extends TestCase
         $data = [
             [
                 'album_id' => '4',
-                'uuid' => '78eda1f2-a6f8-48d8-af30-3907f5f9e534',
+                'album_uuid' => '78eda1f2-a6f8-48d8-af30-3907f5f9e534',
                 'description' => null,
                 'title' => 'The Red Fort, Delhi',
                 'country_id' => '102',
@@ -26,7 +26,7 @@ final class PhotoAlbumCollectionTest extends TestCase
             ],
             [
                 'album_id' => '5',
-                'uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30',
+                'album_uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30',
                 'description' => null,
                 'title' => 'Qutab Minar, Delhi',
                 'country_id' => '102',
@@ -36,7 +36,7 @@ final class PhotoAlbumCollectionTest extends TestCase
             ],
             [
                 'album_id' => '7',
-                'uuid' => 'adf36769-8983-448d-b3ad-0ab1e5edb9c5',
+                'album_uuid' => 'adf36769-8983-448d-b3ad-0ab1e5edb9c5',
                 'description' => null,
                 'title' => 'Mumbai',
                 'country_id' => '102',
@@ -59,7 +59,7 @@ final class PhotoAlbumCollectionTest extends TestCase
                         'threeCharCode' => 'IND',
                         'twoCharCode' => 'IN'
                     ],
-                    'uuid' => '78eda1f2-a6f8-48d8-af30-3907f5f9e534',
+                    'album_uuid' => '78eda1f2-a6f8-48d8-af30-3907f5f9e534',
                     'description' => null,
                     'title' => 'The Red Fort, Delhi',
                     'photos' => []
@@ -70,7 +70,7 @@ final class PhotoAlbumCollectionTest extends TestCase
                         'threeCharCode' => 'IND',
                         'twoCharCode' => 'IN'
                     ],
-                    'uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30',
+                    'album_uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30',
                     'description' => null,
                     'title' => 'Qutab Minar, Delhi',
                     'photos' => []
@@ -81,7 +81,7 @@ final class PhotoAlbumCollectionTest extends TestCase
                         'threeCharCode' => 'IND',
                         'twoCharCode' => 'IN'
                     ],
-                    'uuid' => 'adf36769-8983-448d-b3ad-0ab1e5edb9c5',
+                    'album_uuid' => 'adf36769-8983-448d-b3ad-0ab1e5edb9c5',
                     'description' => null,
                     'title' => 'Mumbai',
                     'photos' => []
@@ -104,7 +104,7 @@ final class PhotoAlbumCollectionTest extends TestCase
             [
                 [
                     'album_id' => '7',
-                    'uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
+                    'album_uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
                     'description' => null,
                     'title' => 'Mumbai',
                     'country_id' => '102',
@@ -119,7 +119,7 @@ final class PhotoAlbumCollectionTest extends TestCase
         ];
 
         $this->expectException(CollectionException::class);
-        $this->expectExceptionMessage('Missing required keys: album_id, uuid, description, title, country_id, country_name, three_char_code, two_char_code');
+        $this->expectExceptionMessage('Missing required keys: album_id, album_uuid, description, title, country_id, country_name, three_char_code, two_char_code');
 
         new PhotoAlbumCollection($data);
     }

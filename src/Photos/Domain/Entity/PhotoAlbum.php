@@ -7,13 +7,14 @@ namespace MyEspacio\Photos\Domain\Entity;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
+use Ramsey\Uuid\UuidInterface;
 
 final class PhotoAlbum extends Model
 {
     public function __construct(
         private string $title = 'Unassigned',
         private ?int $albumId = null,
-        private string $uuid = '',
+        private ?UuidInterface $uuid = null,
         private ?string $description = null,
         private ?Country $country = null,
         private ?PhotoCollection $photos = null
@@ -33,7 +34,7 @@ final class PhotoAlbum extends Model
         return $this->albumId;
     }
 
-    public function getUuid(): string
+    public function getUuid(): ?UuidInterface
     {
         return $this->uuid;
     }
@@ -48,7 +49,7 @@ final class PhotoAlbum extends Model
         $this->albumId = $albumId;
     }
 
-    public function setUuid(string $uuid): void
+    public function setUuid(UuidInterface $uuid): void
     {
         $this->uuid = $uuid;
     }
@@ -88,7 +89,7 @@ final class PhotoAlbum extends Model
         return [
             'title' => $this->title,
             'description' => $this->description,
-            'uuid' => $this->uuid,
+            'album_uuid' => $this->uuid->toString(),
             'country' => $this->country?->jsonSerialize(),
             'photos' => $this->photos->jsonSerialize()
         ];
@@ -108,7 +109,7 @@ final class PhotoAlbum extends Model
         return new PhotoAlbum(
             title: $data->string('title'),
             albumId: $data->int('album_id'),
-            uuid: $data->string('uuid'),
+            uuid: $data->uuidNull('album_uuid'),
             description: $data->string('description'),
             country: $country
         );

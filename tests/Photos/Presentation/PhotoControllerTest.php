@@ -16,6 +16,7 @@ use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use MyEspacio\Photos\Presentation\PhotoController;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -138,7 +139,7 @@ final class PhotoControllerTest extends TestCase
                         'album' => new PhotoAlbum(
                             title: 'Singapore',
                             albumId: 51,
-                            uuid: '4b9d0175-6d47-4460-b48b-6385db446a30',
+                            uuid: Uuid::fromString('4b9d0175-6d47-4460-b48b-6385db446a30'),
                             country: new Country(
                                 id: 199,
                                 name: 'Singapore',
@@ -155,7 +156,7 @@ final class PhotoControllerTest extends TestCase
                         'album' => new PhotoAlbum(
                             title: 'Singapore',
                             albumId: 51,
-                            uuid: '4b9d0175-6d47-4460-b48b-6385db446a30',
+                            uuid: Uuid::fromString('4b9d0175-6d47-4460-b48b-6385db446a30'),
                             country: new Country(
                                 id: 199,
                                 name: 'Singapore',
@@ -170,7 +171,7 @@ final class PhotoControllerTest extends TestCase
                 new PhotoAlbum(
                     title: 'Singapore',
                     albumId: 51,
-                    uuid: '4b9d0175-6d47-4460-b48b-6385db446a30',
+                    uuid: Uuid::fromString('4b9d0175-6d47-4460-b48b-6385db446a30'),
                     country: new Country(
                         id: 199,
                         name: 'Singapore',
@@ -180,7 +181,7 @@ final class PhotoControllerTest extends TestCase
                     photos: new PhotoCollection([])
                 ),
                 JsonResponse::class,
-                '{"album":{"title":"Singapore","description":null,"uuid":"4b9d0175-6d47-4460-b48b-6385db446a30","country":{"name":"Singapore","twoCharCode":"SG","threeCharCode":"SGP"},"photos":[]}}'
+                '{"album":{"title":"Singapore","description":null,"album_uuid":"4b9d0175-6d47-4460-b48b-6385db446a30","country":{"name":"Singapore","twoCharCode":"SG","threeCharCode":"SGP"},"photos":[]}}'
             ]
         ];
     }

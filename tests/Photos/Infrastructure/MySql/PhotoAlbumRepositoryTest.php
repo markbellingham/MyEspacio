@@ -12,6 +12,7 @@ use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoAlbumRepository;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class PhotoAlbumRepositoryTest extends TestCase
 {
@@ -99,7 +100,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $db->expects($this->once())
             ->method('fetchOne')
             ->with(
-                'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
+                'SELECT albums.album_id, albums.uuid AS album_uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id
@@ -126,7 +127,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 4,
                 [
                     'album_id' => 4,
-                    'uuid' => '3ad9590d-6bce-4eb3-a693-e06403178628',
+                    'album_uuid' => '3ad9590d-6bce-4eb3-a693-e06403178628',
                     'description' => null,
                     'title' => 'The Red Fort, Delhi',
                     'country_id' => '102',
@@ -137,7 +138,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 new PhotoAlbum(
                     title: 'The Red Fort, Delhi',
                     albumId: 4,
-                    uuid: '3ad9590d-6bce-4eb3-a693-e06403178628',
+                    uuid: Uuid::fromString('3ad9590d-6bce-4eb3-a693-e06403178628'),
                     description: '',
                     country: new Country(
                         id: 102,
@@ -170,7 +171,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $db->expects($this->once())
             ->method('fetchAll')
             ->with(
-                'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
+                'SELECT albums.album_id, albums.uuid AS album_uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id',
@@ -196,7 +197,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 [
                     [
                         'album_id' => '4',
-                        'uuid' => '7add56c3-ea9a-4c36-916e-a51a19c4bba1',
+                        'album_uuid' => '7add56c3-ea9a-4c36-916e-a51a19c4bba1',
                         'description' => null,
                         'title' => 'The Red Fort, Delhi',
                         'country_id' => '102',
@@ -206,7 +207,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                     ],
                     [
                         'album_id' => '5',
-                        'uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904',
+                        'album_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904',
                         'description' => null,
                         'title' => 'Qutab Minar, Delhi',
                         'country_id' => '102',
@@ -216,7 +217,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                     ],
                     [
                         'album_id' => '7',
-                        'uuid' => '254b994d-fbb0-4f26-a99d-1da9f189df38',
+                        'album_uuid' => '254b994d-fbb0-4f26-a99d-1da9f189df38',
                         'description' => null,
                         'title' => 'Mumbai',
                         'country_id' => '102',
@@ -230,7 +231,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                     [
                         [
                             'album_id' => '4',
-                            'uuid' => '7add56c3-ea9a-4c36-916e-a51a19c4bba1',
+                            'album_uuid' => '7add56c3-ea9a-4c36-916e-a51a19c4bba1',
                             'description' => null,
                             'title' => 'The Red Fort, Delhi',
                             'country_id' => '102',
@@ -240,7 +241,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                         ],
                         [
                             'album_id' => '5',
-                            'uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904',
+                            'album_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904',
                             'description' => null,
                             'title' => 'Qutab Minar, Delhi',
                             'country_id' => '102',
@@ -250,7 +251,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                         ],
                         [
                             'album_id' => '7',
-                            'uuid' => '254b994d-fbb0-4f26-a99d-1da9f189df38',
+                            'album_uuid' => '254b994d-fbb0-4f26-a99d-1da9f189df38',
                             'description' => null,
                             'title' => 'Mumbai',
                             'country_id' => '102',
@@ -309,7 +310,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 new PhotoAlbum(
                     title: 'MyAlbum',
                     albumId: 1,
-                    uuid: 'f133fede-65f5-4b68-aded-f8f0e9bfe3bb',
+                    uuid: Uuid::fromString('f133fede-65f5-4b68-aded-f8f0e9bfe3bb'),
                     description: 'My favourite photos',
                     country: new Country(
                         id: 1,
@@ -374,7 +375,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 new PhotoAlbum(
                     title: 'MyAlbum',
                     albumId: 1,
-                    uuid: 'f133fede-65f5-4b68-aded-f8f0e9bfe3bb',
+                    uuid: Uuid::fromString('f133fede-65f5-4b68-aded-f8f0e9bfe3bb'),
                     description: 'My favourite photos',
                     country: new Country(
                         id: 1,
@@ -432,7 +433,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 new PhotoAlbum(
                     title: 'MyAlbum',
                     albumId: 1,
-                    uuid: '72f997d2-1614-46f1-8396-434042ecd0b3',
+                    uuid: Uuid::fromString('72f997d2-1614-46f1-8396-434042ecd0b3'),
                     description: 'My favourite photos',
                     country: new Country(
                         id: 1,
@@ -502,7 +503,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $queryTerms = ['ab'];
         $photoAlbum = new PhotoAlbum(
             title: 'MyAlbum',
-            uuid: '',
+            uuid: Uuid::uuid4(),
             description: 'My favourite photos',
             country: new Country(
                 id: 1,
@@ -537,7 +538,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $db->expects($this->once())
             ->method('fetchOne')
             ->with(
-                'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
+                'SELECT albums.album_id, albums.uuid AS album_uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id
@@ -565,7 +566,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 [
                     'title' => 'Tulum',
                     'album_id' => '86',
-                    'uuid' => '120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211',
+                    'album_uuid' => '120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211',
                     'description' => null,
                     'country_id' => '142',
                     'country_name' => 'Mexico',
@@ -575,7 +576,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 new PhotoAlbum(
                     title: 'Tulum',
                     albumId: 86,
-                    uuid: '120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211',
+                    uuid: Uuid::fromString('120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211'),
                     description: '',
                     country: new Country(
                         id: 142,
@@ -608,7 +609,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $db->expects($this->once())
             ->method('fetchOne')
             ->with(
-                'SELECT albums.album_id, albums.uuid, albums.title, albums.description, albums.country_id, 
+                'SELECT albums.album_id, albums.uuid AS album_uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id
@@ -647,7 +648,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 [
                     'title' => 'My Favourites',
                     'album_id' => '2',
-                    'uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
+                    'album_uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
                     'description' => null,
                     'country_id' => null,
                     'country_name' => null,
@@ -657,7 +658,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 new PhotoAlbum(
                     title: 'My Favourites',
                     albumId: 2,
-                    uuid: '9d0a6098-8e0e-4caf-9748-175518694fe4',
+                    uuid: Uuid::fromString('9d0a6098-8e0e-4caf-9748-175518694fe4'),
                     description: '',
                     country: null,
                     photos: new PhotoCollection([])
