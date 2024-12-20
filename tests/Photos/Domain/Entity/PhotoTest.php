@@ -12,6 +12,7 @@ use MyEspacio\Photos\Domain\Entity\GeoCoordinates;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\Relevance;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 final class PhotoTest extends TestCase
 {
@@ -52,7 +53,7 @@ final class PhotoTest extends TestCase
             town: "Valparaiso",
             commentCount: 1,
             faveCount: 1,
-            uuid: '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
+            uuid: Uuid::fromString('8d7fb4b9-b496-478b-bd9e-14dc30a1ca71')
         );
 
         $this->assertInstanceOf(Country::class, $photo->getCountry());
@@ -109,7 +110,7 @@ final class PhotoTest extends TestCase
             town: "Valparaiso",
             commentCount: 1,
             faveCount: 1,
-            uuid: '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
+            uuid: Uuid::fromString('8d7fb4b9-b496-478b-bd9e-14dc30a1ca71')
         );
 
         $jsonData = [

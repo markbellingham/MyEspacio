@@ -34,7 +34,7 @@ final readonly class PhotoBuilder
             town: $this->dataSet->string('town'),
             commentCount: $this->dataSet->int('comment_count'),
             faveCount: $this->dataSet->int('fave_count'),
-            uuid: $this->dataSet->string('uuid')
+            uuid: $this->dataSet->uuidNull('uuid')
         );
     }
 

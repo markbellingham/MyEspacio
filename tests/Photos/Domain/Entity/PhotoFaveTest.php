@@ -35,7 +35,8 @@ final class PhotoFaveTest extends TestCase
             'title' => "Getting ready to dance",
             'town' => "Valparaiso",
             'comment_count' => '1',
-            'fave_count' => '1'
+            'fave_count' => '1',
+            'uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
         ]);
         $photo = Photo::createFromDataSet($data);
         $data = new DataSet([

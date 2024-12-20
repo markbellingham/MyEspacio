@@ -10,6 +10,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
+use Ramsey\Uuid\UuidInterface;
 
 final class Photo extends Model
 {
@@ -27,7 +28,7 @@ final class Photo extends Model
         private readonly string $town = '',
         private readonly ?int $commentCount = 0,
         private readonly ?int $faveCount = 0,
-        private readonly string $uuid = ''
+        private readonly ?UuidInterface $uuid = null
     ) {
     }
 
@@ -96,7 +97,7 @@ final class Photo extends Model
         return $this->faveCount;
     }
 
-    public function getUuid(): string
+    public function getUuid(): UuidInterface
     {
         return $this->uuid;
     }
@@ -110,6 +111,7 @@ final class Photo extends Model
         $array['dimensions'] = $this->getDimensions()->jsonSerialize();
         $array['relevance'] = $this->getRelevance()->jsonSerialize();
         $array['geoCoordinates'] = $this->getGeoCoordinates()->jsonSerialize();
+        $array['uuid'] = $this->uuid->toString();
         return $array;
     }
 
@@ -129,7 +131,7 @@ final class Photo extends Model
             town: $data->string('town'),
             commentCount: $data->int('comment_count'),
             faveCount: $data->int('fave_count'),
-            uuid: $data->string('uuid')
+            uuid: $data->uuidNull('uuid')
         );
     }
 }

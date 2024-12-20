@@ -10,7 +10,7 @@ class Fave extends Model
 {
     public function __construct(
         private UuidInterface $userUuid,
-        private string $itemUuid
+        private UuidInterface $itemUuid
     ) {
     }
 
@@ -24,12 +24,12 @@ class Fave extends Model
         $this->userUuid = $userUuid;
     }
 
-    public function getItemUuid(): string
+    public function getItemUuid(): UuidInterface
     {
         return $this->itemUuid;
     }
 
-    public function setItemUuid(string $itemUuid): void
+    public function setItemUuid(UuidInterface $itemUuid): void
     {
         $this->itemUuid = $itemUuid;
     }
@@ -38,7 +38,7 @@ class Fave extends Model
     {
         return new Fave(
             userUuid: $data->uuidNull('user_uuid'),
-            itemUuid: $data->string('item_uuid')
+            itemUuid: $data->uuidNull('item_uuid')
         );
     }
 }
