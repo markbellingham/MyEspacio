@@ -6,6 +6,8 @@ namespace Tests\Home\Presentation;
 
 use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use MyEspacio\Home\Presentation\RootPageController;
+use MyEspacio\Photos\Application\PhotoSearchInterface;
+use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use PHPUnit\Framework\TestCase;
@@ -19,11 +21,16 @@ final class RootPageControllerTest extends TestCase
     public function testShow(): void
     {
         $session = $this->createMock(SessionInterface::class);
+        $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $templateRendererFactory = $this->createMock(TemplateRendererFactoryInterface::class);
         $userRepository = $this->createMock(UserRepositoryInterface::class);
 
         $request = new Request();
         $vars = [];
+
+        $photoSearch->expects($this->once())
+            ->method('search')
+            ->willReturn(new PhotoCollection([]));
 
         $expectedUser = new User(
             email: 'mail@example.tld',
@@ -40,7 +47,12 @@ final class RootPageControllerTest extends TestCase
             ->with('user')
             ->willReturn(null);
 
-        $controller = new RootPageController($session, $templateRendererFactory, $userRepository);
+        $controller = new RootPageController(
+            $photoSearch,
+            $session,
+            $templateRendererFactory,
+            $userRepository
+        );
 
         $response = $controller->show($request, $vars);
 

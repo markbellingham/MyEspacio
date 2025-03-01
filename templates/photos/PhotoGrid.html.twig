@@ -1,23 +1,43 @@
 {% block photos_page %}
-    <div id="photos">
-        {% for key, photo in photos %}
-            {% set marginTop = (key == 0) ? '' : 'mt-2' %}
-            <div class="grid-item {{ marginTop }}">
-                <img loading="lazy" width="{{ photo.width }}" height="{{ photo.height }}" src="/resources/pictures/{{ photo.directory }}/thumbs_md/{{ photo.filename }}" alt="{{ photo.title }}" data-id="{{ photo.id }}"/>
-                <div class="img-overlay">
-                    <h5 class="ml-2">{{ photo.title }}</h5>
-                    <p class="ml-2" style="float: left;">{{ photo.town }}, {{ photo.country.name }}</p>
-                    <p class="mr-2" style="float: right;">
-                    <span id="pcounts-{{ photo.id }}">
-                    {% if photo.faveCount > 0 %}
-                        <i class="fas fa-heart"></i> {{ photo.faveCount }}
-                    {% endif %}
-                    {% if photo.commentCount > 0 %}
-                        <i class="fas fa-comment-alt"></i> {{ photo.commentCount }}
-                    {% endif %}
-                    </span></p>
+    <div class="photos-container">
+        <div id="photo-grid">
+            {% for key, photo in photos %}
+                <div class="grid-item {{ key == 0 ? '' : 'mt-2' }}">
+                    <img
+                            loading="lazy"
+                            width="{{ photo.width }}"
+                            height="{{ photo.height }}"
+                            src="/resources/pictures/{{ photo.directory }}/thumbs_md/{{ photo.filename }}"
+                            alt="{{ photo.title }}"
+                            data-uuid="{{ photo.uuid.toString() }}"
+                            class="thumbnail"
+                    />
+                    <div class="img-overlay">
+                        <h5>{{ photo.title }}</h5>
+                        <p>{{ photo.town }}, {{ photo.country.name }}</p>
+                        <p>
+                        <span id="pcounts-{{ photo.uuid.toString() }}">
+                            {% if photo.faveCount > 0 %}
+                                <i class="bi bi-heart-fill"></i> {{ photo.faveCount }}
+                            {% endif %}
+                            {% if photo.commentCount > 0 %}
+                                <i class="bi bi-chat-right-text"></i> {{ photo.commentCount }}
+                            {% endif %}
+                        </span>
+                        </p>
+                    </div>
                 </div>
+            {% endfor %}
+        </div>
+        <div id="photo-view">
+            <div class="photo-view-header">
+                <button class="close-btn btn btn-outline-danger">
+                    <i class="bi bi-x"></i> Close
+                </button>
             </div>
-        {% endfor %}
+            <div class="photo-view-content">
+
+            </div>
+        </div>
     </div>
 {% endblock %}

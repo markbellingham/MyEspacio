@@ -1,0 +1,110 @@
+/* Large Photo */
+#large-photo {
+    width: 100%;
+    overflow: hidden;
+}
+
+#large-photo img,
+.photo-view-content,
+.comments-wrapper,
+.tags-wrapper,
+.photo-details {
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.photo-details {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Photo Container */
+#photo-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Photo Grid */
+#photo-grid {
+    flex: 1;
+    column-gap: 10px;
+    column-width: 300px;
+    margin-top: 10px;
+    overflow: hidden;
+    width: 100%;
+}
+
+#photo-grid.single-column {
+    flex: 0.2;
+    column-count: 1;
+    max-width: 320px;
+}
+
+/* Photo View */
+#photo-view {
+    flex: 0;
+    width: 0;
+    display: none;
+    padding: 10px;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+#photo-view.active {
+    flex: 0.8;
+    display: flex;
+}
+
+/* Photos Container */
+.photos-container {
+    display: flex;
+    width: 100%;
+}
+
+/* Grid Items */
+.grid-item {
+    break-inside: avoid;
+    margin-bottom: 10px;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.grid-item img {
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.grid-item:hover {
+    transform: scale(1.05);
+}
+
+.grid-item:hover .img-overlay {
+    opacity: 1;
+}
+
+/* Image Overlay */
+.img-overlay {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 0 0 5px 5px;
+    bottom: 0;
+    color: white;
+    cursor: pointer;
+    left: 0;
+    opacity: 0;
+    padding: 10px;
+    position: absolute;
+    right: 0;
+    transition: opacity 0.2s ease;
+    z-index: 1;
+}
+
+/* Photo View Header */
+.photo-view-header {
+    margin-bottom: 10px;
+    width: 100%;
+}

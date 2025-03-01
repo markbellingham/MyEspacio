@@ -94,6 +94,10 @@ final class PhotoAlbumRepository implements PhotoAlbumRepositoryInterface
 
     public function fetchByName(string $albumName): ?PhotoAlbum
     {
+        if (trim($albumName) === '') {
+            return null;
+        }
+
         $result = $this->db->fetchOne(
             'SELECT albums.album_id, albums.uuid AS album_uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code

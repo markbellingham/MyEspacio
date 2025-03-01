@@ -11,7 +11,7 @@
                     <div id="modal-text-container" class="col-md-3 col-sm-12">
                         <div class="row">
                             <div class="col-md-4 text-start">
-                                <i class="bi bi-heart fs-2" id="add-photo-fave" title="Add as a favourite" data-bs-toggle="tooltip" data-id="{{ photo.id }}"></i>
+                                <i class="bi bi-heart fs-2" id="add-photo-fave" title="Add as a favourite" data-bs-toggle="tooltip" data-id="{{ photo.uuid.toString() }}"></i>
                                 <span id="fave-count" class="text-dark fs-2">{% if(photo.faveCount > 0) %}{{ photo.faveCount }}{% endif %}</span>
                             </div>
                             <div class="col-md-8 text-end">

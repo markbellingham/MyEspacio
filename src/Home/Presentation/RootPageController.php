@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyEspacio\Home\Presentation;
 
 use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
+use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 final readonly class RootPageController
 {
     public function __construct(
+        private readonly PhotoSearchInterface $photoSearch,
         private SessionInterface $session,
         private TemplateRendererFactoryInterface $templateRendererFactory,
         private UserRepositoryInterface $userRepository
@@ -29,6 +31,7 @@ final readonly class RootPageController
         $user = $this->session->get('user') ?? $this->userRepository->getAnonymousUser();
 
         $params = [
+            'photos' => $this->photoSearch->search($vars['searchPhotos'] ?? ''),
             'title' => CONFIG['contact']['name'],
             'user' => $user,
         ];

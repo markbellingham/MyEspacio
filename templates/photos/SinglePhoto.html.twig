@@ -1,0 +1,17 @@
+<div id="large-photo">
+    <img src="/resources/pictures/{{ photo.directory }}/{{ photo.filename }}" alt="{{ photo.title }}">
+</div>
+<div class="photo-details">
+    <h2 class="text-primary">{{ photo.title }}</h2>
+    {% if photo.description %}
+        <div>
+            <p>{{ photo.description|raw }}</p>
+        </div>
+    {% endif %}
+    <div class="comments-wrapper" data-section="photo">
+        {{ include('common/CommentsForm.html.twig', { comments, section, icons, captcha1, captcha2, user, item }) }}
+    </div>
+    <div class="tags-wrapper" data-section="photo">
+        {{ include('common/Tags.html.twig', { tags, section }, with_context = false) }}
+    </div>
+</div>
