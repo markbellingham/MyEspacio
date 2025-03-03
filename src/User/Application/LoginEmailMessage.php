@@ -6,7 +6,7 @@ namespace MyEspacio\User\Application;
 
 use Exception;
 use MyEspacio\Framework\Messages\EmailMessage;
-use MyEspacio\Framework\Rendering\TemplateRenderer;
+use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use MyEspacio\User\Domain\User;
 
 final class LoginEmailMessage extends EmailMessage implements LoginEmailMessageInterface
@@ -14,7 +14,7 @@ final class LoginEmailMessage extends EmailMessage implements LoginEmailMessageI
     private const string EMAIL_SUBJECT = 'Your Activation Code';
 
     public function __construct(
-        private readonly TemplateRenderer $templateRenderer,
+        private readonly TemplateRendererFactoryInterface $templateRendererFactory,
     ) {
     }
 
@@ -31,7 +31,8 @@ final class LoginEmailMessage extends EmailMessage implements LoginEmailMessageI
 
     private function markup(User $user): string
     {
-        return $this->templateRenderer->render('user/LoginEmail.html.twig', [
+        $templateRenderer = $this->templateRendererFactory->create();
+        return $templateRenderer->render('user/LoginEmail.html.twig', [
             'user' => $user,
             'domain_root' => CONFIG['domain_root'],
             'website_owner' => CONFIG['contact']['name'],

@@ -7,7 +7,7 @@ module.exports = {
     // We'll place webpack configuration for all environments here
 
     entry: {
-        scripts: path.resolve(SRC, 'js', 'index.js'),
+        scripts: path.resolve(SRC, 'js', 'index.ts'),
     },
     output: {
         // Put all the bundled stuff in your dist folder
@@ -19,8 +19,16 @@ module.exports = {
         // The output path as seen from the domain we're visiting in the browser
         publicPath: ASSETS
     },
+    resolve: {
+        extensions: ['.ts', '.js']
+    },
     module: {
         rules: [
+            {
+                test: /\.tsx?$/, // Matches .ts and .tsx files
+                use: "ts-loader",
+                exclude: /node_modules/,
+            },
             {
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],

@@ -9,12 +9,12 @@ ClassicEditor
         theEditor = editor; // Save for later use.
     });
 
-$('#send-email-btn').addEventListener('click', sendEmailMessage);
+document.querySelector('#send-email-btn').addEventListener('click', sendEmailMessage);
 
 function sendEmailMessage(event)
 {
     event.preventDefault();
-    const form = $('#send-email-form');
+    const form = document.querySelector('#send-email-form');
     theEditor.updateSourceElement();
     if (form.reportValidity()) {
         let formData = new FormData(form);
@@ -26,8 +26,8 @@ function sendEmailMessage(event)
             body: JSON.stringify(Object.fromEntries(formData.entries())),
         }).then(response => response.json())
             .then(data => {
-                $('#contact-selected-icon-name').innerText = data.captcha.selectedIcon.name;
-                $('#contact-captcha2').value = data.captcha.encryptedIcon;
+                document.querySelector('#contact-selected-icon-name').innerText = data.captcha.selectedIcon.name;
+                document.querySelector('#contact-captcha2').value = data.captcha.encryptedIcon;
                 if (data.success) {
                     new Notify('success', 'Success! Message Sent.');
                     form.reset();

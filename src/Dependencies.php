@@ -52,6 +52,8 @@ use MyEspacio\Photos\Infrastructure\MySql\PhotoRepository;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoTagRepository;
 use MyEspacio\User\Application\LoginEmailMessage;
 use MyEspacio\User\Application\LoginEmailMessageInterface;
+use MyEspacio\User\Application\SendLoginCode;
+use MyEspacio\User\Application\SendLoginCodeInterface;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Infrastructure\MySql\UserRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -85,6 +87,7 @@ $injector->alias(SessionInterface::class, Session::class);
 
 $injector->alias(EmailInterface::class, PhpMailerEmail::class);
 $injector->alias(LoginEmailMessageInterface::class, LoginEmailMessage::class);
+$injector->alias(SendLoginCodeInterface::class, SendLoginCode::class);
 
 $injector->delegate(
     Connection::class,

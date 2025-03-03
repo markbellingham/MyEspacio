@@ -4,12 +4,12 @@ import {addDynamicEventListener} from "../framework/dynamicListener.js";
 class PlayList {
     constructor() {
         this.entries = [];
-        this.trackListElement = $('#track-list');
-        this.playerContainer = $('#player-container');
-        this.playlistToggle = $('#playlist-toggle');
-        this.tracklistContainer = $('#tracklistContainer');
-        this.lyricsContainer = $('#lyrics');
-        this.playlistLength = $('#playlist-length');
+        this.trackListElement = document.querySelector('#track-list');
+        this.playerContainer = document.querySelector('#player-container');
+        this.playlistToggle = document.querySelector('#playlist-toggle');
+        this.tracklistContainer = document.querySelector('#tracklistContainer');
+        this.lyricsContainer = document.querySelector('#lyrics');
+        this.playlistLength = document.querySelector('#playlist-length');
         this.addEvents();
         this.generate();
     }
@@ -18,7 +18,7 @@ class PlayList {
         this.playlistToggle.addEventListener('click', this.show.bind(this));
         addDynamicEventListener(this.trackListElement, 'click', '.remove', this.removeTrack.bind(this));
         addDynamicEventListener(this.trackListElement, 'dblclick', 'tr', this.setPlayingTrack.bind(this));
-        $('#clear-playlist').addEventListener('click', this.clear.bind(this));
+        document.querySelector('#clear-playlist').addEventListener('click', this.clear.bind(this));
     }
 
     show(event) {

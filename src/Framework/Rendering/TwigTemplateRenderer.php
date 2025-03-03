@@ -6,10 +6,10 @@ namespace MyEspacio\Framework\Rendering;
 
 use Twig\Environment;
 
-final class TwigTemplateRenderer implements TemplateRenderer
+final readonly class TwigTemplateRenderer implements TemplateRenderer
 {
     public function __construct(
-        private readonly Environment $twigEnvironment
+        private Environment $twigEnvironment
     ) {
     }
 

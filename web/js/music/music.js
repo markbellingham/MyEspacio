@@ -8,13 +8,13 @@ import {Notify} from "../framework/Notify.js";
 let musicLibraryTable;
 
 // Create a collapse instance, toggles the collapse element on invocation
-const myCollapse = new bootstrap.Collapse($("#tracklistContainer"));
+const myCollapse = new bootstrap.Collapse(document.querySelector("#tracklistContainer"));
 myCollapse.toggle();
-$("#playlist-toggle").addEventListener("click", function () {
+document.querySelector("#playlist-toggle").addEventListener("click", function () {
     myCollapse.toggle();
 });
 
-$$('.album-list-filter').forEach(btn => {
+document.querySelectorAll('.album-list-filter').forEach(btn => {
     btn.addEventListener('click', function () {
         const filter = this.getAttribute('data-searchtype');
         const url = '/music/' + filter;
@@ -23,7 +23,7 @@ $$('.album-list-filter').forEach(btn => {
         })
             .then(response => response.text())
             .then(markup => {
-                $('#music-list-container').innerHTML = markup;
+                document.querySelector('#music-list-container').innerHTML = markup;
                 applicationState.setUrl('music', url);
                 setupMusicLibraryDataTable();
             });
@@ -31,7 +31,7 @@ $$('.album-list-filter').forEach(btn => {
 });
 
 function setupMusicLibraryDataTable() {
-    const musicLibraryTableHTML = $('#music-library-table');
+    const musicLibraryTableHTML = document.querySelector('#music-library-table');
 
     musicLibraryTableHTML.addEventListener('click', function (event) {
         if (event.target.closest('td').classList.contains('expand')) {
@@ -55,7 +55,7 @@ function openCloseAlbumDetailView(event) {
     const artist = td.getAttribute('data-artist');
     const title = td.getAttribute('data-title');
     if (tr.nextElementSibling.classList.contains('child-row')) {
-        $('#music-library-table').deleteRow(tr.rowIndex + 1);
+        document.querySelector('#music-library-table').deleteRow(tr.rowIndex + 1);
         td.querySelector('.info-open').style.display = 'block';
         td.querySelector('.info-close').style.display = 'none';
     } else {
@@ -88,11 +88,11 @@ function showAlbumInfo(id, artist, title, rowIndex) {
     Promise.allSettled([promise1, promise2]).then(data => {
         const wikipediaInfo = data[0].value;
         const trackInfo = data[1].value;
-        const musicLibraryTableHTML = $('#music-library-table');
+        const musicLibraryTableHTML = document.querySelector('#music-library-table');
         const newRow = musicLibraryTableHTML.insertRow(rowIndex + 1);
         newRow.classList.add('child-row');
         newRow.innerHTML = `<td colspan="${musicLibraryTableHTML.rows[0].cells.length}">${trackInfo}</td>`;
-        $('#wikipedia-info').innerHTML = wikipediaInfo.getExtractText() + '<br>' + wikipediaInfo.getReferenceUrl();
+        document.querySelector('#wikipedia-info').innerHTML = wikipediaInfo.getExtractText() + '<br>' + wikipediaInfo.getReferenceUrl();
     });
 }
 

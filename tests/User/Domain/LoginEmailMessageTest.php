@@ -6,6 +6,7 @@ namespace Tests\User\Domain;
 
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
+use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use MyEspacio\User\Application\LoginEmailMessage;
 use MyEspacio\User\Domain\User;
 use PHPUnit\Framework\TestCase;
@@ -22,12 +23,14 @@ final class LoginEmailMessageTest extends TestCase
             id: 1
         );
 
+        $templateRendererFactory = $this->createMock(TemplateRendererFactoryInterface::class);
         $templateRenderer = $this->createMock(TemplateRenderer::class);
+        $templateRendererFactory->method('create')->willReturn($templateRenderer);
         $templateRenderer->expects($this->once())
             ->method('render')
             ->willReturn('<html lang=""><body>Login email content</body></html>');
 
-        $loginEmailMessage = new LoginEmailMessage($templateRenderer);
+        $loginEmailMessage = new LoginEmailMessage($templateRendererFactory);
         $loginEmailMessage->assemble($user);
 
         $this->assertEquals('Mark Bellingham', $loginEmailMessage->getName());
@@ -48,10 +51,13 @@ final class LoginEmailMessageTest extends TestCase
             id: 1
         );
 
+        $templateRendererFactory = $this->createMock(TemplateRendererFactoryInterface::class);
+        $templateRenderer = $this->createMock(TemplateRenderer::class);
+        $templateRendererFactory->method('create')->willReturn($templateRenderer);
         $templateRenderer = $this->createMock(TemplateRenderer::class);
         $this->expectException(InvalidEmailException::class);
         $this->expectExceptionMessage('Invalid Message - name:');
-        $loginEmailMessage = new LoginEmailMessage($templateRenderer);
+        $loginEmailMessage = new LoginEmailMessage($templateRendererFactory);
         $loginEmailMessage->assemble($user);
     }
 }

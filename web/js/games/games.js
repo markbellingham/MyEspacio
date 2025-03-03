@@ -1,13 +1,13 @@
 import applicationState from "../framework/ApplicationState.js";
 
-$('#game-selector').addEventListener('change', function () {
+document.querySelector('#game-selector').addEventListener('change', function () {
     const code = this.value;
     const url = code == '' ? '/games' : '/games/' + code;
     applicationState.setUrl('games', url);
     fetch(`/games/${code}/index.html`)
         .then(response => response.text())
         .then(markup => {
-            $('#selected-game').innerHTML = markup;
+            document.querySelector('#selected-game').innerHTML = markup;
         });
     addCssLink(code);
     addJavascriptLink(code);

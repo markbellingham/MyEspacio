@@ -2,19 +2,19 @@ import playlist from "./playlist.js";
 
 class MusicPlayer {
     constructor() {
-        this.player = $('#music-player');
+        this.player = document.querySelector('#music-player');
         this.currentTrack = {track_id: null, track_index: null};
-        this.seekBar = $('#music-seek-bar');
+        this.seekBar = document.querySelector('#music-seek-bar');
         this.seekBarInterval = null;
-        this.trackInfo = $('#track-info');
+        this.trackInfo = document.querySelector('#track-info');
         this.addEvents();
     }
 
     addEvents() {
-        $('#music-player-back').addEventListener('click', this.playlistBack.bind(this));
-        $('#music-player-playpause').addEventListener('click', this.playPause.bind(this));
-        $('#music-player-stop').addEventListener('click', this.playerStop.bind(this));
-        $('#music-player-forward').addEventListener('click', this.playlistForward.bind(this));
+        document.querySelector('#music-player-back').addEventListener('click', this.playlistBack.bind(this));
+        document.querySelector('#music-player-playpause').addEventListener('click', this.playPause.bind(this));
+        document.querySelector('#music-player-stop').addEventListener('click', this.playerStop.bind(this));
+        document.querySelector('#music-player-forward').addEventListener('click', this.playlistForward.bind(this));
         this.player.addEventListener('ended', this.playlistForward.bind(this));
         this.seekBar.addEventListener('change', this.updateTrackTime.bind(this));
     }

@@ -2,7 +2,7 @@ import '../framework/dom-selectors.js';
 import requestHeaders from "../framework/RequestHeaders.js";
 import {Notify} from "../framework/Notify.js";
 
-$('#photo-upload-submit').addEventListener('click', function(e) {
+document.querySelector('#photo-upload-submit').addEventListener('click', function(e) {
     e.preventDefault();
     const form = this.form;
     const url = new URL(form.action);
@@ -27,7 +27,7 @@ $('#photo-upload-submit').addEventListener('click', function(e) {
         });
     });
 
-$('#select-directory-submit').addEventListener('click', function(e) {
+document.querySelector('#select-directory-submit').addEventListener('click', function(e) {
     e.preventDefault();
     const form = this.form;
 
@@ -49,7 +49,7 @@ $('#select-directory-submit').addEventListener('click', function(e) {
         });
 });
 
-$('#upload-flickr-data-btn').addEventListener('click', function(e) {
+document.querySelector('#upload-flickr-data-btn').addEventListener('click', function(e) {
     e.preventDefault();
     const url = this.form.url;
     const method = this.form.method;
