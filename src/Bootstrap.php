@@ -54,8 +54,8 @@ switch ($routeInfo[0]) {
     case Dispatcher::FOUND:
         [$controllerName, $method] = explode('#', $routeInfo[1]);
         $vars = $routeInfo[2];
-        $injector = include 'Dependencies.php';
-        $controller = $injector->make($controllerName);
+        $container = include 'Dependencies.php';
+        $controller = $container->get($controllerName);
         $response = $controller->$method($request, $vars);
         break;
     default:
