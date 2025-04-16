@@ -1,18 +1,20 @@
 /**
  * Adapted from https://www.codingnepalweb.com/toast-notification-html-css-javascript/
  */
-export class Notify {
-    constructor(type, text) {
-        this.notifications = document.querySelector('.notifications');
+export class Notify
+{
+    constructor(type, text)
+    {
+        this.notifications = document.querySelector(".notifications");
         this.timer = 5000;
         this.createToast(type, text);
     }
 
-    createToast(type, text) {
+    createToast(type, text)
+    {
         const icon = this.selectIcon(type);
         const toast = document.createElement("li");
         toast.className = `toast ${type} show`;
-        // Setting the inner HTML for the toast
         toast.innerHTML = `<div class="column">
                              ${icon}
                              <span>${text}</span> 
@@ -22,23 +24,25 @@ export class Notify {
         toast.timeoutId = setTimeout(() => this.removeToast(toast), this.timer);
     }
 
-    removeToast(toast) {
+    removeToast(toast)
+    {
         toast.classList.add("hide");
-        if (toast.timeoutId) clearTimeout(toast.timeoutId); // Clearing the timeout for the toast
-        setTimeout(() => toast.remove(), 500); // Removing the toast after 500ms
+        if (toast.timeoutId) clearTimeout(toast.timeoutId);
+        setTimeout(() => toast.remove(), 500);
     }
 
-    selectIcon(icon) {
+    selectIcon(icon)
+    {
         switch (icon) {
-            case 'success':
-                return '<i class="bi bi-check-circle-fill"></i>';
-            case 'error':
-                return '<i class="bi bi-x-circle-fill"></i>';
-            case 'warning':
-                return '<i class="bi bi-exclamation-circle-fill"></i>';
-            case 'info':
+            case "success":
+                return "<i class='bi bi-check-circle-fill'></i>";
+            case "error":
+                return "<i class='bi bi-x-circle-fill'></i>";
+            case "warning":
+                return "<i class='bi bi-exclamation-circle-fill'></i>";
+            case "info":
             default:
-                return '<i class="bi bi-info-circle-fill"></i>';
+                return "<i class='bi bi-info-circle-fill'></i>";
         }
     }
 }

@@ -1,4 +1,5 @@
-import requestHeaders from "../framework/RequestHeaders";
+import requestHeaders from "../../ts/framework/RequestHeaders";
+import {httpRequest} from "../../ts/framework/HttpRequest";
 
 document.addEventListener("DOMContentLoaded", function () {
     const photoGrid = document.querySelector("#photo-grid");
@@ -12,19 +13,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const img = e.target.closest("div.grid-item").querySelector("img");
         const uuid = img.dataset.uuid;
 
-        fetch(`/photo/${uuid}`, {
-            headers: requestHeaders.html()
+        httpRequest.query(`/photo/${uuid}`, {
+            headers: requestHeaders.html(),
         })
-            .then(response => response.text())
-        .then(data => {
-            if (data.toLowerCase().startsWith("<!doctype")) {
-                document.querySelector("html").innerHTML = data;
-            } else {
-                photoView.querySelector(".photo-view-content").innerHTML = data;
-                const parentWidth = photoView.parentElement.clientWidth;
-                photoView.style.width = parentWidth + "px";
-            }
-        });
+            .then(data => {
+                if (data.toLowerCase().startsWith("<!doctype")) {
+                    document.querySelector("html").innerHTML = data;
+                } else {
+                    photoView.querySelector(".photo-view-content").innerHTML = data;
+                    const parentWidth = photoView.parentElement.clientWidth;
+                    photoView.style.width = parentWidth + "px";
+                }
+            });
 
         photoView.classList.add("active");
         photoGrid.classList.add("single-column");

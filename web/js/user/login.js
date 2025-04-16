@@ -1,5 +1,5 @@
-import {Notify} from "../framework/Notify.js";
-import RequestHeaders from "../framework/RequestHeaders.js";
+import {notify} from "../../ts/framework/Notification";
+import RequestHeaders from "../../ts/framework/RequestHeaders";
 
 const loginBtn = document.querySelector("#login-btn");
 let task;
@@ -29,7 +29,7 @@ function login(event)
     let formData = new FormData(event.target.form);
     formData = Object.fromEntries(formData.entries());
     if (formData.email === "") {
-        new Notify("error", "Please fill in your email address");
+        notify.error("Please fill in your email address");
         return;
     }
 
@@ -43,7 +43,7 @@ function login(event)
         .then(response => response.json())
         .then(data => {
             if (!response.ok) {
-                new Notify("error", `Sorry, there was a problem.<br > ${data.message}`);
+                notify.error(`Sorry, there was a problem.<br > ${data.message}`);
                 return;
             }
 
@@ -59,7 +59,7 @@ function login(event)
 
 function requestPhoneCode()
 {
-    new Notify("success", "Please check your email for a code or login link.");
+    notify.success("Please check your email for a code or login link.");
     document.querySelector("#phone-code-row").toggleAttribute("hidden");
     document.querySelector("#phone-code").focus();
 }
@@ -83,13 +83,13 @@ function logout()
 {
     sendServerRequest("/logout", null, response => {
         if (response.success) {
-            new Notify("success", "You have been logged out");
+            notify.success("You have been logged out");
             loginBtn.setAttribute("data-task", "login");
             loginBtn.innerText = "Log In";
             task = "login";
             loginBtn.parentNode.querySelector("span").remove();
         } else {
-            new Notify("error","Sorry, there was a problem processing your request");
+            notify.error("Sorry, there was a problem processing your request");
         }
     });
 }

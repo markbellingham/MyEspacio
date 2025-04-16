@@ -1,26 +1,30 @@
 {
   "name": "myespacio",
   "version": "1.0.0",
-  "description": "",
+  "description": "| PHPStan Level 6 | [![pipeline status](https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | [![coverage report](https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | |-----------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |",
   "main": "webpack.config.js",
   "scripts": {
     "lint": "eslint 'web/js/**/*.ts'",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "webpack --config build/config.development.js",
     "prod": "webpack --config build/config.production.js"
   },
   "keywords": [],
   "author": "Mark Bellingham",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
     "@eslint/js": "^9.21.0",
+    "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
     "css-loader": "^6.7.1",
     "eslint": "^9.21.0",
     "globals": "^16.0.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "style-loader": "^3.3.1",
+    "ts-jest": "^29.3.2",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.2",
     "webpack": "^5.98.0",
@@ -28,7 +32,20 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "n": "^10.1.0",
     "simple-datatables": "^9.2.1",
     "webpack-manifest-plugin": "^5.0.0"
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/markbellingham/myespacio.git"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/markbellingham/myespacio/issues"
+  },
+  "homepage": "https://gitlab.com/markbellingham/myespacio#readme"
 }
