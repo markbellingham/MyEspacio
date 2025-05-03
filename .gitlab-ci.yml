@@ -7,12 +7,11 @@ include:
   - template: Security/SAST.gitlab-ci.yml
   - component: gitlab.com/gitlab-components/code-quality/code-quality@main
 
-test:
+test_php:
   stage: test
   image: php:8.4-cli
   variables:
     XDEBUG_MODE: coverage
-    NODE_VERSION: v22.14.0
   before_script:
     # Install PHP dev tools
     - apt-get update && apt-get install -yq git unzip zip libzip-dev zlib1g-dev libexif-dev
@@ -23,75 +22,38 @@ test:
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --no-scripts
     - cp config/config.sample.php config/config.php
-
-    # Install Node
-    - curl -fsSL https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-x64.tar.xz -o node.tar.xz
-    - tar -xf node.tar.xz
-    - mv node-$NODE_VERSION-linux-x64 /opt/node
-    - ln -s /opt/node/bin/node /usr/local/bin/node
-    - ln -s /opt/node/bin/npm /usr/local/bin/npm
-
-    # Install and build frontend deps
-    - npm ci --omit=optional
   script:
     # PHP tests
     - vendor/bin/phpcs --standard=./phpcs.xml --parallel=8 src tests
     - php vendor/bin/phpunit --configuration phpunit.xml --exclude-group database --coverage-text --coverage-cobertura=coverage.cobertura.xml
     - vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
-
-    # TypeScript tests
-    - mkdir -p coverage
-    - npm test -- --coverage --coverageReporters=text-summary --coverageReporters=lcov --coverageReporters=cobertura > coverage/text-summary.txt
-
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
         path: coverage.cobertura.xml
-    paths:
-      - coverage/  # Add this to pass Jest coverage reports to the badge job
   coverage: /^\s*Lines:\s*\d+.\d+\%/
   only:
     - merge_requests
     - master
 
-generate_typescript_badge:
-  stage: deploy
-  needs: [ "test" ]
+test_typescript:
+  stage: test
   image: node:22
+  variables:
+    NODE_VERSION: v22.14.0
   script:
-    # Install bc for calculations
-    - apt-get update && apt-get install -y bc
-
-    # Extract the TypeScript coverage percentage
-    - COVERAGE=$(grep -o 'All files[^|]*|[^|]*\s\+\([0-9.]\+\)' coverage/text-summary.txt | awk '{print $NF}' | tr -d '%')
-
-    # Create badge JSON file
-    - mkdir -p public/badges
-    - |
-      cat > public/badges/typescript-coverage.json << EOF
-      {
-        "schemaVersion": 1,
-        "label": "TypeScript coverage",
-        "message": "${COVERAGE}%",
-        "color": $(if (( $(echo "$COVERAGE >= 80" | bc -l) )); then echo '"brightgreen"'; elif (( $(echo "$COVERAGE >= 70" | bc -l) )); then echo '"yellow"'; else echo '"red"'; fi)
-      }
-      EOF
+    # TypeScript tests
+    - npm ci --omit=optional
+    - npm test -- --coverage --coverageReporters=text-summary lcov cobertura
   artifacts:
-    paths:
-      - public/badges/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+  coverage: /All\s+files[^|]*\|[^|]*\s+([\d\.]+)/
   only:
-    - master
-
-pages:
-  stage: deploy
-  needs: ["generate_typescript_badge"]
-  script:
-    - echo "Publishing pages"
-  artifacts:
-    paths:
-      - public
-  only:
+    - merge_requests
     - master
 
 deploy_to_github:
