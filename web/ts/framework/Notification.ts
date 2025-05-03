@@ -1,35 +1,43 @@
-interface NotifyInterface {
-    success(message: string): void;
-
-    error(message: string): void;
-
-    warning(message: string): void;
-
-    info(message: string): void;
+export interface NotifyInterface {
+    success(message: string, timeout?: number): void;
+    error(message: string, timeout?: number): void;
+    warning(message: string, timeout?: number): void;
+    info(message: string, timeout?: number): void;
 }
 
 export class Notification implements NotifyInterface {
-    private notifications: HTMLDivElement | null = document.querySelector(".notifications");
-    private timer: number = 5000;
 
-    public success(message: string): void {
-        this.createToast("success", message, "bi-check-circle-fill");
+    constructor(
+        private readonly notificationContainer: HTMLElement,
+        private readonly timer: number = 5000
+    ) {
+        this.notificationContainer = notificationContainer;
+        this.timer = timer;
     }
 
-    public error(message: string): void {
-        this.createToast("error", message, "bi-x-circle-fill");
+    public success(message: string, timeout?: number): void {
+        this.createToast("success", message, "bi-check-circle-fill", timeout);
     }
 
-    public warning(message: string): void {
-        this.createToast("warning", message, "bi-exclamation-circle-fill");
+    public error(message: string, timeout?: number): void {
+        this.createToast("error", message, "bi-x-circle-fill", timeout);
     }
 
-    public info(message: string): void {
-        this.createToast("info", message, "bi-info-circle-fill");
+    public warning(message: string, timeout?: number): void {
+        this.createToast("warning", message, "bi-exclamation-circle-fill", timeout);
     }
 
-    private createToast(type: string, text: string, iconClass: string): void {
-        if (!this.notifications) {
+    public info(message: string, timeout?: number): void {
+        this.createToast("info", message, "bi-info-circle-fill", timeout);
+    }
+
+    private createToast(
+        type: string,
+        text: string,
+        iconClass: string,
+        timeout: number = this.timer
+    ): void {
+        if (!this.notificationContainer) {
             throw new Error("Notification container not found.");
         }
 
@@ -55,9 +63,9 @@ export class Notification implements NotifyInterface {
         toast.appendChild(column);
         toast.appendChild(close);
 
-        this.notifications.appendChild(toast);
+        this.notificationContainer.appendChild(toast);
 
-        const timeoutId = window.setTimeout(() => this.removeToast(toast), this.timer);
+        const timeoutId = window.setTimeout(() => this.removeToast(toast), timeout);
         toast.dataset.timeoutId = timeoutId.toString();
     }
 
@@ -73,4 +81,7 @@ export class Notification implements NotifyInterface {
     }
 }
 
-export const notify = new Notification();
+export const notify = new Notification(
+    document.querySelector(".notifications") as HTMLElement,
+    5000
+);

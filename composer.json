@@ -64,7 +64,7 @@
     "lint": "Run linting programs on the code base.",
     "phpcs": "Check PHP code conforms to the PSR-12 coding standard.",
     "phpstan": "Check PHP code with PHPStan for static analysis.",
-    "pre-commit": "Run linting, Psalm, and testing programs as part of the pre-commit process.",
+    "pre-commit": "Run PHPCS linting, PHPStan static analysis, and PHPUnit tests as part of the pre-commit process.",
     "test": "Run PHPUnit tests."
   },
   "config": {
