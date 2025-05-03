@@ -36,11 +36,13 @@ test:
   script:
     # PHP tests
     - vendor/bin/phpcs --standard=./phpcs.xml --parallel=8 src tests
-    - php vendor/bin/phpunit --configuration phpunit.xml --exclude-group database  --coverage-text --coverage-cobertura=coverage.cobertura.xml
+    - php vendor/bin/phpunit --configuration phpunit.xml --exclude-group database --coverage-text --coverage-cobertura=coverage.cobertura.xml
     - vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
 
     # TypeScript tests
-    - npm test -- --coverage --coverageReporters=text-summary lcov cobertura
+    - mkdir -p coverage
+    - npm test -- --coverage --coverageReporters=text-summary --coverageReporters=lcov --coverageReporters=cobertura > coverage/text-summary.txt
+
   artifacts:
     reports:
       coverage_report:
