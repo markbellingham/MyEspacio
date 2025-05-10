@@ -1,7 +1,13 @@
 # Code Quality
 
-| PHPStan Level 6 | [![pipeline status](https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | [![PHP coverage](https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | [![TypeScript coverage](https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_typescript)](https://gitlab.com/markbellingham/myespacio/-/commits/master) |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+<table border="1">
+  <tr>
+    <td>PHPStan Level 6</td>
+    <td><a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg" alt="pipeline status" style="vertical-align: middle;"></a></td>
+    <td>PHP <a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_php" alt="PHP coverage" style="vertical-align: middle;"></a></td>
+    <td>TypeScript <a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_typescript" alt="TypeScript coverage" style="vertical-align: middle;"></a></td>
+  </tr>
+</table>
 
 # Photos
 * Displays all photos in the gallery. 
