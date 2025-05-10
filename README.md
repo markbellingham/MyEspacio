@@ -1,24 +1,7 @@
 # Code Quality
 
-| PHPStan Level 6 | [![pipeline status](https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | [![PHP coverage](https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | [![TypeScript coverage](https://gitlab.com/markbellingham/myespacio/-/badges/master/coverage.svg?job=test_typescript)](https://gitlab.com/markbellingham/myespacio/-/commits/master)|
-|-----------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
-# Music
-* Can list and filter all music files on my computer. 
-* Can add albums or individual tracks to the playlist, play file, skip previous / next, double click to another file. 
-* Top artists/albums/tracks is dynamic and retrieved from LastFM once each day that the website is loaded
-  * Top artists/albums/tracks are accessed using the buttons or via the URL. E.g. [/music/topalbums](url)
-
-![Music Browser](screenshots/Music.png?raw=true "Title")
-## Single album view
- * Information paragraph retrived from Wikipedia using their API. 
- * Can add individual tracks to the playlist
-
-![Album View](screenshots/Album.png?raw=true "Title")
-## Playlist 
-* Playlistslides down over the website content. 
-* Can double click on a track to change the currently playing one.
-![Playlist View](screenshots/Playlist and Playing.png?raw=true "Title")
+| PHPStan Level 6 | [![pipeline status](https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | [![PHP coverage](https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | [![TypeScript coverage](https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_typescript)](https://gitlab.com/markbellingham/myespacio/-/commits/master) |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 # Photos
 * Displays all photos in the gallery. 
@@ -38,12 +21,6 @@
 * Add comment (only if you are logged in)
 
 ![Single Photo](screenshots/Photo Detail.png?raw=true "Title")
-
-# Games
-* Shows simple JavaScript games. 
-* Can switch game using the dropdown
-
-![Games Page](screenshots/Games.png?raw=true "Title")
 
 # Contact Me
 * Form to send me a message

@@ -51,7 +51,7 @@ test_typescript:
       coverage_report:
         coverage_format: cobertura
         path: coverage/cobertura-coverage.xml
-  coverage: /All\s+files[^|]*\|[^|]*\s+([\d\.]+)/
+  coverage: /All files\s*\|\s*[\d\.]+\s*\|\s*[\d\.]+\s*\|\s*[\d\.]+\s*\|\s*([\d\.]+)/
   only:
     - merge_requests
     - master
