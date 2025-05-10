@@ -43,15 +43,15 @@ test_typescript:
   variables:
     NODE_VERSION: v22.14.0
   script:
-    # TypeScript tests
     - npm ci --omit=optional
     - npm test -- --coverage --coverageReporters=text-summary lcov cobertura
+    - cat coverage/cobertura-coverage.xml || true
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
         path: coverage/cobertura-coverage.xml
-  coverage: /All files\s*\|\s*[\d\.]+\s*\|\s*[\d\.]+\s*\|\s*[\d\.]+\s*\|\s*([\d\.]+)/
+  coverage: /Lines\s*:\s*([\d.]+)%/
   only:
     - merge_requests
     - master
