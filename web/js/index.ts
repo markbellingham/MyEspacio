@@ -9,5 +9,5 @@ import "./frontpage/frontpage";
 // import './games/games.js';
 // import "./music/music";
 // import "./music/player";
-import "./pictures/photos";
+import "../ts/pictures/photos";
 import "./user/login";

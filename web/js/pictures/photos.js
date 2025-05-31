@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
         photoView.classList.add("active");
         photoGrid.classList.add("single-column");
         document.body.style.overflow = "hidden";
-        closeBtn.scrollIntoView({ behaviour: "smooth" });
+        closeBtn.scrollIntoView({ behavior: "smooth" });
     });
 
     closeBtn.addEventListener("click", () => {
