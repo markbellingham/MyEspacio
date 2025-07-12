@@ -1,0 +1,33 @@
+{{ include('common/headers.html.twig') }}
+<body>
+<ul class="notifications"></ul>
+<div id="container" class="row">
+    <div class="row mb-0">
+        <div class="col-md-2"></div>
+        <div class="col-md-8"></div>
+        <div class="col-md-2" id="user-login-controls">
+            {{ include('common/login-button.html.twig') }}
+        </div>
+    </div>
+
+    <div id="main-page" class="row mt-10">
+        <input type="hidden" name="layout" id="layout-token" value="{{ get_token('layout') }}">
+        <div class="col-md-2">
+            <ul class="nav flex-column" id="main-nav" style="height: 80vh">
+                <li class="nav-item"><a href="/home" class="nav-link"><i class="bi bi-house"></i> Home</a></li>
+                <li class="nav-item"><a href="/photos" class="nav-link"><i class="bi bi-camera"></i> Photos</a></li>
+                <li class="nav-item"><a href="/contact" class="nav-link"><i class="bi bi-chat-text"></i> Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="col-md-10">
+            {% block page_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<div id="modals"></div>
+{{ include('common/footers.html.twig') }}
+<script defer src="/dist/scripts.js"></script>
+</body>
+</html>

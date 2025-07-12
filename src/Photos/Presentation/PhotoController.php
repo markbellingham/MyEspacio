@@ -26,18 +26,20 @@ final readonly class PhotoController
     public function photoGrid(Request $request, array $vars): Response
     {
         $valid = $this->requestHandler->validate($request);
-        if ($valid === false) {
-            return $this->requestHandler->showRoot($request, $vars);
-        }
 
-        $results = $this->photoSearch->search($vars['searchPhotos']);
-        $key = is_a($results, PhotoAlbum::class) ? 'album' : 'photos';
+        $results = $this->photoSearch->search(
+            album: $vars['album'] ?? null,
+            searchTerms: $request->query->get('search')
+        );
+        $template = is_a($results, PhotoAlbum::class)
+            ? 'photos/PhotoAlbumView.html.twig'
+            : 'photos/PhotosNoAlbumView.html.twig';
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: [
-                    $key => $results
+                    'photos' => $results
                 ],
-                template: 'photos/PhotoGrid.html.twig'
+                template: $template
             )
         );
     }
@@ -46,9 +48,6 @@ final readonly class PhotoController
     public function singlePhoto(Request $request, array $vars): Response
     {
         $valid = $this->requestHandler->validate($request);
-        if ($valid === false) {
-            return $this->requestHandler->showRoot($request, $vars);
-        }
 
         $uuid = Uuid::fromString($vars['uuid'] ?? '');
 

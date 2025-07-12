@@ -12,13 +12,6 @@ interface RequestHandlerInterface
 {
     public function validate(Request $request): bool;
 
-    /**
-     * @param Request $request
-     * @param array<string, mixed> $vars
-     * @return Response
-     */
-    public function showRoot(Request $request, array $vars): Response;
-
     public function sendResponse(ResponseData $responseData): Response;
 
     public function getTranslationIdentifier(string $languageFile): TranslationIdentifier;

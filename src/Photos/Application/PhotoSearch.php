@@ -11,7 +11,7 @@ use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 
 final class PhotoSearch implements PhotoSearchInterface
 {
-    private ?PhotoAlbum $album;
+    private ?PhotoAlbum $album = null;
     private int $paramCount;
     /** @var array<int, string> */
     private array $params;
@@ -22,15 +22,15 @@ final class PhotoSearch implements PhotoSearchInterface
     ) {
     }
 
-    public function search(?string $searchTerms): PhotoCollection|PhotoAlbum
+    public function search(?string $album, ?string $searchTerms): PhotoCollection|PhotoAlbum
     {
         $this->parseSearchParams($searchTerms);
-        $this->isAlbum();
+        $this->isAlbum($album);
 
-        if ($this->album && $this->paramCount === 1) {
+        if ($this->album && $this->paramCount === 0) {
             return $this->albumPhotos();
         }
-        if ($this->album && $this->paramCount > 1) {
+        if ($this->album && $this->paramCount > 0) {
             return $this->searchAlbumPhotos();
         }
         if ($this->album === null && $this->paramCount > 0) {
@@ -41,20 +41,20 @@ final class PhotoSearch implements PhotoSearchInterface
 
     private function parseSearchParams(?string $requestParams): void
     {
-        $this->params = explode('/', $requestParams ?? '');
+        $this->params = explode(' ', $requestParams ?? '');
         $this->params = array_filter($this->params);
         $this->paramCount = count($this->params);
         if ($this->paramCount > 0) {
-            $this->params = array_map(fn($param) => trim(urldecode($param)), $this->params);
+            $this->params = array_map(fn($param) => trim($param), $this->params);
         }
     }
 
-    private function isAlbum(): void
+    private function isAlbum(?string $album): void
     {
-        $this->album = $this->photoAlbumRepository->fetchByName(trim($this->params[0] ?? ''));
-        if ($this->album) {
-            array_shift($this->params);
+        if ($album === null) {
+            return;
         }
+        $this->album = $this->photoAlbumRepository->fetchByName(trim($album));
     }
 
     private function albumPhotos(): PhotoAlbum
@@ -73,11 +73,10 @@ final class PhotoSearch implements PhotoSearchInterface
         return $this->album;
     }
 
-    private function popularSearchTypes(): PhotoCollection|PhotoAlbum
+    private function popularSearchTypes(): PhotoCollection
     {
         return match ($this->params[0]) {
             'most-popular' => $this->photoRepository->topPhotos(),
-            'my-favourites' => $this->photoAlbumRepository->fetchMyFavourites(),
             default => $this->photoRepository->search($this->params)
         };
     }

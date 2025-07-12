@@ -6,31 +6,16 @@ return [
     [
         'GET',
         '/',
-        'MyEspacio\Home\Presentation\RootPageController#show'
+        'MyEspacio\Home\Presentation\HomePageController#show'
     ],
     [
         'GET',
         '/home',
-        'MyEspacio\Home\Presentation\FrontPageController#show'
+        'MyEspacio\Home\Presentation\HomePageController#show'
     ],
     [
         'GET',
-        '/music/{albumId: \d+}',
-        'MyEspacio\Music\Presentation\MusicController#getAlbumInfo'
-    ],
-    [
-        'GET',
-        '/music[/[{searchMusic:.+}]]',
-        'MyEspacio\Music\Presentation\MusicController#listMusic'
-    ],
-    [
-        'GET',
-        '/track/{trackId}',
-        'MyEspacio\Music\Presentation\MusicController#getTrackInfo'
-    ],
-    [
-        'GET',
-        '/photos[/[{searchPhotos:.+}]]',
+        '/photos[/[{album:.+}]]',
         'MyEspacio\Photos\Presentation\PhotoController#photoGrid'
     ],
     [
@@ -52,16 +37,6 @@ return [
         'POST',
         '/photo/{uuid:.+}/comment',
         'MyEspacio\Photos\Presentation\PhotoController#addComment'
-    ],
-    [
-        'GET',
-        '/lastfm',
-        'MyEspacio\Music\Presentation\LastFmController#show'
-    ],
-    [
-        'GET',
-        '/games[/[{selectedGame:[a-z]{6,}}]]',
-        'MyEspacio\Games\Presentation\GamesController#show',
     ],
     [
         'GET',
@@ -88,24 +63,4 @@ return [
         '/logout',
         'MyEspacio\User\Presentation\LoginController#logout'
     ],
-    [
-        'GET',
-        '/upload',
-        'MyEspacio\Photos\Presentation\UploadController#show'
-    ],
-    [
-        'POST',
-        '/upload',
-        'MyEspacio\Photos\Presentation\UploadController#upload'
-    ],
-    [
-        'POST',
-        '/photo/upload-photo-metadata',
-        'MyEspacio\Photos\Presentation\UploadController#savePhotoMetadata'
-    ],
-    [
-        'POST',
-        '/photo/upload-flickr-data',
-        'MyEspacio\Photos\Presentation\UploadController#uploadFlickrData'
-    ]
 ];

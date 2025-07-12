@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 final class RequestHandler implements RequestHandlerInterface
 {
     private string $language = 'en';
-    private Request $request;
     private ?string $responseType = null;
     private TemplateRenderer $templateRenderer;
 
@@ -32,7 +31,6 @@ final class RequestHandler implements RequestHandlerInterface
 
     public function validate(Request $request): bool
     {
-        $this->request = $request;
         $this->templateRenderer = $this->templateRendererFactory->create($request->attributes->get('language') ?? 'en');
 
         /**
@@ -52,13 +50,6 @@ final class RequestHandler implements RequestHandlerInterface
             return false;
         }
         return true;
-    }
-
-    public function showRoot(Request $request, array $vars): Response
-    {
-        $injector = include(ROOT_DIR . '/src/Dependencies.php');
-        $controller = $injector->make('MyEspacio\Home\Presentation\RootPageController');
-        return $controller->show($request, $vars);
     }
 
     public function sendResponse(ResponseData $responseData): Response
@@ -92,7 +83,7 @@ final class RequestHandler implements RequestHandlerInterface
             $content = $this->templateRenderer->render($responseData->getTemplate(), $responseData->getData());
             return new Response($content, $responseData->getStatusCode());
         }
-        return $this->showRoot($this->request, []);
+        return new Response('', $responseData->getStatusCode());
     }
 
     public function getTranslationIdentifier(string $languageFile): TranslationIdentifier

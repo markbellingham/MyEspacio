@@ -35,9 +35,6 @@ final class ContactController
     public function show(Request $request, array $vars): Response
     {
         $valid = $this->requestHandler->validate($request);
-        if ($valid === false) {
-            return $this->requestHandler->showRoot($request, $vars);
-        }
 
         $icons = $this->captcha->getIcons(self::CAPTCHA_ICONS_QUANTITY);
         $this->session->set('contactIcons', $icons->toArray());
@@ -59,9 +56,6 @@ final class ContactController
         $vars = new DataSet(json_decode($request->getContent(), true));
 
         $valid = $this->requestHandler->validate($request);
-        if ($valid === false) {
-            return $this->requestHandler->showRoot($request, $vars->toArray());
-        }
 
         if ($this->captcha->validate($vars->intNull('captcha1'), $vars->stringNull('captcha2')) === false) {
             return $this->requestHandler->sendResponse(

@@ -89,7 +89,7 @@ final class PhotoAlbum extends Model
         return [
             'title' => $this->title,
             'description' => $this->description,
-            'album_uuid' => $this->uuid->toString(),
+            'album_uuid' => $this->uuid?->toString(),
             'country' => $this->country?->jsonSerialize(),
             'photos' => $this->photos->jsonSerialize()
         ];

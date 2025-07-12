@@ -41,7 +41,7 @@ final class PhotoSearchTest extends TestCase
             ->willReturn(new PhotoCollection([]));
 
         $photoSearch = new PhotoSearch($photoAlbumRepository, $photoRepository);
-        $result = $photoSearch->search('singapore');
+        $result = $photoSearch->search('singapore', null);
 
         $this->assertInstanceOf(PhotoAlbum::class, $result);
         $this->assertInstanceOf(PhotoCollection::class, $result->getPhotos());
@@ -74,7 +74,7 @@ final class PhotoSearchTest extends TestCase
             ->willReturn(new PhotoCollection([]));
 
         $photoSearch = new PhotoSearch($photoAlbumRepository, $photoRepository);
-        $result = $photoSearch->search($inputSearchTerms);
+        $result = $photoSearch->search($inputSearchTerms, null);
 
         $this->assertInstanceOf(PhotoAlbum::class, $result);
         $this->assertInstanceOf(PhotoCollection::class, $result->getPhotos());
@@ -133,7 +133,8 @@ final class PhotoSearchTest extends TestCase
         string $param0,
         string $method,
         array $searchValue,
-        string $inputValue
+        string $album,
+        string $search,
     ): void {
         $photoAlbumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
@@ -151,7 +152,7 @@ final class PhotoSearchTest extends TestCase
         }
 
         $photoSearch = new PhotoSearch($photoAlbumRepository, $photoRepository);
-        $result = $photoSearch->search($inputValue);
+        $result = $photoSearch->search($album, $search);
 
         $this->assertInstanceOf(PhotoCollection::class, $result);
         $this->assertCount(0, $result);
@@ -188,31 +189,5 @@ final class PhotoSearchTest extends TestCase
                 ''
             ]
         ];
-    }
-
-    public function testSearchMyFavourites(): void
-    {
-        $photoAlbumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
-        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
-
-        $photoAlbumRepository->expects($this->once())
-            ->method('fetchByName')
-            ->with('my-favourites')
-            ->willReturn(null);
-        $photoAlbumRepository->expects($this->once())
-            ->method('fetchMyFavourites')
-            ->willReturn(new PhotoAlbum(
-                title: 'My Favourites',
-                albumId: 2,
-                description: '',
-                country: null,
-                photos: new PhotoCollection([])
-            ));
-
-        $photoSearch = new PhotoSearch($photoAlbumRepository, $photoRepository);
-        $result = $photoSearch->search('my-favourites');
-
-        $this->assertInstanceOf(PhotoAlbum::class, $result);
-        $this->assertInstanceOf(PhotoCollection::class, $result->getPhotos());
     }
 }

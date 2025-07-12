@@ -125,7 +125,11 @@ final class LoginController
 
         if ($this->secondLoginRequestInTime()) {
             $this->setUserLoggedIn();
-            return $this->requestHandler->showRoot($request, $vars);
+            return $this->requestHandler->sendResponse(
+                new ResponseData(
+                    template: '',
+                )
+            );
         }
 
         return $this->requestHandler->sendResponse(

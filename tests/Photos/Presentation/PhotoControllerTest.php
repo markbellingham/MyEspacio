@@ -23,61 +23,37 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class PhotoControllerTest extends TestCase
 {
-    public function testPhotoGridShowRoot(): void
-    {
-        $request = new Request();
-        $vars = ['searchPhotos' => 'sunset'];
-
-        $requestHandler = $this->createMock(RequestHandlerInterface::class);
-        $requestHandler->expects($this->once())
-            ->method('validate')
-            ->with($request)
-            ->willReturn(false);
-        $requestHandler->expects($this->once())
-            ->method('showRoot')
-            ->with($request, $vars)
-            ->willReturn(new Response());
-        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
-        $photoSearch = $this->createMock(PhotoSearchInterface::class);
-
-        $controller = new PhotoController(
-            $photoRepository,
-            $photoSearch,
-            $requestHandler
-        );
-        $result = $controller->photoGrid($request, $vars);
-        $this->assertInstanceOf(Response::class, $result);
-    }
-
-    /** @dataProvider photoGridDataProvider */
+    /**
+     * @param array<string, string> $vars
+     * @dataProvider photoGridDataProvider
+     */
     public function testPhotoGrid(
-        ?string $acceptHeader,
-        string $searchTerms,
+        Request $request,
+        bool $validated,
+        array $vars,
+        ?string $album,
+        ?string $searchTerms,
         ResponseData $responseData,
-        Response $expectedResponseClass,
-        PhotoAlbum|PhotoCollection $expectedPhotoClass,
+        Response $expectedResponse,
+        PhotoAlbum|PhotoCollection $expectedSearchResult,
         string $expectedResponseClassName,
         string $expectedResponseData
     ): void {
-        $request = new Request();
-        $request->headers->set('Accept', $acceptHeader);
-        $vars = ['searchPhotos' => $searchTerms];
-
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $requestHandler->expects($this->once())
             ->method('validate')
             ->with($request)
-            ->willReturn(true);
+            ->willReturn($validated);
         $requestHandler->expects($this->once())
             ->method('sendResponse')
             ->with($responseData)
-            ->willReturn($expectedResponseClass);
+            ->willReturn($expectedResponse);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $photoSearch->expects($this->once())
             ->method('search')
-            ->with($searchTerms)
-            ->willReturn($expectedPhotoClass);
+            ->with($album, $searchTerms)
+            ->willReturn($expectedSearchResult);
 
         $controller = new PhotoController(
             $photoRepository,
@@ -91,98 +67,87 @@ final class PhotoControllerTest extends TestCase
         $this->assertEquals($expectedResponseData, $actualResponse->getContent());
     }
 
-    /** @return array<string, array<int, mixed>> */
+    /** @return array<string, array<string, mixed>> */
     public static function photoGridDataProvider(): array
     {
         return [
-            'json_photo_collection' => [
-                'application/json',
-                'sunset',
-                new ResponseData(
+            'json_photo_collection_search' => [
+                'request' => new Request(['search' => 'sunset'], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
+                'validated' => true,
+                'vars' => [],
+                'album' => null,
+                'searchTerms' => 'sunset',
+                'responseData' => new ResponseData(
                     data: [
                         'photos' => new PhotoCollection([])
                     ],
-                    template: 'photos/PhotoGrid.html.twig'
+                    template: 'photos/PhotosNoAlbumView.html.twig'
                 ),
-                new JsonResponse(
+                'expectedResponse' => new JsonResponse(
                     [
                         'photos' => new PhotoCollection([])
                     ],
                     Response::HTTP_OK
                 ),
-                new PhotoCollection([]),
-                JsonResponse::class,
-                '{"photos":[]}'
-            ],
-            'unspecified_request_html_response' => [
-                null,
-                'sunset',
-                new ResponseData(
-                    data: [
-                        'photos' => new PhotoCollection([])
-                    ],
-                    template: 'photos/PhotoGrid.html.twig'
-                ),
-                new Response(
-                    '<div class="my-class">Some Content</div>',
-                    Response::HTTP_OK
-                ),
-                new PhotoCollection([]),
-                Response::class,
-                '<div class="my-class">Some Content</div>'
+                'expectedSearchResult' => new PhotoCollection([]),
+                'expectedResponseClassName' => JsonResponse::class,
+                'expectedResponseData' => '{"photos":[]}',
             ],
             'json_photo_album' => [
-                'application/json',
-                'sunset',
-                new ResponseData(
+                'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
+                'validated' => true,
+                'vars' => ['album' => 'mexico'],
+                'album' => 'mexico',
+                'searchTerms' => null,
+                'responseData' => new ResponseData(
                     data: [
-                        'album' => new PhotoAlbum(
-                            title: 'Singapore',
-                            albumId: 51,
-                            uuid: Uuid::fromString('4b9d0175-6d47-4460-b48b-6385db446a30'),
-                            country: new Country(
-                                id: 199,
-                                name: 'Singapore',
-                                twoCharCode: 'SG',
-                                threeCharCode: 'SGP'
-                            ),
-                            photos: new PhotoCollection([])
-                        )
+                        'photos' => new PhotoAlbum()
                     ],
-                    template: 'photos/PhotoGrid.html.twig'
+                    template: 'photos/PhotoAlbumView.html.twig'
                 ),
-                new JsonResponse(
+                'expectedResponse' => new JsonResponse(
                     [
-                        'album' => new PhotoAlbum(
-                            title: 'Singapore',
-                            albumId: 51,
-                            uuid: Uuid::fromString('4b9d0175-6d47-4460-b48b-6385db446a30'),
-                            country: new Country(
-                                id: 199,
-                                name: 'Singapore',
-                                twoCharCode: 'SG',
-                                threeCharCode: 'SGP'
-                            ),
-                            photos: new PhotoCollection([])
-                        )
+                        'photos' => new PhotoAlbum(),
+                    ]
+                ),
+                'expectedSearchResult' => new PhotoAlbum(),
+                'expectedResponseClassName' => JsonResponse::class,
+                'expectedResponseData' => '{"photos":{"title":"Unassigned","description":null,"album_uuid":null,"country":null,"photos":[]}}',
+            ],
+            'html_photo_collection_full_search' => [
+                'request' => new Request(['search' => 'sunset']),
+                'validated' => false,
+                'vars' => [],
+                'album' => null,
+                'searchTerms' => 'sunset',
+                'responseData' => new ResponseData(
+                    data: [
+                        'photos' => new PhotoCollection([]),
                     ],
-                    Response::HTTP_OK
+                    template: 'photos/PhotosNoAlbumView.html.twig'
                 ),
-                new PhotoAlbum(
-                    title: 'Singapore',
-                    albumId: 51,
-                    uuid: Uuid::fromString('4b9d0175-6d47-4460-b48b-6385db446a30'),
-                    country: new Country(
-                        id: 199,
-                        name: 'Singapore',
-                        twoCharCode: 'SG',
-                        threeCharCode: 'SGP'
-                    ),
-                    photos: new PhotoCollection([])
+                'expectedResponse' => new Response('<div class="my-class">Some Content</div>'),
+                'expectedSearchResult' => new PhotoCollection([]),
+                'expectedResponseClassName' => Response::class,
+                'expectedResponseData' => '<div class="my-class">Some Content</div>',
+            ],
+            'html_photo_album_full' => [
+                'request' => new Request(),
+                'validated' => false,
+                'vars' => ['album' => 'mexico'],
+                'album' => 'mexico',
+                'searchTerms' => null,
+                'responseData' => new ResponseData(
+                    data: [
+                        'photos' => new PhotoAlbum(),
+                    ],
+                    template: 'photos/PhotoAlbumView.html.twig'
                 ),
-                JsonResponse::class,
-                '{"album":{"title":"Singapore","description":null,"album_uuid":"4b9d0175-6d47-4460-b48b-6385db446a30","country":{"name":"Singapore","twoCharCode":"SG","threeCharCode":"SGP"},"photos":[]}}'
-            ]
+                'expectedResponse' => new Response('<div class="my-class">Some Content</div>'),
+                'expectedSearchResult' => new PhotoAlbum(),
+                'expectedResponseClassName' => Response::class,
+                'expectedResponseData' => '<div class="my-class">Some Content</div>',
+            ],
         ];
     }
 
@@ -357,10 +322,13 @@ final class PhotoControllerTest extends TestCase
 
     public function testSinglePhotoHtmlNoToken(): void
     {
-        $request = new Request();
+        $request = new Request(['uuid' => 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d']);
         $expectedResult = '<html lang="en"><body>Some content</body></html>';
 
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
+        $photoRepository->expects($this->once())
+            ->method('fetchByUuid')
+            ->willReturn(null);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $requestHandler->expects($this->once())
@@ -368,8 +336,13 @@ final class PhotoControllerTest extends TestCase
             ->with($request)
             ->willReturn(false);
         $requestHandler->expects($this->once())
-            ->method('showRoot')
-            ->with($request, ['uuid' => 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d'])
+            ->method('sendResponse')
+            ->with(new ResponseData(
+                data: [
+                    'photo' => null,
+                ],
+                template: 'photos/SinglePhoto.html.twig'
+            ))
             ->willReturn(new Response(
                 $expectedResult,
                 Response::HTTP_OK,

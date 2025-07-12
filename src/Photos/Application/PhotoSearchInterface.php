@@ -9,5 +9,5 @@ use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 
 interface PhotoSearchInterface
 {
-    public function search(string $searchTerms): PhotoCollection|PhotoAlbum;
+    public function search(?string $album, ?string $searchTerms): PhotoCollection|PhotoAlbum;
 }

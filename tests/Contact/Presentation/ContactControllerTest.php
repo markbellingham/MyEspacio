@@ -92,7 +92,7 @@ final class ContactControllerTest extends TestCase
             ->method('validate')
             ->willReturn(false);
         $requestHandler->expects($this->once())
-            ->method('showRoot')
+            ->method('sendResponse')
             ->willReturn(new Response($expectedResponse));
 
         $request = new Request();
@@ -120,7 +120,7 @@ final class ContactControllerTest extends TestCase
             ->method('validate')
             ->willReturn(false);
         $requestHandler->expects($this->once())
-            ->method('showRoot')
+            ->method('sendResponse')
             ->willReturn(new Response($expectedResponse));
 
         $controller = new ContactController($requestHandler, $session, $email, $captcha);

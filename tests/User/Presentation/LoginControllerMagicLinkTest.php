@@ -199,7 +199,7 @@ final class LoginControllerMagicLinkTest extends TestCase
             ->willReturn($user);
 
         $this->requestHandler->expects($this->once())
-            ->method('showRoot')
+            ->method('sendResponse')
             ->willReturn(new Response('<html lang="en"><body><p>You are logged in</p></body></html>'));
 
         $loginController = new LoginController(

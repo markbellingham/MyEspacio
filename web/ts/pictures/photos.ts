@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const closeBtn = document.querySelector(".close-btn") as HTMLButtonElement | null;
 
     if (!photoGrid || !photoView || !closeBtn) {
-        console.error("PhotoViewer: Required elements not found in DOM.");
+        // console.error({photoGrid, photoView, closeBtn});
+        // console.error("PhotoViewer: Required elements not found in DOM.");
         return;
     }
 

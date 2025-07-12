@@ -13,7 +13,6 @@ use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactoryInterface;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
 use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -84,17 +83,6 @@ final class RequestHandlerTest extends TestCase
             $this->translationIdentifierFactory
         );
         $this->assertFalse($requestHandler->validate($request));
-    }
-
-    #[Group('database')]
-    public function testShowRoot(): void
-    {
-        $request = new Request();
-        $request->request->set('language', 'en');
-        $vars = ['var1' => 'value1', 'var2' => 'value2'];
-        $result = $this->requestHandler->showRoot($request, $vars);
-
-        $this->assertInstanceOf(Response::class, $result);
     }
 
     /** @dataProvider sendResponseDataProvider */
