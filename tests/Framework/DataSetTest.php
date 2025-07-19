@@ -186,6 +186,27 @@ final class DataSetTest extends TestCase
         $this->assertNull($dataset->stringNull('eight'));
     }
 
+    public function testStringNullEncodingError(): void
+    {
+        $recursiveObject = new \stdClass();
+        $recursiveObject->self = $recursiveObject;
+
+        $dataset = new DataSet([
+            'recursive' => $recursiveObject
+        ]);
+
+        $this->assertEquals('[Encoding error]', $dataset->stringNull('recursive'));
+
+        $normalObject = new \stdClass();
+        $normalObject->property = 'value';
+
+        $dataset = new DataSet([
+            'normal' => $normalObject
+        ]);
+
+        $this->assertEquals('{"property":"value"}', $dataset->stringNull('normal'));
+    }
+
     public function testIntNull(): void
     {
         $dataset = new DataSet([

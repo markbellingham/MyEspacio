@@ -70,17 +70,14 @@ final readonly class DataSet
             return null;
         }
 
-        try {
-            if (strlen($value) === 16) {
-                return Uuid::fromBytes($value);
-            }
-
-            if (Uuid::isValid($value)) {
-                return Uuid::fromString($value);
-            }
-        } catch (InvalidArgumentException) {
-            return null;
+        if (strlen($value) === 16) {
+            return Uuid::fromBytes($value);
         }
+
+        if (Uuid::isValid($value)) {
+            return Uuid::fromString($value);
+        }
+
         return null;
     }
 

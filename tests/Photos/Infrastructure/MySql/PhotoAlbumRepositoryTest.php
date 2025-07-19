@@ -560,7 +560,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
     public static function fetchByNameDataProvider(): array
     {
         return [
-            'test_1' => [
+            'test_return_album' => [
                 'Tulum',
                 '%tulum%',
                 [
@@ -586,13 +586,24 @@ final class PhotoAlbumRepositoryTest extends TestCase
                     )
                 )
             ],
-            'test_2' => [
+            'test_album_not_found' => [
                 'Mexico',
                 '%mexico%',
                 null,
                 null
-            ]
+            ],
         ];
+    }
+
+    public function testFetchByNameEmptyString(): void
+    {
+        $db = $this->createMock(Connection::class);
+        $db->expects($this->never())
+            ->method('fetchOne');
+
+        $repository = new PhotoAlbumRepository($db);
+        $actualResult = $repository->fetchByName('');
+        $this->assertNull($actualResult);
     }
 
     /**
