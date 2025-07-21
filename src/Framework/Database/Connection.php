@@ -41,5 +41,5 @@ interface Connection
 
     public function statementHasErrors(PDOStatement $stmt): bool;
 
-    public function lastInsertId(): ?int;
+    public function lastInsertId(): int;
 }

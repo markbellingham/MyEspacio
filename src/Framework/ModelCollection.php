@@ -15,7 +15,7 @@ use MyEspacio\Framework\Exceptions\CollectionException;
  */
 abstract class ModelCollection implements Iterator, JsonSerializable
 {
-    /** @var array<int, mixed> */
+    /** @var array<int, array<string, mixed>> */
     protected array $data;
     protected int $position = 0;
 
@@ -25,7 +25,7 @@ abstract class ModelCollection implements Iterator, JsonSerializable
     abstract public function current(): Model;
 
     /**
-     * @param array<int, mixed> $data
+     * @param array<int, array<string, mixed>> $data
      */
     final public function __construct(array $data)
     {
@@ -39,7 +39,7 @@ abstract class ModelCollection implements Iterator, JsonSerializable
      */
     protected function validateElements(array $data): void
     {
-        foreach ($data as $element) {
+        foreach ($data as $key => $element) {
             if (is_array($element) === false) {
                 throw CollectionException::wrongDataType();
             }

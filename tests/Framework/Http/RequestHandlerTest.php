@@ -13,6 +13,7 @@ use MyEspacio\Framework\Localisation\TranslationIdentifier;
 use MyEspacio\Framework\Localisation\TranslationIdentifierFactoryInterface;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
 use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,12 +23,9 @@ use Symfony\Component\HttpFoundation\Response;
 final class RequestHandlerTest extends TestCase
 {
     private LanguageReader|MockObject $languageReader;
-
     private TranslationIdentifierFactoryInterface|MockObject $translationIdentifierFactory;
-
     private TemplateRendererFactoryInterface|MockObject $templateRendererFactory;
-
-    private RequestHandler|MockObject $requestHandler;
+    private RequestHandler $requestHandler;
 
     protected function setUp(): void
     {
@@ -85,7 +83,7 @@ final class RequestHandlerTest extends TestCase
         $this->assertFalse($requestHandler->validate($request));
     }
 
-    /** @dataProvider sendResponseDataProvider */
+    #[DataProvider('sendResponseDataProvider')]
     public function testSendResponse(
         string $language,
         string $requestedFormat,

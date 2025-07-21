@@ -9,6 +9,7 @@ use MyEspacio\Framework\DataSet;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -130,10 +131,10 @@ final class PhotoRepositoryTest extends TestCase
     }
 
     /**
-     * @dataProvider fetchByUuidDataProvider
      * @param array<string, string>|null $queryResult
      * @throws Exception
      */
+    #[DataProvider('fetchByUuidDataProvider')]
     public function testFetchByUuid(
         ?array $queryResult,
         string $binary,
@@ -377,12 +378,12 @@ final class PhotoRepositoryTest extends TestCase
     }
 
     /**
-     * @dataProvider searchDataProvider
      * @param array<int, mixed> $queryTerms
      * @param array<int, mixed> $searchTerms
      * @param array<int, array<string, string>> $searchResults
      * @throws Exception
      */
+    #[DataProvider('searchDataProvider')]
     public function testSearch(
         array $queryTerms,
         array $searchTerms,

@@ -14,9 +14,6 @@ final class LanguagesDirectoryTest extends TestCase
         $localDir = '/src/Locale';
         $directory = new LanguagesDirectory(ROOT_DIR);
 
-        $this->assertEquals(
-            expected: ROOT_DIR . $localDir,
-            actual: $directory->toString()
-        );
+        $this->assertEquals(ROOT_DIR . $localDir, $directory->toString());
     }
 }

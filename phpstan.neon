@@ -6,3 +6,5 @@ parameters:
         - tests/
     bootstrapFiles:
         - phpstan-bootstrap.php
+    ignoreErrors:
+        - '#Call to method PHPUnit\\Framework\\Assert::assertInstanceOf\(\) with .+ will always evaluate to true#'

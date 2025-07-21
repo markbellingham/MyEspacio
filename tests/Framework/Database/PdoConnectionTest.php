@@ -336,7 +336,6 @@ final class PdoConnectionTest extends TestCase
             'SELECT * FROM project.icons',
             []
         );
-        $this->assertIsArray($results);
         $this->assertCount(0, $results);
     }
 

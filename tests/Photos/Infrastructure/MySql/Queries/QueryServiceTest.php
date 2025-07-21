@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Photos\Infrastructure\MySql\Queries;
 
 use MyEspacio\Photos\Infrastructure\MySql\Queries\QueryService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class QueryServiceTest extends TestCase
@@ -94,8 +95,8 @@ final class QueryServiceTest extends TestCase
     /**
      * @param array<int, string> $searchTerms
      * @param array<int, string> $expectedResult
-     * @dataProvider preparedSearchTermsDataProvider
      */
+    #[DataProvider('preparedSearchTermsDataProvider')]
     public function testPrepareSearchTerms(
         array $searchTerms,
         array $expectedResult

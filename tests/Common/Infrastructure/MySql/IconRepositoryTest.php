@@ -5,16 +5,17 @@ namespace Tests\Common\Infrastructure\MySql;
 use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use MyEspacio\Common\Infrastructure\MySql\IconRepository;
 use MyEspacio\Framework\Database\Connection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 final class IconRepositoryTest extends TestCase
 {
     /**
-     * @dataProvider getIconsDataProvider
      * @param array<int, array<string, mixed>> $databaseResult
      * @throws Exception
      */
+    #[DataProvider('getIconsDataProvider')]
     public function testGetIcons(
         int $quantity,
         string $query,

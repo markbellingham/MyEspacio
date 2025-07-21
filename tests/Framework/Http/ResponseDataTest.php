@@ -6,16 +6,17 @@ namespace Tests\Framework\Http;
 
 use InvalidArgumentException;
 use MyEspacio\Framework\Http\ResponseData;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ResponseDataTest extends TestCase
 {
     /**
-     * @dataProvider modelDataProvider
      * @param array<string, mixed> $data
      * @param array<string, mixed> $translationVariables
      */
+    #[DataProvider('modelDataProvider')]
     public function testModel(
         array $data,
         int $statusCode,
@@ -87,9 +88,7 @@ final class ResponseDataTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider setDataDataProvider
-     */
+    #[DataProvider('setDataDataProvider')]
     public function testSetData(
         string $key,
         mixed $value

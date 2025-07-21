@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Locale;
 
 use Monolog\Test\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class MessagesTest extends TestCase
 {
@@ -17,9 +18,7 @@ final class MessagesTest extends TestCase
         $this->referenceKeys = $this->arrayKeysRecursive($referencesFile);
     }
 
-    /**
-     * @dataProvider localizationFilesProvider
-     */
+    #[DataProvider('localizationFilesProvider')]
     public function testAllLanguageFilesHaveSameKeys(string $languageFile): void
     {
         $comparedFile = include($languageFile);

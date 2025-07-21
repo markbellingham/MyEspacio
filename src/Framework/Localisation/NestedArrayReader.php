@@ -18,7 +18,7 @@ final class NestedArrayReader implements NestedArrayReaderInterface
     {
         $value = $this->data;
         foreach ($keys as $key) {
-            if (is_array($value) && array_key_exists($key, $value)) {
+            if (array_key_exists($key, $value)) {
                 $value = $value[$key];
             }
             if (is_string($value)) {

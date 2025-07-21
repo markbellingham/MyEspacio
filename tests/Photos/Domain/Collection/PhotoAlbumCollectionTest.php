@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Photos\Domain\Collection;
+namespace Tests\Photos\Domain\Collection;
 
 use MyEspacio\Framework\Exceptions\CollectionException;
 use MyEspacio\Photos\Domain\Collection\PhotoAlbumCollection;
@@ -102,19 +102,17 @@ final class PhotoAlbumCollectionTest extends TestCase
     {
         $data = [
             [
-                [
-                    'album_id' => '7',
-                    'album_uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
-                    'description' => null,
-                    'title' => 'Mumbai',
-                    'country_id' => '102',
-                    'country_name' => 'India',
-                    'three_char_code' => 'IND',
-                    'two_char_code' => 'IN'
-                ],
-                [
-                    'bad_key' => 'Bad Value'
-                ]
+                'album_id' => '7',
+                'album_uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4',
+                'description' => null,
+                'title' => 'Mumbai',
+                'country_id' => '102',
+                'country_name' => 'India',
+                'three_char_code' => 'IND',
+                'two_char_code' => 'IN'
+            ],
+            [
+                'bad_key' => 'Bad Value'
             ]
         ];
 

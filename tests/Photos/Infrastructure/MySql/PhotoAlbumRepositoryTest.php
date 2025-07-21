@@ -10,6 +10,7 @@ use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoAlbumRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -87,10 +88,10 @@ final class PhotoAlbumRepositoryTest extends TestCase
     ) AS fv ON fv.photo_id = photos.id';
 
     /**
-     * @dataProvider fetchByIdDataProvider
      * @param null|array<string, string> $queryResult
      * @throws Exception
      */
+    #[DataProvider('fetchByIdDataProvider')]
     public function testFetchById(
         int $albumId,
         ?array $queryResult,
@@ -158,10 +159,10 @@ final class PhotoAlbumRepositoryTest extends TestCase
     }
 
     /**
-     * @dataProvider fetchAllDataProvider
      * @param array<string, string> $databaseResult
      * @throws Exception
      */
+    #[DataProvider('fetchAllDataProvider')]
     public function testFetchAll(
         array $databaseResult,
         int $count,
@@ -271,10 +272,10 @@ final class PhotoAlbumRepositoryTest extends TestCase
     }
 
     /**
-     * @dataProvider fetchAlbumPhotosDataProvider
      * @param array<int, array<string, string>> $databaseResult
      * @throws Exception
      */
+    #[DataProvider('fetchAlbumPhotosDataProvider')]
     public function testFetchAlbumPhotos(
         PhotoAlbum $photoAlbum,
         int $photoCount,
@@ -392,12 +393,12 @@ final class PhotoAlbumRepositoryTest extends TestCase
     }
 
     /**
-     * @dataProvider searchAlbumPhotosDataProvider
      * @param array<int, mixed> $queryTerms
      * @param array<int, mixed> $searchTerms
      * @param array<int, array<string, string>> $searchResults
      * @throws Exception
      */
+    #[DataProvider('searchAlbumPhotosDataProvider')]
     public function testSearchAlbumPhotos(
         PhotoAlbum $photoAlbum,
         int $albumId,
@@ -524,10 +525,10 @@ final class PhotoAlbumRepositoryTest extends TestCase
     }
 
     /**
-     * @dataProvider fetchByNameDataProvider
      * @param null|array<string, string> $queryResult
      * @throws Exception
      */
+    #[DataProvider('fetchByNameDataProvider')]
     public function testFetchByName(
         string $requestAlbumName,
         string $paramAlbumName,
@@ -607,10 +608,10 @@ final class PhotoAlbumRepositoryTest extends TestCase
     }
 
     /**
-     * @dataProvider fetchMyFavouritesDataProvider
      * @param null|array<string, string> $queryResult
      * @throws Exception
      */
+    #[DataProvider('fetchMyFavouritesDataProvider')]
     public function testFetchMyFavourites(
         int $albumId,
         ?array $queryResult,

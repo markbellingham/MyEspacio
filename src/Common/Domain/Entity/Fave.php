@@ -3,6 +3,7 @@
 namespace MyEspacio\Common\Domain\Entity;
 
 use MyEspacio\Framework\DataSet;
+use MyEspacio\Framework\Exceptions\FaveException;
 use MyEspacio\Framework\Model;
 use Ramsey\Uuid\UuidInterface;
 
@@ -34,11 +35,18 @@ class Fave extends Model
         $this->itemUuid = $itemUuid;
     }
 
+    /**
+     * @throws FaveException
+     */
     public static function createFromDataSet(DataSet $data): Fave
     {
-        return new Fave(
-            userUuid: $data->uuidNull('user_uuid'),
-            itemUuid: $data->uuidNull('item_uuid')
-        );
+        $userUuid = $data->uuidNull('user_uuid');
+        $itemUuid = $data->uuidNull('item_uuid');
+
+        if ($userUuid === null || $itemUuid === null) {
+            throw FaveException::noNullValues();
+        }
+
+        return new Fave($userUuid, $itemUuid);
     }
 }

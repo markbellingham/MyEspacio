@@ -100,12 +100,12 @@ final class User extends Model
         $this->id = $id;
     }
 
-    public function getUuid(): ?UuidInterface
+    public function getUuid(): UuidInterface
     {
         return $this->uuid;
     }
 
-    public function setUuid(?UuidInterface $uuid): void
+    public function setUuid(UuidInterface $uuid): void
     {
         $this->uuid = $uuid;
     }

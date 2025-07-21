@@ -92,7 +92,7 @@ final class PdoConnection implements Connection
         return $errorInfo[0] !== $this::STATEMENT_SUCCESS_CODE;
     }
 
-    public function lastInsertId(): ?int
+    public function lastInsertId(): int
     {
         return intval($this->pdo->lastInsertId());
     }

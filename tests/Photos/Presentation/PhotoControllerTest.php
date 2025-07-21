@@ -14,6 +14,7 @@ use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use MyEspacio\Photos\Presentation\PhotoController;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -23,10 +24,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class PhotoControllerTest extends TestCase
 {
-    /**
-     * @param array<string, string> $vars
-     * @dataProvider photoGridDataProvider
-     */
+    /** @param array<string, string> $vars */
+    #[DataProvider('photoGridDataProvider')]
     public function testPhotoGrid(
         Request $request,
         bool $validated,
@@ -152,10 +151,10 @@ final class PhotoControllerTest extends TestCase
     }
 
     /**
-     * @dataProvider singlePhotoDataProvider
      * @param array<string, mixed> $vars
      * @throws Exception
      */
+    #[DataProvider('singlePhotoDataProvider')]
     public function testSinglePhoto(
         Request $request,
         array $vars,

@@ -6,6 +6,8 @@ namespace Tests\Common\Domain\Entity;
 
 use MyEspacio\Common\Domain\Entity\Fave;
 use MyEspacio\Framework\DataSet;
+use MyEspacio\Framework\Exceptions\FaveException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -49,5 +51,36 @@ final class FaveTest extends TestCase
         $this->assertInstanceOf(Fave::class, $fave);
         $this->assertSame('2cb35615-f812-45b9-b552-88a116979d11', $fave->getUserUuid()->toString());
         $this->assertSame('f133fede-65f5-4b68-aded-f8f0e9bfe3bb', $fave->getItemUuid()->toString());
+    }
+
+    #[DataProvider('createFromDataSetExceptionDataProvider')]
+    public function testCreateFromDataSetException(
+        DataSet $dataSet
+    ): void {
+        $this->expectException(FaveException::class);
+        $this->expectExceptionMessage('User uuid and item uuid must not be null.');
+
+        Fave::createFromDataSet($dataSet);
+    }
+
+    /**
+     * @return array<int, array<int, DataSet>>
+     */
+    public static function createFromDataSetExceptionDataProvider(): array
+    {
+        return [
+            [
+                new DataSet([
+                    'user_uuid' => '2cb35615-f812-45b9-b552',
+                    'item_uuid' => '3f9e14c1-6c5b-4d8c-a8d2-5c1dbbc43f67',
+                ]),
+            ],
+            [
+                new DataSet([
+                    'user' => '3f9e14c1-6c5b-4d8c-a8d2-5c1dbbc43f67',
+                    'item' => '3f9e14c1-6c5b-4d8c-a8d2',
+                ]),
+            ],
+        ];
     }
 }

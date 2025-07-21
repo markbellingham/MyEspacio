@@ -10,6 +10,7 @@ use MyEspacio\Photos\Domain\Collection\PhotoCommentCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoComment;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoCommentRepository;
 use PDOStatement;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -17,10 +18,10 @@ use Ramsey\Uuid\Uuid;
 final class PhotoCommentRepositoryTest extends TestCase
 {
     /**
-     * @dataProvider getCommentCountDataProvider
      * @param null|array<string, string> $databaseResult
      * @throws Exception
      */
+    #[DataProvider('getCommentCountDataProvider')]
     public function testGetCommentCount(
         int $photoId,
         ?array $databaseResult,
@@ -72,10 +73,7 @@ final class PhotoCommentRepositoryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider addCommentDataProvider
-     * @throws Exception
-     */
+    #[DataProvider('addCommentDataProvider')]
     public function testAddComment(
         PhotoComment $photoComment,
         string $comment,
