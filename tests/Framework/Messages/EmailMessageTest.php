@@ -23,13 +23,6 @@ final class EmailMessageTest extends TestCase
         $this->assertEquals('name@example.tld', $this->msg->getEmailAddress());
     }
 
-    public function testEmailAddressNull(): void
-    {
-        $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - email:');
-        $this->msg->setProtectedEmailAddress(null);
-    }
-
     public function testEmailAddressInvalid(): void
     {
         $this->expectException(InvalidEmailException::class);
@@ -46,13 +39,6 @@ final class EmailMessageTest extends TestCase
         );
     }
 
-    public function testMessageNull(): void
-    {
-        $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - message:');
-        $this->msg->setProtectedMessage(null);
-    }
-
     public function testMessageTooShort(): void
     {
         $this->expectException(InvalidEmailException::class);
@@ -66,13 +52,6 @@ final class EmailMessageTest extends TestCase
         $this->assertEquals('Mark Bellingham', $this->msg->getName());
     }
 
-    public function testNameNull(): void
-    {
-        $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - name:');
-        $this->msg->setProtectedName(null);
-    }
-
     public function testNameTooShort(): void
     {
         $this->expectException(InvalidEmailException::class);
@@ -84,13 +63,6 @@ final class EmailMessageTest extends TestCase
     {
         $this->msg->setProtectedSubject('Test Subject');
         $this->assertEquals('Test Subject', $this->msg->getSubject());
-    }
-
-    public function testSubjectNull(): void
-    {
-        $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - subject:');
-        $this->msg->setProtectedSubject(null);
     }
 
     public function testSubjectTooShort(): void

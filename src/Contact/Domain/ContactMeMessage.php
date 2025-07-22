@@ -13,10 +13,10 @@ final class ContactMeMessage extends EmailMessage
      * @throws InvalidEmailException
      */
     public function __construct(
-        protected ?string $emailAddress,
-        protected ?string $name,
-        protected ?string $subject,
-        protected ?string $message,
+        protected string $emailAddress,
+        protected string $name,
+        protected string $subject,
+        protected string $message,
         private ?int $captchaIconId,
         private ?string $description
     ) {
@@ -28,6 +28,9 @@ final class ContactMeMessage extends EmailMessage
         $this->setMessage($message);
     }
 
+    /**
+     * @throws InvalidEmailException
+     */
     private function setCaptcha(?int $captcha): void
     {
         $this->captchaIconId = $captcha;
@@ -36,6 +39,9 @@ final class ContactMeMessage extends EmailMessage
         }
     }
 
+    /**
+     * @throws InvalidEmailException
+     */
     private function setDescription(?string $description): void
     {
         $this->description = $description;
@@ -47,9 +53,16 @@ final class ContactMeMessage extends EmailMessage
         }
     }
 
-    /** @return array<string, mixed> */
+    /** @return array<string, string> */
     private function toArray(): array
     {
-        return get_object_vars($this);
+        return [
+            'emailAddress' => $this->emailAddress,
+            'message' => $this->message,
+            'name' => $this->name,
+            'subject' => $this->subject,
+            'captchaIconId' => (string) ($this->captchaIconId ?? 'null'),
+            'description' => $this->description ?? 'null',
+        ];
     }
 }

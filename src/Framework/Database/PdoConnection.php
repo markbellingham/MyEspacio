@@ -35,7 +35,12 @@ final class PdoConnection implements Connection
             return null;
         }
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ?: null;
+        if ($result === false) {
+            return null;
+        }
+
+        /** @var array<string, mixed> $result */
+        return $result;
     }
 
     /**
@@ -98,7 +103,7 @@ final class PdoConnection implements Connection
     }
 
     /**
-     * @param string $className
+     * @param class-string $className
      * @return array<int, mixed>
      * @throws ReflectionException
      */

@@ -13,8 +13,8 @@ use Twig\TwigFunction;
 
 final class TwigTemplateRendererFactory implements TemplateRendererFactoryInterface
 {
-    private ?TemplateRenderer $templateRenderer = null;
-    private ?Translator $translator = null;
+    private TemplateRenderer $templateRenderer;
+    private Translator $translator;
 
     public function __construct(
         private readonly CaptchaInterface $captcha,

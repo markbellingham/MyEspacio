@@ -19,15 +19,19 @@ final class LanguageLoaderTest extends TestCase
         $directory = vfsStream::newDirectory('languages')->at($root);
         $englishDirectory = vfsStream::newDirectory('en')->at($directory);
 
-        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
+        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => ["hello" => "Hello"], "goodbye" => ["goodbye" => "Goodbye"]];');
         vfsStream::newFile('non_existent_file.php')->at($englishDirectory);
 
         $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);
         $languagesDirectory->method('toString')->willReturn($directory->url());
 
         $loader = new LanguageLoader($languagesDirectory);
+        $actual = $loader->loadTranslations('en', 'test');
 
-        $this->assertEquals(['hello' => 'Hello', 'goodbye' => 'Goodbye'], $loader->loadTranslations('en', 'test'));
+        $this->assertEquals(
+            ["hello" => ["hello" => "Hello"], "goodbye" => ["goodbye" => "Goodbye"]],
+            $actual
+        );
     }
 
     public function testFileDoesNotExist(): void
@@ -36,16 +40,19 @@ final class LanguageLoaderTest extends TestCase
         $directory = vfsStream::newDirectory('languages')->at($root);
         $englishDirectory = vfsStream::newDirectory('en')->at($directory);
 
-        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
+        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => ["hello" => "Hello"], "goodbye" => ["goodbye" => "Goodbye"]];');
         vfsStream::newFile('non_existent_file.php')->at($englishDirectory);
 
         $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);
         $languagesDirectory->method('toString')->willReturn($directory->url());
 
         $loader = new LanguageLoader($languagesDirectory);
+        $actual = $loader->loadTranslations('fr', 'test');
 
-        // Return English if language file not found
-        $this->assertEquals(['hello' => 'Hello', 'goodbye' => 'Goodbye'], $loader->loadTranslations('fr', 'test'));
+        $this->assertEquals(
+            ["hello" => ["hello" => "Hello"], "goodbye" => ["goodbye" => "Goodbye"]],
+            $actual
+        );
     }
 
     public function testEnglishFileNotFound(): void
@@ -54,7 +61,7 @@ final class LanguageLoaderTest extends TestCase
         $directory = vfsStream::newDirectory('languages')->at($root);
         $englishDirectory = vfsStream::newDirectory('en')->at($directory);
 
-        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
+        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => ["hello" => "Hello"], "goodbye" => ["goodbye" => "Goodbye"]];');
         vfsStream::newFile('non_existent_file.php')->at($englishDirectory);
 
         $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);
@@ -73,7 +80,7 @@ final class LanguageLoaderTest extends TestCase
         $directory = vfsStream::newDirectory('languages')->at($root);
         $englishDirectory = vfsStream::newDirectory('en')->at($directory);
 
-        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
+        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => ["hello" => "Hello"], "goodbye" => ["goodbye" => "Goodbye"]];');
         vfsStream::newFile('not_array.php')->at($englishDirectory);
 
         $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);
@@ -92,7 +99,7 @@ final class LanguageLoaderTest extends TestCase
         $directory = vfsStream::newDirectory('languages')->at($root);
         $englishDirectory = vfsStream::newDirectory('en')->at($directory);
 
-        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => "Hello", "goodbye" => "Goodbye"];');
+        vfsStream::newFile('test.php')->at($englishDirectory)->setContent('<?php return ["hello" => ["hello" => "Hello"], "goodbye" => ["goodbye" => "Goodbye"]];');
         vfsStream::newFile('not_array.php')->at($englishDirectory);
 
         $languagesDirectory = $this->createMock(LanguagesDirectoryInterface::class);

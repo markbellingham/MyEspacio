@@ -17,7 +17,6 @@ final class PhotoSearch implements PhotoSearchInterface
     ];
     private const string COMMON_SEARCH_TERMS_DIVISORS = '/[\s\/\-_.,;]+/';
 
-    private ?PhotoAlbum $album = null;
     private int $paramCount;
     /** @var array<int, string> */
     private array $params;
@@ -28,24 +27,24 @@ final class PhotoSearch implements PhotoSearchInterface
     ) {
     }
 
-    public function search(?string $album, ?string $searchTerms): PhotoCollection|PhotoAlbum
+    public function search(?string $albumName, ?string $searchTerms): PhotoCollection|PhotoAlbum
     {
         $this->parseSearchParams($searchTerms);
-        $this->isAlbum($album);
+        $album = $this->isAlbum($albumName);
 
-        if ($this->album && $this->paramCount === 0) {
-            return $this->albumPhotos();
+        if ($album && $this->paramCount === 0) {
+            return $this->albumPhotos($album);
         }
-        if ($this->album && $this->paramCount > 0) {
-            return $this->searchAlbumPhotos();
+        if ($album && $this->paramCount > 0) {
+            return $this->searchAlbumPhotos($album);
         }
         if (
-            $this->album === null &&
-            in_array($album, self::NON_ALBUM_SEARCHES, true)
+            $album === null &&
+            in_array($albumName, self::NON_ALBUM_SEARCHES, true)
         ) {
-            return $this->popularSearchTypes($album);
+            return $this->popularSearchTypes($albumName);
         }
-        if ($this->album === null && $this->paramCount > 0) {
+        if ($album === null && $this->paramCount > 0) {
             return $this->photoRepository->search($this->params);
         }
         return $this->photoRepository->randomSelection();
@@ -53,37 +52,38 @@ final class PhotoSearch implements PhotoSearchInterface
 
     private function parseSearchParams(?string $requestParams): void
     {
-        $this->params = preg_split(
+        $result = preg_split(
             pattern: self::COMMON_SEARCH_TERMS_DIVISORS,
             subject: $requestParams ?? '',
             limit: -1,
             flags: PREG_SPLIT_NO_EMPTY
         );
+        $this->params = $result ?: [];
         $this->paramCount = count($this->params);
     }
 
-    private function isAlbum(?string $album): void
+    private function isAlbum(?string $album): ?PhotoAlbum
     {
         if ($album === null) {
-            return;
+            return null;
         }
-        $this->album = $this->photoAlbumRepository->fetchByName(trim($album));
+        return $this->photoAlbumRepository->fetchByName(trim($album));
     }
 
-    private function albumPhotos(): PhotoAlbum
+    private function albumPhotos(PhotoAlbum $album): PhotoAlbum
     {
-        $this->album->setPhotos(
-            $this->photoAlbumRepository->fetchAlbumPhotos($this->album)
+        $album->setPhotos(
+            $this->photoAlbumRepository->fetchAlbumPhotos($album)
         );
-        return $this->album;
+        return $album;
     }
 
-    private function searchAlbumPhotos(): PhotoAlbum
+    private function searchAlbumPhotos(PhotoAlbum $album): PhotoAlbum
     {
-        $this->album->setPhotos(
-            $this->photoAlbumRepository->searchAlbumPhotos($this->album, $this->params)
+        $album->setPhotos(
+            $this->photoAlbumRepository->searchAlbumPhotos($album, $this->params)
         );
-        return $this->album;
+        return $album;
     }
 
     private function popularSearchTypes(?string $searchType): PhotoCollection

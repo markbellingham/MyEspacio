@@ -109,13 +109,10 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $request = $this->createMock(Request::class);
+        $request = new Request();
 
         $expectedResponse = 'Rendered HTML Root Content';
 
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn('{}');
         $requestHandler->expects($this->once())
             ->method('validate')
             ->willReturn(false);
@@ -136,11 +133,8 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $request = $this->createMock(Request::class);
+        $request = new Request();
 
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn('{}');
         $requestHandler->expects($this->once())
             ->method('validate')
             ->willReturn(true);
@@ -168,11 +162,8 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $request = $this->createMock(Request::class);
+        $request = new Request();
 
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn('[]');
         $requestHandler->expects($this->once())
             ->method('validate')
             ->willReturn(true);
@@ -197,11 +188,18 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $request = $this->createMock(Request::class);
+        $request = new Request(
+            query: [],
+            request: [
+                'emailAddress' => 'mail@domain.tld',
+                'name' => 'Mark',
+                'subject' => 'subject',
+                'message' => 'message to the website admin',
+                'captcha1' => '1',
+                'description' => '',
+            ],
+        );
 
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn('{"emailAddress":"mail@domain.tld","name":"Mark","subject":"subject","message":"message to the website admin","captcha1":"1","description":""}');
         $requestHandler->expects($this->once())
             ->method('validate')
             ->willReturn(true);
@@ -229,11 +227,18 @@ final class ContactControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
-        $request = $this->createMock(Request::class);
+        $request = new Request(
+            query: [],
+            request: [
+                'emailAddress' => 'mail@domain.tld',
+                'name' => 'Mark',
+                'subject' => 'subject',
+                'message' => 'message to the website admin',
+                'captcha1' => '1',
+                'description' => '',
+            ],
+        );
 
-        $request->expects($this->once())
-            ->method('getContent')
-            ->willReturn('{"emailAddress":"mail@domain.tld","name":"Mark","subject":"subject","message":"message to the website admin","captcha1":"1","description":""}');
         $requestHandler->expects($this->once())
             ->method('validate')
             ->willReturn(true);

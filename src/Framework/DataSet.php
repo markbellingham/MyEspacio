@@ -81,6 +81,15 @@ final readonly class DataSet
         return null;
     }
 
+    public function uuid(string $key): UuidInterface
+    {
+        $uuidNull = $this->uuidNull($key);
+        if ($uuidNull === null) {
+            throw new InvalidArgumentException('Invalid UUID format for key ' . $key);
+        }
+        return $uuidNull;
+    }
+
     public function stringNull(string|null $key): ?string
     {
         $value = $this->data[$key] ?? null;

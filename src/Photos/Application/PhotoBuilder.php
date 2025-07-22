@@ -52,7 +52,7 @@ final readonly class PhotoBuilder
     {
         return new GeoCoordinates(
             id: $this->dataSet->int('geo_id'),
-            photoUuid: $this->dataSet->uuidNull('photo_uuid'),
+            photoUuid: $this->dataSet->uuid('photo_uuid'),
             latitude: $this->dataSet->int('latitude'),
             longitude: $this->dataSet->int('longitude'),
             accuracy: $this->dataSet->int('accuracy')

@@ -12,11 +12,11 @@ class EmailMessage implements EmailMessageInterface
     private const int MINIMUM_NAME_LENGTH = 3;
     private const int MINIMUM_SUBJECT_LENGTH = 3;
 
-    protected ?string $emailAddress;
-    protected ?string $message;
-    protected ?string $name;
-    protected ?string $subject;
-    protected ?string $error;
+    protected string $emailAddress;
+    protected string $message;
+    protected string $name;
+    protected string $subject;
+    protected string $error;
 
     public function getEmailAddress(): string
     {
@@ -41,12 +41,9 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @throws InvalidEmailException
      */
-    protected function setEmailAddress(?string $emailAddress): void
+    protected function setEmailAddress(string $emailAddress): void
     {
-        if (
-            $emailAddress === null ||
-            filter_var($emailAddress, FILTER_VALIDATE_EMAIL) === false
-        ) {
+        if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL) === false) {
             throw InvalidEmailException::invalidMessage(['email' => $emailAddress]);
         }
 
@@ -56,12 +53,9 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @throws InvalidEmailException
      */
-    protected function setMessage(?string $message): void
+    protected function setMessage(string $message): void
     {
-        if (
-            $message === null ||
-            strlen($message) < self::MINIMUM_MESSAGE_LENGTH
-        ) {
+        if (strlen($message) < self::MINIMUM_MESSAGE_LENGTH) {
             throw InvalidEmailException::invalidMessage(['message' => $message]);
         }
 
@@ -71,12 +65,9 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @throws InvalidEmailException
      */
-    protected function setName(?string $name): void
+    protected function setName(string $name): void
     {
-        if (
-            $name === null ||
-            strlen($name) < self::MINIMUM_NAME_LENGTH
-        ) {
+        if (strlen($name) < self::MINIMUM_NAME_LENGTH) {
             throw InvalidEmailException::invalidMessage(['name' => $name]);
         }
         $this->name = $name;
@@ -85,12 +76,9 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @throws InvalidEmailException
      */
-    protected function setSubject(?string $subject): void
+    protected function setSubject(string $subject): void
     {
-        if (
-            $subject === null ||
-            strlen($subject) < self::MINIMUM_SUBJECT_LENGTH
-        ) {
+        if (strlen($subject) < self::MINIMUM_SUBJECT_LENGTH) {
             throw InvalidEmailException::invalidMessage(['subject' => $subject]);
         }
         $this->subject = $subject;

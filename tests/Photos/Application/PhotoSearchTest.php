@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Photos\Application;
+namespace Tests\Photos\Application;
 
 use MyEspacio\Photos\Application\PhotoSearch;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;

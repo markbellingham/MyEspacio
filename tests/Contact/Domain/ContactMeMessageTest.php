@@ -6,6 +6,7 @@ namespace Tests\Contact\Domain;
 
 use MyEspacio\Contact\Domain\ContactMeMessage;
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
+use MyEspacio\Framework\Messages\EmailMessage;
 use PHPUnit\Framework\TestCase;
 
 final class ContactMeMessageTest extends TestCase
@@ -22,14 +23,15 @@ final class ContactMeMessageTest extends TestCase
         );
 
         $this->assertInstanceOf(ContactMeMessage::class, $message);
+        $this->assertInstanceOf(EmailMessage::class, $message);
     }
 
     public function testCaptchaIdNull(): void
     {
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - emailAddress: mail@example.tld, message: A test message with lots of characters, name: Anonymous, subject: A Test Subject, captchaIconId: , description:');
+        $this->expectExceptionMessage('Invalid Message - emailAddress: mail@example.tld, message: A test message with lots of characters, name: Anonymous, subject: A Test Subject, captchaIconId: null, description:');
 
-        $message = new ContactMeMessage(
+        new ContactMeMessage(
             emailAddress: 'mail@example.tld',
             name: 'Anonymous',
             subject: 'A Test Subject',
@@ -42,9 +44,9 @@ final class ContactMeMessageTest extends TestCase
     public function testDescriptionNull(): void
     {
         $this->expectException(InvalidEmailException::class);
-        $this->expectExceptionMessage('Invalid Message - emailAddress: mail@example.tld, message: A test message with lots of characters, name: Anonymous, subject: A Test Subject, captchaIconId: 1, description:');
+        $this->expectExceptionMessage('Invalid Message - emailAddress: mail@example.tld, message: A test message with lots of characters, name: Anonymous, subject: A Test Subject, captchaIconId: 1, description: null');
 
-        $message = new ContactMeMessage(
+        new ContactMeMessage(
             emailAddress: 'mail@example.tld',
             name: 'Anonymous',
             subject: 'A Test Subject',
@@ -59,7 +61,7 @@ final class ContactMeMessageTest extends TestCase
         $this->expectException(InvalidEmailException::class);
         $this->expectExceptionMessage('Invalid Message - emailAddress: mail@example.tld, message: A test message with lots of characters, name: Anonymous, subject: A Test Subject, captchaIconId: 1, description: An invalid description');
 
-        $message = new ContactMeMessage(
+        new ContactMeMessage(
             emailAddress: 'mail@example.tld',
             name: 'Anonymous',
             subject: 'A Test Subject',

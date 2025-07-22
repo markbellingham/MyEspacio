@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Framework\Logger;
 
+use Monolog\Level;
 use Monolog\Logger;
 use MyEspacio\Framework\Logger\MonologAdapter;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LogLevel;
 
 final class MonologAdapterTest extends TestCase
 {
     public function testLog(): void
     {
-        $level = LogLevel::INFO;
+        $level = Level::Info;
         $message = 'Test message';
 
         $monologMock = $this->createMock(Logger::class);

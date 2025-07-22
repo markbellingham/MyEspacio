@@ -53,7 +53,7 @@ final class ContactController
 
     public function sendMessage(Request $request): Response
     {
-        $vars = new DataSet(json_decode($request->getContent(), true));
+        $vars = new DataSet($request->request->all());
 
         $valid = $this->requestHandler->validate($request);
 
@@ -68,10 +68,10 @@ final class ContactController
 
         try {
             $emailMessage = new ContactMeMessage(
-                emailAddress: $vars->stringNull('emailAddress'),
-                name: $vars->stringNull('name'),
-                subject: $vars->stringNull('subject'),
-                message: $vars->stringNull('message'),
+                emailAddress: $vars->string('emailAddress'),
+                name: $vars->string('name'),
+                subject: $vars->string('subject'),
+                message: $vars->string('message'),
                 captchaIconId: $vars->intNull('captcha1'),
                 description: $vars->string('description')
             );

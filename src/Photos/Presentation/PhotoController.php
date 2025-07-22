@@ -28,7 +28,7 @@ final readonly class PhotoController
         $valid = $this->requestHandler->validate($request);
 
         $results = $this->photoSearch->search(
-            album: $vars['album'] ?? null,
+            albumName: $vars['album'] ?? null,
             searchTerms: $request->query->get('search')
         );
         $template = is_a($results, PhotoAlbum::class)

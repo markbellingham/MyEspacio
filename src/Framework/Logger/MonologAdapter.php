@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Logger;
 
+use Monolog\Level;
 use Monolog\Logger;
 
 final readonly class MonologAdapter implements LoggerInterface
@@ -13,7 +14,7 @@ final readonly class MonologAdapter implements LoggerInterface
     ) {
     }
 
-    public function log(string $level, string $message, array $context = []): void
+    public function log(Level $level, string $message, array $context = []): void
     {
         $this->monolog->log($level, $message);
     }

@@ -7,16 +7,16 @@ namespace MyEspacio\Framework\Rendering;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Translator;
 
-final class TranslatorFactory implements TranslatorFactoryInterface
+final readonly class TranslatorFactory implements TranslatorFactoryInterface
 {
     public function __construct(
-        private readonly ArrayLoader $arrayLoader
+        private ArrayLoader $arrayLoader
     ) {
     }
 
     public function createTranslator(string $locale): Translator
     {
-        // To handle dynamic content (like user names), use placeholders:
+        // To handle dynamic content (like usernames), use placeholders:
         // /../locale/en/messages.php
         // user => [
         //     'WELCOME' => "Welcome, %name%!"

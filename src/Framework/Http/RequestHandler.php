@@ -31,7 +31,7 @@ final class RequestHandler implements RequestHandlerInterface
 
     public function validate(Request $request): bool
     {
-        $this->templateRenderer = $this->templateRendererFactory->create($request->attributes->get('language') ?? 'en');
+        $this->templateRenderer = $this->templateRendererFactory->create($request->attributes->getString('language') ?: 'en');
 
         /**
          * If the response type is text/html and does not contain the token, send a full application response
@@ -39,7 +39,7 @@ final class RequestHandler implements RequestHandlerInterface
          * If the response type is application/json we can skip this and send only raw data
          */
         $this->responseType = $request->headers->get('Accept');
-        $this->language = $request->attributes->get('language') ?? 'en';
+        $this->language = $request->attributes->getString('language') ?: 'en';
         if ($this->responseType === 'application/json') {
             return true;
         }

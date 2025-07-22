@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Localisation;
 
+use RuntimeException;
+
 class LanguageReader
 {
-    private const PLACEHOLDER_PATTERN = '/%\{(\w+)}/';
+    private const string PLACEHOLDER_PATTERN = '/%\{(\w+)}/';
 
     public function __construct(
         private readonly LanguageLoaderInterface $languageLoader,
@@ -48,10 +50,14 @@ class LanguageReader
      */
     private function replaceVariables(string $text, array $variables): string
     {
-        return preg_replace_callback(
+        $result = preg_replace_callback(
             pattern: self::PLACEHOLDER_PATTERN,
             callback: fn($matches) => $variables[$matches[1]] ?: $matches[0],
             subject: $text
         );
+        if (is_string($result) === false) {
+            throw new RuntimeException('Failed to replace variables in text');
+        }
+        return $result;
     }
 }

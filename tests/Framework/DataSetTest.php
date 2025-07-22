@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Tests\Framework;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 use MyEspacio\Framework\DataSet;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class DataSetTest extends TestCase
@@ -160,6 +163,101 @@ final class DataSetTest extends TestCase
         $this->assertNull($dataset->uuidNull('invalid_binary_4'));
         $this->assertNull($dataset->uuidNull('invalid_string'));
         $this->assertNull($dataset->uuidNull('null_value'));
+    }
+
+    #[DataProvider('uuidDataProvider')]
+    public function testUuid(
+        DataSet $dataset,
+        UuidInterface $expectedUuid
+    ): void {
+        $this->assertEquals($expectedUuid, $dataset->uuid('uuid'));
+    }
+
+    /** @return array<string, array<int, mixed>> */
+    public static function uuidDataProvider(): array
+    {
+        return [
+            'valid_string_1' => [
+                new DataSet(['uuid' => '9c001dd7-7921-4944-bc17-52b890aa51fb']),
+                Uuid::fromString('9c001dd7-7921-4944-bc17-52b890aa51fb')
+            ],
+            'valid_string_2' => [
+                new DataSet(['uuid' => '550e8400-e29b-41d4-a716-446655440000']),
+                Uuid::fromString('550e8400-e29b-41d4-a716-446655440000')
+            ],
+            'valid_binary_1' => [
+                new DataSet(['uuid' => hex2bin('550e8400e29b41d4a716446655440000')]),
+                Uuid::fromBytes(hex2bin('550e8400e29b41d4a716446655440000'))
+            ],
+            'valid_binary_2' => [
+                new DataSet(['uuid' => hex2bin('123e4567e89b12d3a456426614174000')]),
+                Uuid::fromBytes(hex2bin('123e4567e89b12d3a456426614174000'))
+            ],
+        ];
+    }
+
+    #[DataProvider('uuidExceptionDataProvider')]
+    public function testUuidException(
+        DataSet $dataset,
+        string $key,
+        string $expectedExceptionMessage,
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+
+        $dataset->uuid($key);
+    }
+
+    /** @return array<string, array<int, mixed>> */
+    public static function uuidExceptionDataProvider(): array
+    {
+        return [
+            'invalid_string_1' => [
+                new DataSet(['string1' => '550e8400-e29b-41d4-a716-44665544000']),
+                'string1',
+                'Invalid UUID format for key string1',
+            ],
+            'invalid_string_2' => [
+                new DataSet(['string2' => '550e8400-e29b-41d4-a716-4466554400000']),
+                'string2',
+                'Invalid UUID format for key string2'
+            ],
+            'invalid_string_3' => [
+                new DataSet(['string3' => '550e8400-e29b-41d4-a716-zzzzzzzzzzzz']),
+                'string3',
+                'Invalid UUID format for key string3'
+            ],
+            'invalid_string_4' => [
+                new DataSet(['string4' => 'random-string']),
+                'string4',
+                'Invalid UUID format for key string4'
+            ],
+            'invalid_binary_1' => [
+                new DataSet(['binary1' => hex2bin('550e8400e29b41d4a71644665544')]),
+                'binary1',
+                'Invalid UUID format for key binary1'
+            ],
+            'invalid_binary_2' => [
+                new DataSet(['binary2' => hex2bin('550e8400e29b41d4a71644665544000000')]),
+                'binary2',
+                'Invalid UUID format for key binary2'
+            ],
+            'invalid_binary_3' => [
+                new DataSet(['binary3' => hex2bin('abcd1234abcd1234abcd1234abcd12')]),
+                'binary3',
+                'Invalid UUID format for key binary3'
+            ],
+            'invalid_binary_4' => [
+                new DataSet(['binary4' => hex2bin('1234567890')]),
+                'binary4',
+                'Invalid UUID format for key binary4'
+            ],
+            'null_value' => [
+                new DataSet(['null' => null]),
+                'null',
+                'Invalid UUID format for key null'
+            ],
+        ];
     }
 
     public function testStringNull(): void
