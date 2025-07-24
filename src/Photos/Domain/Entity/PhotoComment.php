@@ -40,7 +40,7 @@ final class PhotoComment extends Comment
         return [
             'photoUuid' => $this->photoUuid->toString(),
             'comment' => $this->comment,
-            'created' => $this->getCreated()?->format(DateTimeInterface::ATOM),
+            'created' => $this->getCreated()->format(DateTimeInterface::ATOM),
             'username' => $this->username,
             'userUuid' => $this->userUuid->toString()
         ];

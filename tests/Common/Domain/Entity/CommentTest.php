@@ -41,19 +41,23 @@ final class CommentTest extends TestCase
 
     public function testCommentDefault(): void
     {
-        $comment = new Comment();
+        $comment = new Comment(
+            comment: '',
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
+            title: null,
+            userUuid: Uuid::fromString('39fa7943-6fa7-4412-97c8-c6cec6a44e0b'),
+            username: ''
+        );
 
         $this->assertEquals('', $comment->getComment());
-        $this->assertNull($comment->getCreated());
         $this->assertEquals('', $comment->getTitle());
-        $this->assertEquals(null, $comment->getUserUuid());
         $this->assertEquals('', $comment->getUsername());
         $this->assertEquals(
             [
                 'comment' => '',
-                'created' => null,
+                'created' => '2023-12-30T12:13:14+00:00',
                 'username' => '',
-                'userUuid' => null
+                'userUuid' => '39fa7943-6fa7-4412-97c8-c6cec6a44e0b'
             ],
             $comment->jsonSerialize()
         );
@@ -63,20 +67,19 @@ final class CommentTest extends TestCase
     {
         $comment = new Comment(
             comment: '',
-            created: null,
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
             title: null,
-            userUuid: null,
+            userUuid: Uuid::fromString('39fa7943-6fa7-4412-97c8-c6cec6a44e0b'),
             username: ''
         );
 
-        $this->assertNull($comment->getCreated());
         $this->assertNull($comment->getTitle());
         $this->assertEquals(
             [
                 'comment' => '',
-                'created' => null,
+                'created' => '2023-12-30T12:13:14+00:00',
                 'username' => '',
-                'userUuid' => null
+                'userUuid' => '39fa7943-6fa7-4412-97c8-c6cec6a44e0b'
             ],
             $comment->jsonSerialize()
         );
@@ -111,7 +114,13 @@ final class CommentTest extends TestCase
 
     public function testCreatedException(): void
     {
-        $comment = new Comment();
+        $comment = new Comment(
+            comment: '',
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
+            title: null,
+            userUuid: Uuid::fromString('39fa7943-6fa7-4412-97c8-c6cec6a44e0b'),
+            username: ''
+        );
         $this->expectException(Exception::class);
         $comment->setCreated('invalid_date');
     }

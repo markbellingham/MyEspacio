@@ -14,11 +14,6 @@ final readonly class CommentValidator
 
     public function validate(): bool
     {
-        if ($this->comment->getUserUuid() instanceof UuidInterface === false) {
-            // Anonymous user does not post comments
-            return false;
-        }
-
         if (trim($this->comment->getComment()) === '') {
             return false;
         }

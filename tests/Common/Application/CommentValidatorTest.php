@@ -26,20 +26,6 @@ final class CommentValidatorTest extends TestCase
         $this->assertTrue($validator->validate());
     }
 
-    public function testInvalidUserId(): void
-    {
-        $comment = new Comment(
-            comment: 'Hello',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
-            title: null,
-            userUuid: null,
-            username: 'Mark Bellingham'
-        );
-
-        $validator = new CommentValidator($comment);
-        $this->assertFalse($validator->validate());
-    }
-
     public function testCommentIsEmpty(): void
     {
         $comment = new Comment(

@@ -26,10 +26,13 @@ final readonly class PhotoController
     public function photoGrid(Request $request, array $vars): Response
     {
         $valid = $this->requestHandler->validate($request);
-
+        $albumName = $vars['album'] ?? null;
+        if (!is_null($albumName) && !is_string($albumName)) {
+            return new Response('Invalid album name', Response::HTTP_BAD_REQUEST);
+        }
         $results = $this->photoSearch->search(
-            albumName: $vars['album'] ?? null,
-            searchTerms: $request->query->get('search')
+            albumName: $albumName,
+            searchTerms: $request->query->getString('search')
         );
         $template = is_a($results, PhotoAlbum::class)
             ? 'photos/PhotoAlbumView.html.twig'
@@ -48,8 +51,11 @@ final readonly class PhotoController
     public function singlePhoto(Request $request, array $vars): Response
     {
         $valid = $this->requestHandler->validate($request);
-
-        $uuid = Uuid::fromString($vars['uuid'] ?? '');
+        $uuidString = $vars['uuid'] ?? '';
+        if (is_string($uuidString) === false) {
+            return new Response('Invalid UUID', Response::HTTP_BAD_REQUEST);
+        }
+        $uuid = Uuid::fromString($uuidString);
 
         return $this->requestHandler->sendResponse(
             new ResponseData(

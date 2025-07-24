@@ -82,7 +82,7 @@ final class QueryService
      */
     public static function prepare(array $searchTerms): array
     {
-        $cleanedStrings = array_map(fn($str) => preg_replace('/[^a-zA-Z0-9]/', '', $str), $searchTerms);
+        $cleanedStrings = array_map(fn($str) => (string) preg_replace('/[^a-zA-Z0-9]/', '', $str), $searchTerms);
         $filteredStrings = array_filter($cleanedStrings, fn($term) => strlen($term) >= 3);
         return array_values(array_map(fn($str) => $str . '*', $filteredStrings));
     }

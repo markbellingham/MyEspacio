@@ -12,15 +12,15 @@ use Ramsey\Uuid\UuidInterface;
 class Comment extends Model
 {
     public function __construct(
-        private string $comment = '',
-        private ?DateTimeImmutable $created = null,
-        private readonly ?string $title = '',
-        private ?UuidInterface $userUuid = null,
-        private string $username = ''
+        private string $comment,
+        private DateTimeImmutable $created,
+        private readonly ?string $title,
+        private UuidInterface $userUuid,
+        private string $username,
     ) {
     }
 
-    public function getUserUuid(): ?UuidInterface
+    public function getUserUuid(): UuidInterface
     {
         return $this->userUuid;
     }
@@ -40,7 +40,7 @@ class Comment extends Model
         $this->comment = $comment;
     }
 
-    public function getCreated(): ?DateTimeImmutable
+    public function getCreated(): DateTimeImmutable
     {
         return $this->created;
     }
@@ -72,9 +72,9 @@ class Comment extends Model
     {
         return [
             'comment' => $this->comment,
-            'created' => $this->created?->format(DateTimeInterface::ATOM),
+            'created' => $this->created->format(DateTimeInterface::ATOM),
             'username' => $this->username,
-            'userUuid' => $this->userUuid
+            'userUuid' => $this->userUuid->toString(),
         ];
     }
 

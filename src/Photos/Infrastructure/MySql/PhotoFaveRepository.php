@@ -47,7 +47,11 @@ final readonly class PhotoFaveRepository implements PhotoFaveRepositoryInterface
                 'photoId' => $photo->getId()
             ]
         );
-        return (int) ($result['quantity'] ?? 0);
+        $quantity = $result['quantity'] ?? 0;
+        if (is_numeric($quantity)) {
+            return (int) $quantity;
+        }
+        return 0;
     }
 
     public function getAnonymousFaveCount(Photo $photo): int
@@ -58,6 +62,10 @@ final readonly class PhotoFaveRepository implements PhotoFaveRepositoryInterface
                 'photoId' => $photo->getId()
             ]
         );
-        return (int) ($result['quantity'] ?? 0);
+        $quantity = $result['quantity'] ?? 0;
+        if (is_numeric($quantity)) {
+            return (int) $quantity;
+        }
+        return 0;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Photos\Infrastructure\MySql;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Photos\Domain\Collection\PhotoCommentCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoComment;
@@ -123,7 +124,7 @@ final class PhotoCommentRepositoryTest extends TestCase
                 new PhotoComment(
                     photoUuid: Uuid::fromString('3ad9590d-6bce-4eb3-a693-e06403178628'),
                     comment: 'Great photo!',
-                    created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
+                    created: new DateTimeImmutable('2024-07-27 16:34:00', new DateTimeZone('UTC')),
                     title: '',
                     userUuid: Uuid::fromString('b8cf4379-62f4-4f98-a57e-9811d1a7d07d'),
                     username: ''
@@ -139,7 +140,7 @@ final class PhotoCommentRepositoryTest extends TestCase
                 new PhotoComment(
                     photoUuid: Uuid::fromString('3ad9590d-6bce-4eb3-a693-e06403178628'),
                     comment: 'Great photo!',
-                    created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-27 16:34:00'),
+                    created: new DateTimeImmutable('2024-07-27 16:34:00', new DateTimeZone('UTC')),
                     title: '',
                     userUuid: Uuid::fromString('b8cf4379-62f4-4f98-a57e-9811d1a7d07d'),
                     username: ''

@@ -26,7 +26,11 @@ final readonly class PhotoCommentRepository implements PhotoCommentRepositoryInt
                 'photoId' => $photoId,
             ]
         );
-        return (int) ($result['comment_count'] ?? 0);
+        $count = $result['comment_count'] ?? 0;
+        if (is_numeric($count)) {
+            return (int) $count;
+        }
+        return 0;
     }
 
     public function addComment(PhotoComment $comment): bool
