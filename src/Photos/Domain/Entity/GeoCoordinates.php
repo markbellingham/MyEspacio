@@ -55,7 +55,7 @@ final class GeoCoordinates extends Model
     {
         return new GeoCoordinates(
             id: $data->int('geo_id'),
-            photoUuid: $data->uuidNull('photo_uuid'),
+            photoUuid: $data->uuid('photo_uuid'),
             latitude: $data->int('latitude'),
             longitude: $data->int('longitude'),
             accuracy: $data->int('accuracy')

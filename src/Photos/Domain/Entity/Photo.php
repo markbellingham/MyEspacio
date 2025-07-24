@@ -97,7 +97,7 @@ final class Photo extends Model
         return $this->faveCount;
     }
 
-    public function getUuid(): UuidInterface
+    public function getUuid(): ?UuidInterface
     {
         return $this->uuid;
     }
@@ -110,7 +110,7 @@ final class Photo extends Model
         $array['dimensions'] = $this->getDimensions()->jsonSerialize();
         $array['relevance'] = $this->getRelevance()->jsonSerialize();
         $array['geoCoordinates'] = $this->getGeoCoordinates()->jsonSerialize();
-        $array['photo_uuid'] = $this->uuid->toString();
+        $array['photo_uuid'] = $this->uuid?->toString();
         unset($array['id'], $array['directory'], $array['filename'], $array['uuid']);
         return $array;
     }
@@ -122,7 +122,7 @@ final class Photo extends Model
             geoCoordinates: GeoCoordinates::createFromDataSet($data),
             dimensions: Dimensions::createFromDataSet($data),
             relevance: Relevance::createFromDataSet($data),
-            dateTaken: $data->dateTimeNull('date_taken'),
+            dateTaken: $data->utcDateTimeNull('date_taken'),
             description: $data->string('description'),
             directory: $data->string('directory'),
             filename: $data->string('filename'),

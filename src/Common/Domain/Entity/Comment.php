@@ -82,7 +82,7 @@ class Comment extends Model
     {
         return new Comment(
             comment: $data->string('comment'),
-            created: $data->dateTimeNull('created'),
+            created: $data->utcDateTimeNull('created'),
             title: $data->string('title'),
             userUuid: $data->uuidNull('user_uuid'),
             username: $data->string('username')

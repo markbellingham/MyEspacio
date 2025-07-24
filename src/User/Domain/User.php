@@ -194,7 +194,7 @@ final class User extends Model
             name: $data->string('name'),
             phone: $data->stringNull('phone'),
             loginAttempts: $data->intNull('login_attempts'),
-            loginDate: $data->dateTimeNull('login_date'),
+            loginDate: $data->utcDateTimeNull('login_date'),
             magicLink: $data->stringNull('magic_link'),
             phoneCode: $data->stringNull('phone_code'),
             passcodeRoute: $data->string('passcode_route'),

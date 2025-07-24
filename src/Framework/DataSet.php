@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyEspacio\Framework;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -28,9 +29,42 @@ final readonly class DataSet
         return $this->stringNull($key) ?? '';
     }
 
+    public function stringNull(string|null $key): ?string
+    {
+        $value = $this->data[$key] ?? null;
+        if (
+            is_scalar($value)
+        ) {
+            return trim((string)$value);
+        } elseif (
+            is_array($value) ||
+            is_object($value)
+        ) {
+            $json = json_encode($value);
+            if ($json === false) {
+                return '[Encoding error]';
+            }
+            return $json;
+        }
+        return null;
+    }
+
     public function int(string $key): int
     {
         return $this->intNull($key) ?? 0;
+    }
+
+    public function intNull(string|null $key): ?int
+    {
+        $value = $this->data[$key] ?? null;
+        if (is_scalar($value) === false) {
+            return null;
+        }
+        return filter_var(
+            value: $value,
+            filter: FILTER_VALIDATE_INT,
+            options: FILTER_NULL_ON_FAILURE
+        );
     }
 
     public function float(string $key): float
@@ -38,28 +72,44 @@ final readonly class DataSet
         return $this->floatNull($key) ?? 0.00;
     }
 
+    public function floatNull(string|null $key): ?float
+    {
+        $value = $this->data[$key] ?? null;
+        if (is_scalar($value) === false) {
+            return null;
+        }
+        return filter_var(
+            value: $value,
+            filter: FILTER_VALIDATE_FLOAT,
+            options:FILTER_NULL_ON_FAILURE
+        );
+    }
+
     public function bool(string $key): bool
     {
         return $this->boolNull($key) ?? false;
     }
 
-    public function dateTimeNull(string $key): ?DateTimeImmutable
+    public function boolNull(string|null $key): ?bool
     {
         $value = $this->data[$key] ?? null;
-        if (
-            $value === null ||
-            is_string($value) === false
-        ) {
+        if (is_scalar($value) === false) {
             return null;
         }
-        if (str_contains($value, ':') === false) {
-            $value .= ' 00:00:00';
+        return filter_var(
+            value: $value,
+            filter: FILTER_VALIDATE_BOOLEAN,
+            options:FILTER_NULL_ON_FAILURE
+        );
+    }
+
+    public function uuid(string $key): UuidInterface
+    {
+        $uuidNull = $this->uuidNull($key);
+        if ($uuidNull === null) {
+            throw new InvalidArgumentException('Invalid UUID format for key ' . $key);
         }
-        try {
-            return new DateTimeImmutable($value);
-        } catch (Throwable) {
-            return null;
-        }
+        return $uuidNull;
     }
 
     public function uuidNull(?string $key): ?UuidInterface
@@ -81,72 +131,38 @@ final readonly class DataSet
         return null;
     }
 
-    public function uuid(string $key): UuidInterface
-    {
-        $uuidNull = $this->uuidNull($key);
-        if ($uuidNull === null) {
-            throw new InvalidArgumentException('Invalid UUID format for key ' . $key);
-        }
-        return $uuidNull;
-    }
-
-    public function stringNull(string|null $key): ?string
+    /**
+     * @throws \DateMalformedStringException
+     */
+    public function utcDatetime(string $key): DateTimeImmutable
     {
         $value = $this->data[$key] ?? null;
         if (
-            is_scalar($value)
+            $value === null ||
+            is_string($value) === false
         ) {
-            return trim((string)$value);
-        } elseif (
-            is_array($value) ||
-            is_object($value)
+            throw new InvalidArgumentException('Invalid date format for key ' . $key);
+        }
+        return new DateTimeImmutable($value, new DateTimeZone('UTC'));
+    }
+
+    public function utcDateTimeNull(string $key): ?DateTimeImmutable
+    {
+        $value = $this->data[$key] ?? null;
+        if (
+            $value === null ||
+            is_string($value) === false
         ) {
-            $json = json_encode($value);
-            if ($json === false) {
-                return '[Encoding error]';
-            }
-            return $json;
-        }
-        return null;
-    }
-
-    public function intNull(string|null $key): ?int
-    {
-        $value = $this->data[$key] ?? null;
-        if (is_scalar($value) === false) {
             return null;
         }
-        return filter_var(
-            value: $value,
-            filter: FILTER_VALIDATE_INT,
-            options: FILTER_NULL_ON_FAILURE
-        );
-    }
-
-    public function floatNull(string|null $key): ?float
-    {
-        $value = $this->data[$key] ?? null;
-        if (is_scalar($value) === false) {
+        if (str_contains($value, ':') === false) {
+            $value .= ' 00:00:00';
+        }
+        try {
+            return new DateTimeImmutable($value, new DateTimeZone('UTC'));
+        } catch (Throwable) {
             return null;
         }
-        return filter_var(
-            value: $value,
-            filter: FILTER_VALIDATE_FLOAT,
-            options:FILTER_NULL_ON_FAILURE
-        );
-    }
-
-    public function boolNull(string|null $key): ?bool
-    {
-        $value = $this->data[$key] ?? null;
-        if (is_scalar($value) === false) {
-            return null;
-        }
-        return filter_var(
-            value: $value,
-            filter: FILTER_VALIDATE_BOOLEAN,
-            options:FILTER_NULL_ON_FAILURE
-        );
     }
 
     /** @return array<string, mixed> */

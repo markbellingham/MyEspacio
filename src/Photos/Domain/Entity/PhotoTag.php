@@ -37,7 +37,7 @@ final class PhotoTag extends Tag
     public static function createFromDataSet(DataSet $data): PhotoTag
     {
         return new PhotoTag(
-            photoUuid: $data->uuidNull('photo_uuid'),
+            photoUuid: $data->uuid('photo_uuid'),
             tag: $data->string('tag'),
             id: $data->int('tag_id')
         );

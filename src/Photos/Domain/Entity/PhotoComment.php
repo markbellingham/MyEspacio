@@ -40,7 +40,7 @@ final class PhotoComment extends Comment
         return [
             'photoUuid' => $this->photoUuid->toString(),
             'comment' => $this->comment,
-            'created' => $this->getCreated()->format(DateTimeInterface::ATOM),
+            'created' => $this->getCreated()?->format(DateTimeInterface::ATOM),
             'username' => $this->username,
             'userUuid' => $this->userUuid->toString()
         ];
@@ -49,11 +49,11 @@ final class PhotoComment extends Comment
     public static function createFromDataSet(DataSet $data): Comment
     {
         return new PhotoComment(
-            photoUuid: $data->uuidNull('photo_uuid'),
+            photoUuid: $data->uuid('photo_uuid'),
             comment: $data->string('comment'),
-            created: $data->dateTimeNull('created'),
+            created: $data->utcDateTime('created'),
             title: $data->stringNull('title'),
-            userUuid: $data->uuidNull('user_uuid'),
+            userUuid: $data->uuid('user_uuid'),
             username: $data->string('username')
         );
     }

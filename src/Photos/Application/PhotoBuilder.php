@@ -25,7 +25,7 @@ final readonly class PhotoBuilder
             geoCoordinates: $this->getGeoCoordinates(),
             dimensions: $this->getDimensions(),
             relevance: $this->getRelevance(),
-            dateTaken: $this->dataSet->dateTimeNull('date_taken'),
+            dateTaken: $this->dataSet->utcDateTimeNull('date_taken'),
             description: $this->dataSet->string('description'),
             directory: $this->dataSet->string('directory'),
             filename: $this->dataSet->string('filename'),

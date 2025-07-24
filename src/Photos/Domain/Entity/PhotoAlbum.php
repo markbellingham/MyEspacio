@@ -76,6 +76,9 @@ final class PhotoAlbum extends Model
 
     public function getPhotos(): PhotoCollection
     {
+        if ($this->photos === null) {
+            $this->photos = new PhotoCollection([]);
+        }
         return $this->photos;
     }
 
@@ -86,6 +89,9 @@ final class PhotoAlbum extends Model
 
     public function jsonSerialize(): array
     {
+        if ($this->photos === null) {
+            $this->photos = new PhotoCollection([]);
+        }
         return [
             'title' => $this->title,
             'description' => $this->description,

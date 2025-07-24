@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Photos\Infrastructure\MySql;
 
-use Monolog\DateTimeImmutable;
+use DateTimeImmutable;
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Photos\Domain\Collection\PhotoCommentCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoComment;
