@@ -29,7 +29,7 @@ final class PhotoAlbumTest extends TestCase
 
         $this->assertSame('MyAlbum', $photoAlbum->getTitle());
         $this->assertSame(1, $photoAlbum->getAlbumId());
-        $this->assertEquals('78eda1f2-a6f8-48d8-af30-3907f5f9e534', $photoAlbum->getUuid()->toString());
+        $this->assertEquals('78eda1f2-a6f8-48d8-af30-3907f5f9e534', $photoAlbum->getUuid()?->toString());
         $this->assertSame('My favourite photos', $photoAlbum->getDescription());
         $this->assertInstanceOf(Country::class, $photoAlbum->getCountry());
         $this->assertEquals('United Kingdom', $photoAlbum->getCountry()->getName());
@@ -85,7 +85,7 @@ final class PhotoAlbumTest extends TestCase
 
         $this->assertEquals('Yadda Yadda', $photoAlbum->getTitle());
         $this->assertSame(1, $photoAlbum->getAlbumId());
-        $this->assertEquals('4b9d0175-6d47-4460-b48b-6385db446a30', $photoAlbum->getUuid()->toString());
+        $this->assertEquals('4b9d0175-6d47-4460-b48b-6385db446a30', $photoAlbum->getUuid()?->toString());
         $this->assertSame('My favourite photos', $photoAlbum->getDescription());
         $this->assertInstanceOf(Country::class, $photoAlbum->getCountry());
     }

@@ -9,7 +9,6 @@ use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
-use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
@@ -17,14 +16,16 @@ use MyEspacio\Photos\Presentation\PhotoController;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class PhotoControllerTest extends TestCase
 {
-    /** @param array<string, string> $vars */
+    /**
+     * @param array<string, string> $vars
+     * @param class-string $expectedResponseClassName
+     */
     #[DataProvider('photoGridDataProvider')]
     public function testPhotoGrid(
         Request $request,
@@ -152,6 +153,7 @@ final class PhotoControllerTest extends TestCase
 
     /**
      * @param array<string, mixed> $vars
+     * @param class-string $expectedClass
      * @throws Exception
      */
     #[DataProvider('singlePhotoDataProvider')]
@@ -195,7 +197,7 @@ final class PhotoControllerTest extends TestCase
 
         $this->assertInstanceOf($expectedClass, $actualResult);
         $this->assertEquals($expectedResult, $actualResult->getContent());
-        $this->assertStringContainsString($expectedContentType, $actualResult->headers->get('Content-Type'));
+        $this->assertStringContainsString($expectedContentType, (string) $actualResult->headers->get('Content-Type'));
     }
 
     /** @return array<string, array<int, mixed>> */
@@ -357,6 +359,6 @@ final class PhotoControllerTest extends TestCase
 
         $this->assertInstanceOf(Response::class, $actualResult);
         $this->assertEquals($expectedResult, $actualResult->getContent());
-        $this->assertStringContainsString('text/html', $actualResult->headers->get('Content-Type'));
+        $this->assertStringContainsString('text/html', (string) $actualResult->headers->get('Content-Type'));
     }
 }

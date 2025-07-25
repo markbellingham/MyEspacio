@@ -88,7 +88,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(409, $response->getStatusCode());
     }
@@ -128,7 +128,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(409, $response->getStatusCode());
     }
@@ -144,7 +144,7 @@ final class LoginControllerTest extends TestCase
             [],
             [],
             [],
-            json_encode(['email' => 'test@example.tld'])
+            '{"email":"test@example.tld"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -181,7 +181,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(404, $response->getStatusCode());
     }
@@ -197,7 +197,7 @@ final class LoginControllerTest extends TestCase
             [],
             [],
             [],
-            json_encode(['email' => 'test@example.tld'])
+            '{"email":"test@example.tld"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -256,7 +256,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(200, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
@@ -273,7 +273,7 @@ final class LoginControllerTest extends TestCase
             [],
             [],
             [],
-            json_encode(['phone' => '01234567890'])
+            '{"phone":"01234567890"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -332,7 +332,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(200, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
@@ -349,7 +349,7 @@ final class LoginControllerTest extends TestCase
             [],
             [],
             [],
-            json_encode(['phone' => '01234567890'])
+            '{"phone":"01234567890"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -403,7 +403,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(500, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
@@ -420,7 +420,7 @@ final class LoginControllerTest extends TestCase
             [],
             [],
             [],
-            json_encode(['phone' => '01234567890'])
+            '{"phone":"01234567890"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -475,7 +475,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(500, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
@@ -492,7 +492,7 @@ final class LoginControllerTest extends TestCase
             [],
             [],
             [],
-            json_encode(['phone' => '01234567890'])
+            '{"phone":"01234567890"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -551,7 +551,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(500, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
@@ -568,10 +568,7 @@ final class LoginControllerTest extends TestCase
             [],
             [],
             [],
-            json_encode([
-                'email' => 'test@example.tld',
-                'phone_code' => 'ABC123'
-            ])
+            '{"email":"test@example.tld","phone_code":"ABC123"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -622,7 +619,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(400, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
@@ -639,10 +636,7 @@ final class LoginControllerTest extends TestCase
             [],
             [],
             [],
-            json_encode([
-                'email' => 'test@example.tld',
-                'phone_code' => 'XYZ321'
-            ])
+            '{"email":"test@example.tld","phone_code":"XYZ321"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -693,7 +687,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(400, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
@@ -713,10 +707,7 @@ final class LoginControllerTest extends TestCase
             [],
             [],
             [],
-            json_encode([
-                'email' => 'test@example.tld',
-                'phone_code' => 'ABC123'
-            ])
+            '{"email":"test@example.tld","phone_code":"ABC123"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -765,7 +756,7 @@ final class LoginControllerTest extends TestCase
 
         $response = $loginController->processLoginForm($request);
 
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals($expectedResponse, json_decode((string) $response->getContent(), true));
         $this->assertSame(200, $response->getStatusCode());
         $this->assertTrue($user->isLoggedIn());
     }
@@ -804,7 +795,7 @@ final class LoginControllerTest extends TestCase
 
         $this->assertEquals(
             $expectedResponse,
-            json_decode($response->getContent(), true)
+            json_decode((string) $response->getContent(), true)
         );
         $this->assertSame(200, $response->getStatusCode());
     }

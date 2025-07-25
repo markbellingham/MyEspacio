@@ -64,7 +64,7 @@ final class LoginControllerMagicLinkTest extends TestCase
             [],
             [],
             [],
-            json_encode($vars)
+            '{"email":"test@example.tld","magicLink":"e762349c-a60e-4428-b781-a076e161f1e3"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -94,7 +94,7 @@ final class LoginControllerMagicLinkTest extends TestCase
 
         $response = $loginController->loginWithMagicLink($request, $vars);
 
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals($expectedResponse, json_decode((string) $response->getContent(), true));
         $this->assertSame(404, $response->getStatusCode());
     }
 
@@ -112,7 +112,7 @@ final class LoginControllerMagicLinkTest extends TestCase
             [],
             [],
             [],
-            json_encode($vars)
+            '{"email":"test@example.tld","magicLink":"e762349c-a60e-4428-b781-a076e161f1e3"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');
@@ -156,7 +156,7 @@ final class LoginControllerMagicLinkTest extends TestCase
 
         $response = $loginController->loginWithMagicLink($request, $vars);
 
-        $this->assertEquals($expectedResponse, json_decode($response->getContent(), true));
+        $this->assertEquals($expectedResponse, json_decode((string) $response->getContent(), true));
         $this->assertSame(408, $response->getStatusCode());
         $this->assertFalse($user->isLoggedIn());
     }
@@ -174,7 +174,7 @@ final class LoginControllerMagicLinkTest extends TestCase
             [],
             [],
             [],
-            json_encode($vars)
+            '{"email":"test@example.tld","magicLink":"e762349c-a60e-4428-b781-a076e161f1e3"}'
         );
         $request->attributes->set('language', 'en');
         $request->headers->set('Accept', 'application/json');

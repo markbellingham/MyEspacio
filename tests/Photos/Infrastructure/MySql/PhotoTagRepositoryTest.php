@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Photos\Infrastructure\MySql;
 
-use Monolog\DateTimeImmutable;
+use DateTimeImmutable;
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Photos\Domain\Collection\PhotoTagCollection;
 use MyEspacio\Photos\Domain\Entity\Country;
@@ -49,7 +49,7 @@ final class PhotoTagRepositoryTest extends TestCase
             geoCoordinates: $geo,
             dimensions: $dimensions,
             relevance: $relevance,
-            dateTaken: DateTimeImmutable::createFromFormat('Y-m-d', "2012-10-21"),
+            dateTaken: new DateTimeImmutable("2012-10-21"),
             description: "Note the spurs...",
             directory: "RTW Trip\/16Chile\/03 - Valparaiso",
             filename: "P1070237.JPG",

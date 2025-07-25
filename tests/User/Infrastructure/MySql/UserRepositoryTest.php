@@ -117,7 +117,7 @@ final class UserRepositoryTest extends TestCase
             );
 
         $repository = new UserRepository($db);
-        $result = $repository->getUserByPhoneNumber($this->user->getPhone());
+        $result = $repository->getUserByPhoneNumber($this->user->getPhone() ?? '');
 
         $this->assertInstanceOf(User::class, $result);
     }
@@ -138,7 +138,7 @@ final class UserRepositoryTest extends TestCase
             ->willReturn(null);
 
         $repository = new \MyEspacio\User\Infrastructure\MySql\UserRepository($db);
-        $result = $repository->getUserByPhoneNumber($this->user->getPhone());
+        $result = $repository->getUserByPhoneNumber($this->user->getPhone() ?? '');
 
         $this->assertNull($result);
     }
@@ -172,7 +172,7 @@ final class UserRepositoryTest extends TestCase
             );
 
         $repository = new UserRepository($db);
-        $result = $repository->getUserFromMagicLink($this->user->getMagicLink());
+        $result = $repository->getUserFromMagicLink($this->user->getMagicLink() ?? '');
 
         $this->assertInstanceOf(User::class, $result);
     }
@@ -193,7 +193,7 @@ final class UserRepositoryTest extends TestCase
             ->willreturn(null);
 
         $repository = new UserRepository($db);
-        $result = $repository->getUserFromMagicLink($this->user->getMagicLink());
+        $result = $repository->getUserFromMagicLink($this->user->getMagicLink() ?? '');
 
         $this->assertNull($result);
     }

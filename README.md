@@ -2,7 +2,7 @@
 
 <table border="1">
   <tr>
-    <td>PHPStan Level 6</td>
+    <td>PHPStan Level 9</td>
     <td><a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg" alt="pipeline status" style="vertical-align: middle;"></a></td>
     <td>PHP <a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_php" alt="PHP coverage" style="vertical-align: middle;"></a></td>
     <td>TypeScript <a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_typescript" alt="TypeScript coverage" style="vertical-align: middle;"></a></td>

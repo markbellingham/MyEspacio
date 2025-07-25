@@ -393,15 +393,14 @@ final class PhotoAlbumRepositoryTest extends TestCase
     }
 
     /**
-     * @param array<int, mixed> $queryTerms
-     * @param array<int, mixed> $searchTerms
+     * @param array<int, string> $queryTerms
+     * @param array<int, string> $searchTerms
      * @param array<int, array<string, string>> $searchResults
      * @throws Exception
      */
     #[DataProvider('searchAlbumPhotosDataProvider')]
     public function testSearchAlbumPhotos(
         PhotoAlbum $photoAlbum,
-        int $albumId,
         array $queryTerms,
         array $searchTerms,
         string $expectedSearchString,
@@ -443,7 +442,6 @@ final class PhotoAlbumRepositoryTest extends TestCase
                         threeCharCode: 'GBR'
                     )
                 ),
-                1,
                 ['dance'],
                 [
                     'albumId' => 1,
@@ -484,7 +482,6 @@ final class PhotoAlbumRepositoryTest extends TestCase
                     description: 'Loads of photos',
                     country: null
                 ),
-                2,
                 ['dance','carnival'],
                 [
                     'albumId' => 2,

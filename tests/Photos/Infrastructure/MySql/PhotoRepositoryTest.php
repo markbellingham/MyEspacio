@@ -378,8 +378,8 @@ final class PhotoRepositoryTest extends TestCase
     }
 
     /**
-     * @param array<int, mixed> $queryTerms
-     * @param array<int, mixed> $searchTerms
+     * @param array<int, string> $queryTerms
+     * @param array<int, string> $searchTerms
      * @param array<int, array<string, string>> $searchResults
      * @throws Exception
      */

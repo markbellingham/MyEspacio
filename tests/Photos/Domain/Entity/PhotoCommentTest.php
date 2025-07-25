@@ -15,7 +15,7 @@ final class PhotoCommentTest extends TestCase
 {
     public function testPhotoComment(): void
     {
-        $created = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-20 16:23:00');
+        $created = new DateTimeImmutable('2024-07-20 16:23:00');
 
         $photoComment = new PhotoComment(
             photoUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
@@ -49,7 +49,7 @@ final class PhotoCommentTest extends TestCase
 
     public function testNullValues(): void
     {
-        $created = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2024-07-20 16:23:00');
+        $created = new DateTimeImmutable('2024-07-20 16:23:00');
 
         $photoComment = new PhotoComment(
             photoUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),

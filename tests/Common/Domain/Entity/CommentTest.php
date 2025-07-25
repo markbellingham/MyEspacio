@@ -17,7 +17,7 @@ final class CommentTest extends TestCase
     {
         $comment = new Comment(
             comment: 'Hello',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
             title: null,
             userUuid: Uuid::fromString('39fa7943-6fa7-4412-97c8-c6cec6a44e0b'),
             username: 'Mark Bellingham'
@@ -89,7 +89,7 @@ final class CommentTest extends TestCase
     {
         $comment = new Comment(
             comment: 'Hello',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
             title: null,
             userUuid: Uuid::fromString('39fa7943-6fa7-4412-97c8-c6cec6a44e0b'),
             username: 'Mark Bellingham'

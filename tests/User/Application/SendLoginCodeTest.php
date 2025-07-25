@@ -39,8 +39,8 @@ final class SendLoginCodeTest extends TestCase
 
         $sendLoginCode = new SendLoginCode($loginEmailMessage, $emailInterface);
         $user = $sendLoginCode->generateCode($user);
-        $this->assertEquals(40, strlen($user->getMagicLink()));
-        $this->assertEquals(6, strlen($user->getPhoneCode()));
+        $this->assertEquals(40, strlen($user->getMagicLink() ?? ''));
+        $this->assertEquals(6, strlen($user->getPhoneCode() ?? ''));
     }
 
     public function testSendToUser(): void

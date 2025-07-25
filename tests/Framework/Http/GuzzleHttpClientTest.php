@@ -27,7 +27,9 @@ final class GuzzleHttpClientTest extends TestCase
         $httpClient = new GuzzleHttpClient($clientMock);
 
         $response = $httpClient->get($url);
-        $decoded = json_decode($response, true);
+        $decoded = json_decode((string) $response, true);
+
+        $this->assertIsArray($decoded);
         $this->assertEquals($url, $decoded['url']);
     }
 
@@ -57,8 +59,8 @@ final class GuzzleHttpClientTest extends TestCase
 
         $httpClient = new GuzzleHttpClient($clientMock);
         $response = $httpClient->get($url, $headers);
-        $decoded = json_decode($response, true);
-
+        $decoded = json_decode((string) $response, true);
+        $this->assertIsArray($decoded);
         $this->assertEquals($url, $decoded['url']);
     }
 
@@ -76,7 +78,9 @@ final class GuzzleHttpClientTest extends TestCase
         $httpClient = new GuzzleHttpClient($clientMock);
 
         $response = $httpClient->post($url);
-        $decoded = json_decode($response, true);
+        $decoded = json_decode((string) $response, true);
+
+        $this->assertIsArray($decoded);
         $this->assertEquals($url, $decoded['url']);
     }
 
@@ -105,7 +109,9 @@ final class GuzzleHttpClientTest extends TestCase
 
         $httpClient = new GuzzleHttpClient($clientMock);
         $response = $httpClient->post($url, [], $headers);
-        $decoded = json_decode($response, true);
+        $decoded = json_decode((string) $response, true);
+
+        $this->assertIsArray($decoded);
         $this->assertEquals($url, $decoded['url']);
     }
 
@@ -138,8 +144,9 @@ final class GuzzleHttpClientTest extends TestCase
 
         $httpClient = new GuzzleHttpClient($clientMock);
         $response = $httpClient->post($url, $postData, $headers);
-        $decoded = json_decode($response, true);
+        $decoded = json_decode((string) $response, true);
 
+        $this->assertIsArray($decoded);
         $this->assertEquals($postData, $decoded['data']);
     }
 

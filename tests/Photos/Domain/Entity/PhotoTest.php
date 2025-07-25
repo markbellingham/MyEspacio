@@ -44,7 +44,7 @@ final class PhotoTest extends TestCase
             geoCoordinates: $geo,
             dimensions: $dimensions,
             relevance: $relevance,
-            dateTaken: DateTimeImmutable::createFromFormat('Y-m-d', "2012-10-21"),
+            dateTaken: new DateTimeImmutable("2012-10-21"),
             description: "Note the spurs...",
             directory: "RTW Trip\/16Chile\/03 - Valparaiso",
             filename: "P1070237.JPG",
@@ -101,7 +101,7 @@ final class PhotoTest extends TestCase
             geoCoordinates: $geo,
             dimensions: $dimensions,
             relevance: $relevance,
-            dateTaken: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', "2012-10-21 00:00:00"),
+            dateTaken: new DateTimeImmutable("2012-10-21 00:00:00"),
             description: "Note the spurs...",
             directory: "RTW Trip\/16Chile\/03 - Valparaiso",
             filename: "P1070237.JPG",
@@ -143,7 +143,7 @@ final class PhotoTest extends TestCase
 
         $this->assertEquals(
             $jsonData,
-            json_decode(json_encode($photo), true)
+            json_decode((string) json_encode($photo), true)
         );
     }
 

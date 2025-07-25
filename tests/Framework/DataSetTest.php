@@ -329,11 +329,11 @@ final class DataSetTest extends TestCase
             ],
             'valid_binary_1' => [
                 new DataSet(['uuid' => hex2bin('550e8400e29b41d4a716446655440000')]),
-                Uuid::fromBytes(hex2bin('550e8400e29b41d4a716446655440000'))
+                Uuid::fromBytes((string) hex2bin('550e8400e29b41d4a716446655440000'))
             ],
             'valid_binary_2' => [
                 new DataSet(['uuid' => hex2bin('123e4567e89b12d3a456426614174000')]),
-                Uuid::fromBytes(hex2bin('123e4567e89b12d3a456426614174000'))
+                Uuid::fromBytes((string) hex2bin('123e4567e89b12d3a456426614174000'))
             ],
         ];
     }

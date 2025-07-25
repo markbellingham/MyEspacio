@@ -30,6 +30,7 @@ final class CaptchaIconsCollectionTest extends TestCase
         $this->assertCount(2, $collection);
         foreach ($collection as $icon) {
             $element = array_shift($elements);
+            $this->assertIsArray($element);
             $this->assertInstanceOf(CaptchaIcon::class, $icon);
             $this->assertEquals($element['icon_id'], $icon->getIconId());
             $this->assertEquals($element['icon'], $icon->getIcon());

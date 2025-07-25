@@ -16,7 +16,7 @@ final class CommentValidatorTest extends TestCase
     {
         $comment = new Comment(
             comment: 'Hello',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
             title: null,
             userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
@@ -30,7 +30,7 @@ final class CommentValidatorTest extends TestCase
     {
         $comment = new Comment(
             comment: '',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
             title: null,
             userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
@@ -44,7 +44,7 @@ final class CommentValidatorTest extends TestCase
     {
         $comment = new Comment(
             comment: 'Hello',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
             title: 'Title',
             userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
@@ -58,7 +58,7 @@ final class CommentValidatorTest extends TestCase
     {
         $comment = new Comment(
             comment: '<div class="my-class">Hello</div>',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
             title: null,
             userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
@@ -72,7 +72,7 @@ final class CommentValidatorTest extends TestCase
     {
         $comment = new Comment(
             comment: 'Hello',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
             title: null,
             userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'
@@ -90,7 +90,7 @@ final class CommentValidatorTest extends TestCase
     {
         $comment = new Comment(
             comment: '01234567890',
-            created: DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2023-12-30 12:13:14'),
+            created: new DateTimeImmutable('2023-12-30 12:13:14'),
             title: null,
             userUuid: Uuid::fromString('95e7a3b0-6b8a-41bc-bbe2-4efcea215aea'),
             username: 'Mark Bellingham'

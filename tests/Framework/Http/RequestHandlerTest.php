@@ -14,6 +14,7 @@ use MyEspacio\Framework\Localisation\TranslationIdentifierFactoryInterface;
 use MyEspacio\Framework\Rendering\TemplateRenderer;
 use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,9 +23,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RequestHandlerTest extends TestCase
 {
-    private LanguageReader|MockObject $languageReader;
-    private TranslationIdentifierFactoryInterface|MockObject $translationIdentifierFactory;
-    private TemplateRendererFactoryInterface|MockObject $templateRendererFactory;
+    private LanguageReader $languageReader;
+    private TranslationIdentifierFactoryInterface $translationIdentifierFactory;
+    private TemplateRendererFactoryInterface $templateRendererFactory;
     private RequestHandler $requestHandler;
 
     protected function setUp(): void
@@ -83,6 +84,17 @@ final class RequestHandlerTest extends TestCase
         $this->assertFalse($requestHandler->validate($request));
     }
 
+    /**
+     * @param string $language
+     * @param string $requestedFormat
+     * @param string|null $translatedText
+     * @param ResponseData $responseData
+     * @param class-string $expectedResponseClass
+     * @param int $expectedStatusCode
+     * @param string $expectedResponseContent
+     * @return void
+     * @throws Exception
+     */
     #[DataProvider('sendResponseDataProvider')]
     public function testSendResponse(
         string $language,
@@ -97,6 +109,8 @@ final class RequestHandlerTest extends TestCase
         $request->attributes->set('language', $language);
         $request->headers->set('Accept', $requestedFormat);
 
+        $languageReader = $this->createMock(LanguageReader::class);
+        $templateRendererFactory = $this->createMock(TemplateRendererFactoryInterface::class);
         $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
 
         if ($responseData->getTemplate()) {
@@ -105,22 +119,22 @@ final class RequestHandlerTest extends TestCase
                 ->method('render')
                 ->with($responseData->getTemplate(), $responseData->getData())
                 ->willReturn($expectedResponseContent);
-            $this->templateRendererFactory->expects($this->once())
+            $templateRendererFactory->expects($this->once())
                 ->method('create')
                 ->with($language)
                 ->willReturn($templateRenderer);
         }
 
         if ($responseData->getTranslationKey()) {
-            $this->languageReader->expects($this->once())
+            $languageReader->expects($this->once())
                 ->method('getTranslationText')
                 ->willReturn($translatedText);
         }
 
         $requestHandler = new RequestHandler(
-            $this->languageReader,
+            $languageReader,
             $storedTokenValidator,
-            $this->templateRendererFactory,
+            $templateRendererFactory,
             $this->translationIdentifierFactory
         );
 
@@ -133,7 +147,8 @@ final class RequestHandlerTest extends TestCase
         $this->assertEquals($expectedResponseContent, $response->getContent());
 
         if ($responseData->getTranslationKey()) {
-            $actualResponseContent = json_decode($response->getContent(), true);
+            $actualResponseContent = json_decode((string) $response->getContent(), true);
+            $this->assertIsArray($actualResponseContent);
             $this->assertArrayHasKey('message', $actualResponseContent);
             $this->assertEquals($translatedText, $actualResponseContent['message']);
         }
@@ -207,14 +222,23 @@ final class RequestHandlerTest extends TestCase
 
     public function testGetTranslationIdentifier(): void
     {
-        $this->translationIdentifierFactory->expects($this->once())
+        $languageReader = $this->createMock(LanguageReader::class);
+        $storedTokenValidator = $this->createMock(StoredTokenValidatorInterface::class);
+        $templateRendererFactory = $this->createMock(TemplateRendererFactoryInterface::class);
+        $translationIdentifierFactory = $this->createMock(TranslationIdentifierFactoryInterface::class);
+
+        $translationIdentifierFactory->expects($this->once())
             ->method('create')
             ->willReturn(new TranslationIdentifier('en', 'messages', new LanguagesDirectory(ROOT_DIR)));
 
-        $request = new Request();
-        $request->attributes->set('language', 'en');
+        $requestHandler = new RequestHandler(
+            $languageReader,
+            $storedTokenValidator,
+            $templateRendererFactory,
+            $translationIdentifierFactory
+        );
 
-        $result = $this->requestHandler->getTranslationIdentifier('messages');
+        $result = $requestHandler->getTranslationIdentifier('messages');
 
         $this->assertInstanceOf(TranslationIdentifier::class, $result);
     }

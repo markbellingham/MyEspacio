@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class LoginController
 {
-    private ?User $user;
+    private ?User $user = null;
 
     private const int LOGIN_CODE_EXPIRY_TIME = 15;
 
@@ -43,6 +43,7 @@ final class LoginController
         }
 
         $vars = json_decode($request->getContent(), true);
+        /** @var array<string, mixed> $vars */
         $this->user = $this->getUserByLoginValues($vars);
         if ($this->user === null) {
             return $this->requestHandler->sendResponse(
@@ -54,7 +55,7 @@ final class LoginController
         }
 
         if (($vars['phone_code'] ?? '') !== '') {
-            return $this->logUserIn($request, $vars);
+            return $this->logUserIn($vars);
         }
 
         try {
@@ -94,9 +95,15 @@ final class LoginController
      */
     private function getUserByLoginValues(array $vars): ?User
     {
-        if (($vars['email'] ?? '') !== '') {
+        if (
+            ($vars['email'] ?? '') !== '' &&
+            is_string($vars['email'])
+        ) {
             $this->user = $this->userRepository->getUserByEmailAddress($vars['email']);
-        } elseif (($vars['phone'] ?? '') !== '') {
+        } elseif (
+            ($vars['phone'] ?? '') !== '' &&
+            is_string($vars['phone'])
+        ) {
             $this->user = $this->userRepository->getUserByPhoneNumber($vars['phone']);
             $this->user?->setPasscodeRoute('phone');
         }
@@ -113,7 +120,9 @@ final class LoginController
     {
         $this->requestHandler->validate($request);
 
-        $this->user = $this->userRepository->getUserFromMagicLink($vars['magicLink']);
+        if (is_string($vars['magicLink'])) {
+            $this->user = $this->userRepository->getUserFromMagicLink($vars['magicLink']);
+        }
         if ($this->user === null) {
             return $this->requestHandler->sendResponse(
                 new ResponseData(
@@ -141,18 +150,17 @@ final class LoginController
     }
 
     /**
-     * @param Request $request
      * @param array<string, mixed> $vars
      * @return Response
      */
-    private function logUserIn(Request $request, array $vars): Response
+    private function logUserIn(array $vars): Response
     {
         if ($this->loginValuesCheckout($vars)) {
             $this->setUserLoggedIn();
             return $this->requestHandler->sendResponse(
                 new ResponseData(
                     data: [
-                        'username' => $this->user->getName()
+                        'username' => $this->user?->getName()
                     ],
                     translationKey: 'login.logged_in'
                 )
@@ -177,8 +185,8 @@ final class LoginController
             return false;
         }
 
-        if (isset($vars['phone_code'])) {
-            return trim($vars['phone_code']) === $this->user->getPhoneCode();
+        if (isset($vars['phone_code']) && is_string($vars['phone_code'])) {
+            return trim($vars['phone_code']) === $this->user?->getPhoneCode();
         }
 
         return false;
@@ -187,7 +195,7 @@ final class LoginController
     private function secondLoginRequestInTime(): bool
     {
         try {
-            $firstLoginTime = new DateTimeImmutable($this->user->getLoginDateString());
+            $firstLoginTime = new DateTimeImmutable($this->user?->getLoginDateString() ?? '');
             $secondLoginTime = new DateTimeImmutable();
             $diff = $firstLoginTime->diff($secondLoginTime);
             $minutes = $diff->days * 24 * 60;
@@ -201,7 +209,7 @@ final class LoginController
 
     private function setUserLoggedIn(): void
     {
-        $this->user->setIsLoggedIn(true);
+        $this->user?->setIsLoggedIn(true);
         $this->session->set('user', $this->user);
     }
 

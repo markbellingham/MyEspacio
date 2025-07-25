@@ -190,7 +190,7 @@ final class User extends Model
     {
         return new User(
             email: $data->string('email'),
-            uuid: $data->uuidNull('uuid'),
+            uuid: $data->uuid('uuid'),
             name: $data->string('name'),
             phone: $data->stringNull('phone'),
             loginAttempts: $data->intNull('login_attempts'),
