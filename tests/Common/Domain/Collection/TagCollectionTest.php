@@ -5,41 +5,81 @@ declare(strict_types=1);
 namespace Tests\Common\Domain\Collection;
 
 use MyEspacio\Common\Domain\Collection\TagCollection;
+use MyEspacio\Common\Domain\Entity\Tag;
 use MyEspacio\Framework\Exceptions\CollectionException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class TagCollectionTest extends TestCase
 {
-    public function testTagCollection(): void
-    {
-        $data = [
-            [
-                'tag' => 'sunset',
-                'id' => '1'
-            ],
-            [
-                'tag' => 'flower',
-                'id' => '2'
-            ]
-        ];
+    /**
+     * @param array<int, array<string, mixed>> $inputData
+     * @param int $count
+     * @param array<int, array<string, mixed>> $jsonSerialized
+     * @return void
+     */
+    #[DataProvider('collectionDataProvider')]
+    public function testTagCollection(
+        array $inputData,
+        int $count,
+        array $jsonSerialized,
+    ): void {
+        $collection = new TagCollection($inputData);
 
-        $collection = new TagCollection($data);
-        $this->assertInstanceOf(TagCollection::class, $collection);
-        $this->assertCount(2, $collection);
-
-        $tags = ['sunset', 'flower'];
-        $ids = [1, 2];
         foreach ($collection as $tag) {
-            $this->assertEquals(array_shift($tags), $tag->getTag());
-            $this->assertSame(array_shift($ids), $tag->getId());
+            $this->assertInstanceOf(Tag::class, $tag);
         }
+
+        $this->assertCount($count, $collection);
+        $this->assertEquals($jsonSerialized, $collection->jsonSerialize());
+        $this->assertEquals($inputData, $collection->toArray());
     }
 
-    public function testEmpty(): void
+    /** @return array<string, array<string, mixed>> */
+    public static function collectionDataProvider(): array
     {
-        $collection = new TagCollection([]);
-        $this->assertInstanceOf(TagCollection::class, $collection);
-        $this->assertCount(0, $collection);
+        return [
+            'two_elements' => [
+                'inputData' => [
+                    [
+                        'tag' => 'sunset',
+                        'id' => '1'
+                    ],
+                    [
+                        'tag' => 'flower',
+                        'id' => '2'
+                    ],
+                ],
+                'count' => 2,
+                'jsonSerialized' => [
+                    [
+                        'tag' => 'sunset',
+                    ],
+                    [
+                        'tag' => 'flower',
+                    ],
+                ],
+            ],
+            'one_element' => [
+                'inputData' => [
+                    [
+                        'tag' => 'sunset',
+                        'id' => '1'
+                    ],
+                ],
+                'count' => 1,
+                'jsonSerialized' => [
+                    [
+                        'tag' => 'sunset',
+                    ],
+                ],
+            ],
+            'zero_elements' => [
+                'inputData' => [],
+                'count' => 0,
+                'jsonSerialized' => [],
+            ],
+        ];
     }
 
     public function testRequiredKeys(): void
@@ -55,24 +95,7 @@ final class TagCollectionTest extends TestCase
         new TagCollection($data);
     }
 
-    public function testToArray(): void
-    {
-        $data = [
-            [
-                'tag' => 'sunset',
-                'id' => '1'
-            ],
-            [
-                'tag' => 'flower',
-                'id' => '2'
-            ]
-        ];
-
-        $collection = new TagCollection($data);
-        $this->assertEquals($data, $collection->toArray());
-    }
-
-    public function testWrongDataType(): void
+    public function testException(): void
     {
         $data = [
             'tag' => 'sunset',

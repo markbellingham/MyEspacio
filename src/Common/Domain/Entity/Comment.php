@@ -60,12 +60,9 @@ class Comment extends Model
         $this->username = $username;
     }
 
-    /**
-     * @throws Exception
-     */
-    public function setCreated(string $datetime): void
+    public function setCreated(DateTimeImmutable $datetime): void
     {
-        $this->created = new DateTimeImmutable($datetime);
+        $this->created = $datetime;
     }
 
     public function jsonSerialize(): array

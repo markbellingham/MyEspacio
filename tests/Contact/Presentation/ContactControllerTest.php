@@ -40,7 +40,12 @@ final class ContactControllerTest extends TestCase
         ]);
         $expectedResponse = 'Rendered HTML Content';
 
-        $selectedIcon = new CaptchaIcon();
+        $selectedIcon = new CaptchaIcon(
+            iconId: 1,
+            icon: '<i class="bi bi-phone-vibrate"></i>',
+            name: 'Mobile',
+            colour: 'btn-warning'
+        );
         $requestHandler->expects($this->once())
             ->method('validate')
             ->willReturn(true);

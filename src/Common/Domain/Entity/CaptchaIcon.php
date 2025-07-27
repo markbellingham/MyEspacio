@@ -10,49 +10,49 @@ use MyEspacio\Framework\Model;
 final class CaptchaIcon extends Model
 {
     public function __construct(
-        private ?int $iconId = null,
-        private ?string $icon = '',
-        private ?string $name = '',
-        private ?string $colour = ''
+        private int $iconId,
+        private string $icon,
+        private string $name,
+        private string $colour
     ) {
     }
 
-    public function getIconId(): ?int
+    public function getIconId(): int
     {
         return $this->iconId;
     }
 
-    public function setIconId(?int $iconId): void
+    public function setIconId(int $iconId): void
     {
         $this->iconId = $iconId;
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return $this->icon;
     }
 
-    public function setIcon(?string $icon): void
+    public function setIcon(string $icon): void
     {
         $this->icon = $icon;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): void
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    public function getColour(): ?string
+    public function getColour(): string
     {
         return $this->colour;
     }
 
-    public function setColour(?string $colour): void
+    public function setColour(string $colour): void
     {
         $this->colour = $colour;
     }

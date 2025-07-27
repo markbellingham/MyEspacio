@@ -7,44 +7,81 @@ namespace Tests\Common\Domain\Collection;
 use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
 use MyEspacio\Common\Domain\Entity\CaptchaIcon;
 use MyEspacio\Framework\Exceptions\CollectionException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class CaptchaIconsCollectionTest extends TestCase
 {
-    public function testCaptchaIconsCollection(): void
-    {
-        $elements = [
-            [
-                'icon_id' => '1',
-                'icon' => '<i class="bi bi-phone-vibrate"></i>',
-                'name' => 'Mobile'
-            ],
-            [
-                'icon_id' => '2',
-                'icon' => '<i class="bi bi-keyboard"></i>',
-                'name' => 'Keyboard'
-            ]
-        ];
-        $collection = new CaptchaIconCollection($elements);
+    /**
+     * @param array<int, array<string, mixed>> $inputData
+     * @param int $count
+     * @param array<int, array<string, mixed>> $jsonSerialized
+     */
+    #[DataProvider('collectionDataProvider')]
+    public function testCollection(
+        array $inputData,
+        int $count,
+        array $jsonSerialized,
+    ): void {
+        $collection = new CaptchaIconCollection($inputData);
 
-        $this->assertCount(2, $collection);
         foreach ($collection as $icon) {
-            $element = array_shift($elements);
-            $this->assertIsArray($element);
             $this->assertInstanceOf(CaptchaIcon::class, $icon);
-            $this->assertEquals($element['icon_id'], $icon->getIconId());
-            $this->assertEquals($element['icon'], $icon->getIcon());
-            $this->assertEquals($element['name'], $icon->getName());
-            $this->assertEquals('', $icon->getColour());
         }
+
+        $this->assertCount($count, $collection);
+        $this->assertEquals($jsonSerialized, $collection->jsonSerialize());
+        $this->assertEquals($inputData, $collection->toArray());
     }
 
-    public function testEmpty(): void
+    /** @return array<string, array<string, mixed>> */
+    public static function collectionDataProvider(): array
     {
-        $collection = new CaptchaIconCollection([]);
-
-        $this->assertInstanceOf(CaptchaIconCollection::class, $collection);
-        $this->assertCount(0, $collection);
+        return [
+            'two_elements' => [
+                'inputData' => [
+                    [
+                        'icon_id' => '1',
+                        'icon' => '<i class="bi bi-phone-vibrate"></i>',
+                        'name' => 'Mobile'
+                    ],
+                    [
+                        'icon_id' => '2',
+                        'icon' => '<i class="bi bi-keyboard"></i>',
+                        'name' => 'Keyboard'
+                    ],
+                ],
+                'count' => 2,
+                'jsonSerialized' => [
+                    [
+                        'name' => 'Mobile'
+                    ],
+                    [
+                        'name' => 'Keyboard'
+                    ],
+                ],
+            ],
+            'one_element' => [
+                'inputData' => [
+                    [
+                        'icon_id' => '2',
+                        'icon' => '<i class="bi bi-keyboard"></i>',
+                        'name' => 'Keyboard'
+                    ],
+                ],
+                'count' => 1,
+                'jsonSerialized' => [
+                    [
+                        'name' => 'Keyboard'
+                    ],
+                ],
+            ],
+            'zero_elements' => [
+                'inputData' => [],
+                'count' => 0,
+                'jsonSerialized' => [],
+            ],
+        ];
     }
 
     public function testRequiredKeys(): void
@@ -53,9 +90,6 @@ final class CaptchaIconsCollectionTest extends TestCase
             [
                 'colour' => '1'
             ],
-            [
-                'colour' => '2'
-            ]
         ];
 
         $this->expectException(CollectionException::class);
@@ -64,26 +98,7 @@ final class CaptchaIconsCollectionTest extends TestCase
         new CaptchaIconCollection($elements);
     }
 
-    public function testToArray(): void
-    {
-        $elements = [
-            [
-                'icon_id' => '1',
-                'icon' => '<i class="bi bi-phone-vibrate"></i>',
-                'name' => 'Mobile'
-            ],
-            [
-                'icon_id' => '2',
-                'icon' => '<i class="bi bi-keyboard"></i>',
-                'name' => 'Keyboard'
-            ]
-        ];
-        $collection = new CaptchaIconCollection($elements);
-
-        $this->assertEquals($elements, $collection->toArray());
-    }
-
-    public function testWrongDataType(): void
+    public function testException(): void
     {
         $elements = [
             'icon_id' => '1',
