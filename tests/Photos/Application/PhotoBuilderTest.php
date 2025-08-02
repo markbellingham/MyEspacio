@@ -52,12 +52,12 @@ final class PhotoBuilderTest extends TestCase
         $this->assertInstanceOf(Dimensions::class, $photo->getDimensions());
         $this->assertInstanceOf(Relevance::class, $photo->getRelevance());
         $this->assertInstanceOf(DateTimeImmutable::class, $photo->getDateTaken());
-        $this->assertEquals("Note the spurs...", $photo->getDescription());
-        $this->assertEquals("RTW Trip\/16Chile\/03 - Valparaiso", $photo->getDirectory());
-        $this->assertEquals("P1070237.JPG", $photo->getFilename());
+        $this->assertSame("Note the spurs...", $photo->getDescription());
+        $this->assertSame("RTW Trip\/16Chile\/03 - Valparaiso", $photo->getDirectory());
+        $this->assertSame("P1070237.JPG", $photo->getFilename());
         $this->assertSame(2689, $photo->getId());
-        $this->assertEquals("Getting ready to dance", $photo->getTitle());
-        $this->assertEquals("Valparaiso", $photo->getTown());
+        $this->assertSame("Getting ready to dance", $photo->getTitle());
+        $this->assertSame("Valparaiso", $photo->getTown());
         $this->assertSame(1, $photo->getCommentCount());
         $this->assertSame(1, $photo->getFaveCount());
     }

@@ -106,7 +106,7 @@ final class TagTest extends TestCase
             'test_1' => [
                 'dataSet' => new DataSet([
                     'tag' => 'sunset',
-                    'id' => 1
+                    'id' => '1'
                 ]),
                 'expectedTag' => new Tag(
                     tag: 'sunset',

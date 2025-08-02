@@ -26,7 +26,7 @@ final readonly class TagRepository implements TagRepositoryInterface
         return $this->db->statementHasErrors($stmt) ? null : $this->db->lastInsertId();
     }
 
-    public function getTagByName(string $name): ?Tag
+    public function fetchTagByName(string $name): ?Tag
     {
         return $this->db->fetchOneModel(
             'SELECT id, tag FROM project.tags WHERE tag = :tag',

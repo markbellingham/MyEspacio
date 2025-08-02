@@ -10,5 +10,5 @@ interface TagRepositoryInterface
 {
     public function save(Tag $tag): ?int;
 
-    public function getTagByName(string $name): ?Tag;
+    public function fetchTagByName(string $name): ?Tag;
 }
