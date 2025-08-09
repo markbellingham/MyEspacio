@@ -49,6 +49,7 @@ final class PhotoTagRepositoryTest extends TestCase
             geoCoordinates: $geo,
             dimensions: $dimensions,
             relevance: $relevance,
+            uuid: Uuid::fromString('78eda1f2-a6f8-48d8-af30-3907f5f9e534'),
             dateTaken: new DateTimeImmutable("2012-10-21"),
             description: "Note the spurs...",
             directory: "RTW Trip\/16Chile\/03 - Valparaiso",

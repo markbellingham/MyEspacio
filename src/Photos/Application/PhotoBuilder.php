@@ -25,6 +25,7 @@ final readonly class PhotoBuilder
             geoCoordinates: $this->getGeoCoordinates(),
             dimensions: $this->getDimensions(),
             relevance: $this->getRelevance(),
+            uuid: $this->dataSet->uuid('photo_uuid'),
             dateTaken: $this->dataSet->utcDateTimeNull('date_taken'),
             description: $this->dataSet->string('description'),
             directory: $this->dataSet->string('directory'),
@@ -34,7 +35,6 @@ final readonly class PhotoBuilder
             town: $this->dataSet->string('town'),
             commentCount: $this->dataSet->int('comment_count'),
             faveCount: $this->dataSet->int('fave_count'),
-            uuid: $this->dataSet->uuidNull('photo_uuid')
         );
     }
 

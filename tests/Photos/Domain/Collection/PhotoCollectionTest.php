@@ -70,9 +70,9 @@ final class PhotoCollectionTest extends TestCase
                     'description' => "Note the spurs...",
                     'title' => "Getting ready to dance",
                     'town' => "Valparaiso",
-                    'commentCount' => '1',
-                    'faveCount' => '1',
-                    'photo_uuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4'
+                    'commentCount' => 1,
+                    'faveCount' => 1,
+                    'photoUuid' => '9d0a6098-8e0e-4caf-9748-175518694fe4'
                 ]
             ],
             $collection->jsonSerialize()

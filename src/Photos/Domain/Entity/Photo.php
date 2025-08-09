@@ -19,16 +19,16 @@ final class Photo extends Model
         private readonly GeoCoordinates $geoCoordinates,
         private readonly Dimensions $dimensions,
         private readonly Relevance $relevance,
+        private readonly UuidInterface $uuid,
         private readonly ?DateTimeImmutable $dateTaken = null,
         private readonly ?string $description = '',
-        private readonly ?string $directory = '',
+        private readonly string $directory = '',
         private readonly string $filename = '',
         private readonly int $id = 0,
         private readonly string $title = '',
         private readonly string $town = '',
         private readonly ?int $commentCount = 0,
         private readonly ?int $faveCount = 0,
-        private readonly ?UuidInterface $uuid = null
     ) {
     }
 
@@ -52,6 +52,11 @@ final class Photo extends Model
         return $this->relevance;
     }
 
+    public function getUuid(): UuidInterface
+    {
+        return $this->uuid;
+    }
+
     public function getDateTaken(): ?DateTimeImmutable
     {
         return $this->dateTaken;
@@ -62,7 +67,7 @@ final class Photo extends Model
         return $this->description;
     }
 
-    public function getDirectory(): ?string
+    public function getDirectory(): string
     {
         return $this->directory;
     }
@@ -97,11 +102,6 @@ final class Photo extends Model
         return $this->faveCount;
     }
 
-    public function getUuid(): ?UuidInterface
-    {
-        return $this->uuid;
-    }
-
     public function jsonSerialize(): array
     {
         $array = get_object_vars($this);
@@ -110,7 +110,7 @@ final class Photo extends Model
         $array['dimensions'] = $this->getDimensions()->jsonSerialize();
         $array['relevance'] = $this->getRelevance()->jsonSerialize();
         $array['geoCoordinates'] = $this->getGeoCoordinates()->jsonSerialize();
-        $array['photo_uuid'] = $this->uuid?->toString();
+        $array['photoUuid'] = $this->uuid->toString();
         unset($array['id'], $array['directory'], $array['filename'], $array['uuid']);
         return $array;
     }
@@ -122,6 +122,7 @@ final class Photo extends Model
             geoCoordinates: GeoCoordinates::createFromDataSet($data),
             dimensions: Dimensions::createFromDataSet($data),
             relevance: Relevance::createFromDataSet($data),
+            uuid: $data->uuid('photo_uuid'),
             dateTaken: $data->utcDateTimeNull('date_taken'),
             description: $data->string('description'),
             directory: $data->string('directory'),
@@ -131,7 +132,6 @@ final class Photo extends Model
             town: $data->string('town'),
             commentCount: $data->int('comment_count'),
             faveCount: $data->int('fave_count'),
-            uuid: $data->uuidNull('photo_uuid')
         );
     }
 }
