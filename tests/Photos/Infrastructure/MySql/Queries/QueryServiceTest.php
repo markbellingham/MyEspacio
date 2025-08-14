@@ -12,7 +12,7 @@ final class QueryServiceTest extends TestCase
 {
     public function testPhotoProperties(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             'SELECT photos.id AS photo_id,
         photos.date_taken,
         photos.description,
@@ -50,7 +50,7 @@ final class QueryServiceTest extends TestCase
 
     public function testPhotoMatchProperties(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             'SELECT 
         photos.id AS photo_id,
         photos.date_taken,

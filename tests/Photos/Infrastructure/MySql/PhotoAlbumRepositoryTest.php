@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Photos\Infrastructure\MySql;
+namespace Tests\Photos\Infrastructure\MySql;
 
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Photos\Domain\Collection\PhotoAlbumCollection;
@@ -11,7 +11,6 @@ use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoAlbumRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -87,10 +86,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         GROUP BY photo_id
     ) AS fv ON fv.photo_id = photos.id';
 
-    /**
-     * @param null|array<string, string> $queryResult
-     * @throws Exception
-     */
+    /** @param null|array<string, string> $queryResult */
     #[DataProvider('fetchByIdDataProvider')]
     public function testFetchById(
         int $albumId,
@@ -118,9 +114,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $this->assertEquals($expectedFunctionResult, $actualResult);
     }
 
-    /**
-     * @return array<string, array<int, mixed>>
-     */
+    /** @return array<string, array<int, mixed>> */
     public static function fetchByIdDataProvider(): array
     {
         return [
@@ -158,10 +152,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         ];
     }
 
-    /**
-     * @param array<string, string> $databaseResult
-     * @throws Exception
-     */
+    /** @param array<string, string> $databaseResult */
     #[DataProvider('fetchAllDataProvider')]
     public function testFetchAll(
         array $databaseResult,
@@ -188,9 +179,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $this->assertEquals($expectedFunctionResult, $actualResult);
     }
 
-    /**
-     * @return array<string, array<int, mixed>>
-     */
+    /** @return array<string, array<int, mixed>> */
     public static function fetchAllDataProvider(): array
     {
         return [
@@ -271,10 +260,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         ];
     }
 
-    /**
-     * @param array<int, array<string, string>> $databaseResult
-     * @throws Exception
-     */
+    /** @param array<int, array<string, string>> $databaseResult */
     #[DataProvider('fetchAlbumPhotosDataProvider')]
     public function testFetchAlbumPhotos(
         PhotoAlbum $photoAlbum,
@@ -301,9 +287,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $this->assertEquals($expectedFunctionResult, $actualResult);
     }
 
-    /**
-     * @return array<string, array<int, mixed>>
-     */
+    /** @return array<string, array<int, mixed>> */
     public static function fetchAlbumPhotosDataProvider(): array
     {
         return [
@@ -396,7 +380,6 @@ final class PhotoAlbumRepositoryTest extends TestCase
      * @param array<int, string> $queryTerms
      * @param array<int, string> $searchTerms
      * @param array<int, array<string, string>> $searchResults
-     * @throws Exception
      */
     #[DataProvider('searchAlbumPhotosDataProvider')]
     public function testSearchAlbumPhotos(
@@ -423,9 +406,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $this->assertCount($searchCount, $actualResult);
     }
 
-    /**
-     * @return array<string, array<int, mixed>>
-     */
+    /** @return array<string, array<int, mixed>> */
     public static function searchAlbumPhotosDataProvider(): array
     {
         return [
@@ -521,10 +502,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $this->assertCount(0, $actualResult);
     }
 
-    /**
-     * @param null|array<string, string> $queryResult
-     * @throws Exception
-     */
+    /** @param null|array<string, string> $queryResult */
     #[DataProvider('fetchByNameDataProvider')]
     public function testFetchByName(
         string $requestAlbumName,
@@ -552,9 +530,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $this->assertEquals($album, $actualResult);
     }
 
-    /**
-     * @return array<string, array<int, mixed>>
-     */
+    /** @return array<string, array<int, mixed>> */
     public static function fetchByNameDataProvider(): array
     {
         return [
@@ -604,10 +580,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $this->assertNull($actualResult);
     }
 
-    /**
-     * @param null|array<string, string> $queryResult
-     * @throws Exception
-     */
+    /** @param null|array<string, string> $queryResult */
     #[DataProvider('fetchMyFavouritesDataProvider')]
     public function testFetchMyFavourites(
         int $albumId,
@@ -646,9 +619,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
         $this->assertEquals($album, $actualResult);
     }
 
-    /**
-     * @return array<string, array<int, mixed>>
-     */
+    /** @return array<string, array<int, mixed>> */
     public static function fetchMyFavouritesDataProvider(): array
     {
         return [

@@ -6,6 +6,7 @@ namespace MyEspacio\Photos\Infrastructure\MySql;
 
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Photos\Domain\Collection\PhotoCommentCollection;
+use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoComment;
 use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
 
@@ -16,14 +17,14 @@ final readonly class PhotoCommentRepository implements PhotoCommentRepositoryInt
     ) {
     }
 
-    public function getCommentCount(int $photoId): int
+    public function fetchCount(Photo $photo): int
     {
         $result = $this->db->fetchOne(
             'SELECT COUNT(*) AS comment_count 
             FROM pictures.photo_comments 
             WHERE photo_id = :photoId',
             [
-                'photoId' => $photoId,
+                'photoId' => $photo->getId(),
             ]
         );
         $count = $result['comment_count'] ?? 0;
@@ -33,7 +34,7 @@ final readonly class PhotoCommentRepository implements PhotoCommentRepositoryInt
         return 0;
     }
 
-    public function addComment(PhotoComment $comment): bool
+    public function save(PhotoComment $comment): bool
     {
         $stmt = $this->db->run(
             'INSERT INTO pictures.photo_comments (user_id, photo_id, comment, created)
@@ -45,14 +46,14 @@ final readonly class PhotoCommentRepository implements PhotoCommentRepositoryInt
             [
                 'comment' => $comment->getComment(),
                 'created' => $comment->getCreated()->format('Y-m-d H:i:s'),
-                'photoUuid' => $comment->getPhotoUuid(),
-                'userUuid' => $comment->getUserUuid(),
+                'photoUuid' => $comment->getPhotoUuid()->getBytes(),
+                'userUuid' => $comment->getUserUuid()->getBytes(),
             ]
         );
         return $this->db->statementHasErrors($stmt) === false;
     }
 
-    public function getPhotoComments(int $photoId): PhotoCommentCollection
+    public function fetchForPhoto(Photo $photo): PhotoCommentCollection
     {
         $result = $this->db->fetchAll(
             'SELECT 
@@ -64,9 +65,9 @@ final readonly class PhotoCommentRepository implements PhotoCommentRepositoryInt
                 users.name AS username
             FROM pictures.photo_comments
             LEFT JOIN project.users ON users.id = photo_comments.user_id
-            WHERE photo_id = :photoId AND verified = 1',
+            WHERE photo_comments.photo_id = :photoId AND photo_comments.verified = 1',
             [
-                'photoId' => $photoId,
+                'photoId' => $photo->getId(),
             ]
         );
         return new PhotoCommentCollection($result);

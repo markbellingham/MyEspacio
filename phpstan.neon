@@ -7,4 +7,6 @@ parameters:
     bootstrapFiles:
         - phpstan-bootstrap.php
     ignoreErrors:
-        - '#Call to method PHPUnit\\Framework\\Assert::assertInstanceOf\(\) with .+ will always evaluate to true#'
+        - '#Call to method PHPUnit\\Framework\\Assert::assert(?:InstanceOf|Same)\(\) with .+ will always evaluate to true#'
+        - '#method\.alreadyNarrowedType#'
+    reportUnmatchedIgnoredErrors: false
