@@ -39,25 +39,19 @@ final readonly class PhotoFaveRepository implements PhotoFaveRepositoryInterface
         return $this->db->statementHasErrors($statement) === false;
     }
 
-    public function getPhotoFaveCount(Photo $photo): int
+    public function countForPhoto(Photo $photo): int
     {
         $result = $this->db->fetchOne(
-            'SELECT COUNT(photo_id) AS quantity FROM pictures.photo_faves WHERE photo_id = :photoId',
-            [
-                'photoId' => $photo->getId()
-            ]
-        );
-        $quantity = $result['quantity'] ?? 0;
-        if (is_numeric($quantity)) {
-            return (int) $quantity;
-        }
-        return 0;
-    }
-
-    public function getAnonymousFaveCount(Photo $photo): int
-    {
-        $result = $this->db->fetchOne(
-            'SELECT COUNT(photo_id) AS quantity FROM pictures.anon_photo_faves WHERE photo_id = :photoId',
+            'SELECT COUNT(*) AS quantity
+            FROM (
+                SELECT photo_id
+                FROM pictures.photo_faves 
+                WHERE photo_id = :photoId
+                UNION ALL
+                SELECT photo_id
+                FROM pictures.anon_photo_faves
+                WHERE photo_id = :photoId
+            ) AS combined_faves',
             [
                 'photoId' => $photo->getId()
             ]

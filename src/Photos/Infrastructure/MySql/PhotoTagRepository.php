@@ -16,7 +16,7 @@ final readonly class PhotoTagRepository implements PhotoTagRepositoryInterface
     ) {
     }
 
-    public function getPhotoTags(Photo $photo): PhotoTagCollection
+    public function fetchForPhoto(Photo $photo): PhotoTagCollection
     {
         $results = $this->db->fetchAll(
             'SELECT

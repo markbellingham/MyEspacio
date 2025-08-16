@@ -13,7 +13,5 @@ interface PhotoFaveRepositoryInterface
 
     public function addAnonymous(PhotoFave $fave): bool;
 
-    public function getPhotoFaveCount(Photo $photo): int;
-
-    public function getAnonymousFaveCount(Photo $photo): int;
+    public function countForPhoto(Photo $photo): int;
 }

@@ -6,234 +6,256 @@ namespace Tests\Photos\Infrastructure\MySql;
 
 use DateTimeImmutable;
 use MyEspacio\Framework\Database\Connection;
-use MyEspacio\Framework\DataSet;
+use MyEspacio\Photos\Domain\Entity\Country;
+use MyEspacio\Photos\Domain\Entity\Dimensions;
+use MyEspacio\Photos\Domain\Entity\GeoCoordinates;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoFave;
+use MyEspacio\Photos\Domain\Entity\Relevance;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoFaveRepository;
 use MyEspacio\User\Domain\User;
 use PDOStatement;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
 final class PhotoFaveRepositoryTest extends TestCase
 {
-    private Photo $photo;
-    private PhotoFave $photoFave;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->photo = Photo::createFromDataset(
-            new DataSet([
-                'country_id' => '45',
-                'country_name' => 'Chile',
-                'two_char_code' => 'CL',
-                'three_char_code' => 'CHL',
-                'geo_id' => '2559',
-                'photo_id' => '2689',
-                'photo_uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71',
-                'latitude' => '-33438084',
-                'longitude' => '-33438084',
-                'accuracy' =>  '16',
-                'width' => '456',
-                'height' => '123',
-                'cscore' => '4',
-                'pscore' => '5',
-                'date_taken' => "2012-10-21",
-                'description' => "Note the spurs...",
-                'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
-                'filename' => "P1070237.JPG",
-                'title' => "Getting ready to dance",
-                'town' => "Valparaiso",
-                'comment_count' => '1',
-                'fave_count' => '1',
-                'uuid' => '8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'
-            ])
-        );
-        $this->photoFave = new PhotoFave(
-            photo: $this->photo,
-            user: new User(
-                email: 'mail@example.com',
-                uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
-                name: 'Mark',
-                phone: '01234567890',
-                loginAttempts: 1,
-                loginDate: new DateTimeImmutable('2024-03-02 15:26:00'),
-                magicLink: '550e8400-e29b-41d4-a716-446655440000',
-                phoneCode: '9bR3xZ',
-                passcodeRoute: 'email',
-                id: 1
-            )
-        );
-    }
-
-    public function testAdd(): void
-    {
+    /** @param array<string, int> $queryParameters */
+    #[DataProvider('addDataProvider')]
+    public function testAdd(
+        array $queryParameters,
+        PhotoFave $photoFave,
+        bool $statementHasErrors,
+        bool $expectedFunctionResult,
+    ): void {
         $statement = $this->createMock(PDOStatement::class);
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('run')
             ->with(
                 'INSERT INTO pictures.photo_faves (user_id, photo_id) VALUES (:userId, :photoId)',
-                [
-                    'userId' => 1,
-                    'photoId' => 2689
-                ]
+                $queryParameters
             )
             ->willReturn($statement);
         $db->expects($this->once())
             ->method('statementHasErrors')
             ->with($statement)
-            ->willReturn(false);
+            ->willReturn($statementHasErrors);
 
         $repository = new PhotoFaveRepository($db);
-        $result = $repository->add($this->photoFave);
-        $this->assertTrue($result);
+        $actualResult = $repository->add($photoFave);
+        $this->assertSame($expectedFunctionResult, $actualResult);
     }
 
-    public function testAddFail(): void
+    /** @return array<string, array<string, mixed>> */
+    public static function addDataProvider(): array
     {
-        $statement = $this->createMock(PDOStatement::class);
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('run')
-            ->with(
-                'INSERT INTO pictures.photo_faves (user_id, photo_id) VALUES (:userId, :photoId)',
-                [
+        return [
+            'success' => [
+                'queryParameters' => [
                     'userId' => 1,
-                    'photoId' => 2689
-                ]
-            )
-            ->willReturn($statement);
-        $db->expects($this->once())
-            ->method('statementHasErrors')
-            ->with($statement)
-            ->willReturn(true);
-
-        $repository = new PhotoFaveRepository($db);
-        $result = $repository->add($this->photoFave);
-        $this->assertFalse($result);
+                    'photoId' => 2689,
+                ],
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(2689),
+                    user: self::createUser(1),
+                ),
+                'statementHasErrors' => false,
+                'expectedFunctionResult' => true,
+            ],
+            'failure' => [
+                'queryParameters' => [
+                    'userId' => 10,
+                    'photoId' => 1000,
+                ],
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(1000),
+                    user: self::createUser(10),
+                ),
+                'statementHasErrors' => true,
+                'expectedFunctionResult' => false,
+            ]
+        ];
     }
 
-    public function testAddAnonymous(): void
-    {
+    /** @param array<string, int> $queryParameters */
+    #[DataProvider('addAnonymousDataProvider')]
+    public function testAddAnonymous(
+        array $queryParameters,
+        bool $statementHasErrors,
+        PhotoFave $photoFave,
+        bool $expectedFunctionResult,
+    ): void {
         $statement = $this->createMock(PDOStatement::class);
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('run')
             ->with(
                 'INSERT INTO pictures.anon_photo_faves (photo_id) VALUES (:photoId)',
-                [
-                    'photoId' => 2689
-                ]
+                $queryParameters
             )
             ->willReturn($statement);
         $db->expects($this->once())
             ->method('statementHasErrors')
             ->with($statement)
-            ->willReturn(false);
+            ->willReturn($statementHasErrors);
 
         $repository = new PhotoFaveRepository($db);
-        $result = $repository->addAnonymous($this->photoFave);
-        $this->assertTrue($result);
+        $actualResult = $repository->addAnonymous($photoFave);
+        $this->assertSame($expectedFunctionResult, $actualResult);
     }
 
-    public function testAddAnonymousFail(): void
+    /** @return array<string, array<string, mixed>> */
+    public static function addAnonymousDataProvider(): array
     {
-        $statement = $this->createMock(PDOStatement::class);
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('run')
-            ->with(
-                'INSERT INTO pictures.anon_photo_faves (photo_id) VALUES (:photoId)',
-                [
-                    'photoId' => 2689
-                ]
-            )
-            ->willReturn($statement);
-        $db->expects($this->once())
-            ->method('statementHasErrors')
-            ->with($statement)
-            ->willReturn(true);
-
-        $repository = new PhotoFaveRepository($db);
-        $result = $repository->addAnonymous($this->photoFave);
-        $this->assertFalse($result);
+        return [
+            'success' => [
+                'queryParameters' => [
+                    'photoId' => 3,
+                ],
+                'statementHasErrors' => false,
+                'photoFave' => new PhotoFave(
+                    self::createPhoto(3),
+                    self::createUser(1),
+                ),
+                'expectedFunctionResult' => true,
+            ],
+            'failure' => [
+                'queryParameters' => [
+                    'photoId' => 77,
+                ],
+                'statementHasErrors' => true,
+                'photoFave' => new PhotoFave(
+                    self::createPhoto(77),
+                    self::createUser(1),
+                ),
+                'expectedFunctionResult' => false,
+            ]
+        ];
     }
 
-    public function testGetPhotoFaveCount(): void
-    {
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchOne')
-            ->with(
-                'SELECT COUNT(photo_id) AS quantity FROM pictures.photo_faves WHERE photo_id = :photoId',
-                [
-                    'photoId' => 2689
-                ]
-            )
-            ->willReturn(['quantity' => '2']);
-
-        $repository = new PhotoFaveRepository($db);
-        $result = $repository->getPhotoFaveCount($this->photo);
-
-        $this->assertSame(2, $result);
-    }
-
-    public function testGetPhotoFaveCountNotFound(): void
-    {
+    /** @param array<string, string> $databaseResult */
+    #[DataProvider('getPhotoFaveCountDataProvider')]
+    public function testGetPhotoFaveCount(
+        int $photoId,
+        Photo $photo,
+        ?array $databaseResult,
+        int $expectedFunctionResult,
+    ): void {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchOne')
             ->with(
-                'SELECT COUNT(photo_id) AS quantity FROM pictures.photo_faves WHERE photo_id = :photoId',
+                'SELECT COUNT(*) AS quantity
+            FROM (
+                SELECT photo_id
+                FROM pictures.photo_faves 
+                WHERE photo_id = :photoId
+                UNION ALL
+                SELECT photo_id
+                FROM pictures.anon_photo_faves
+                WHERE photo_id = :photoId
+            ) AS combined_faves',
                 [
-                    'photoId' => 2689
+                    'photoId' => $photoId
                 ]
             )
-            ->willReturn(null);
+            ->willReturn($databaseResult);
 
         $repository = new PhotoFaveRepository($db);
-        $result = $repository->getPhotoFaveCount($this->photo);
+        $actualResult = $repository->countForPhoto($photo);
 
-        $this->assertSame(0, $result);
+        $this->assertSame($expectedFunctionResult, $actualResult);
     }
 
-    public function testGetAnonymousFaveCount(): void
+    /** @return array<string, array<string, mixed>> */
+    public static function getPhotoFaveCountDataProvider(): array
     {
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchOne')
-            ->with(
-                'SELECT COUNT(photo_id) AS quantity FROM pictures.anon_photo_faves WHERE photo_id = :photoId',
-                [
-                    'photoId' => 2689
-                ]
-            )
-            ->willReturn(['quantity' => '2']);
-
-        $repository = new PhotoFaveRepository($db);
-        $result = $repository->getAnonymousFaveCount($this->photo);
-
-        $this->assertSame(2, $result);
+        return [
+            'test_1' => [
+                'photoId' => 2869,
+                'photo' => self::createPhoto(2869),
+                'databaseResult' => [
+                    'quantity' => '5',
+                ],
+                'expectedFunctionResult' => 5,
+            ],
+            'test_2' => [
+                'photoId' => 1234,
+                'photo' => self::createPhoto(1234),
+                'databaseResult' => [
+                    'quantity' => '0',
+                ],
+                'expectedFunctionResult' => 0,
+            ],
+            'test_3' => [
+                'photoId' => 4321,
+                'photo' => self::createPhoto(4321),
+                'databaseResult' => null,
+                'expectedFunctionResult' => 0,
+            ],
+            'test_4' => [
+                'photoId' => 4999,
+                'photo' => self::createPhoto(4999),
+                'databaseResult' => [
+                    'quantity' => 'nonsense',
+                ],
+                'expectedFunctionResult' => 0,
+            ],
+        ];
     }
 
-    public function testGetAnonymousFaveCountNotFound(): void
+    private static function createPhoto(int $photoId): Photo
     {
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchOne')
-            ->with(
-                'SELECT COUNT(photo_id) AS quantity FROM pictures.anon_photo_faves WHERE photo_id = :photoId',
-                [
-                    'photoId' => 2689
-                ]
-            )
-            ->willReturn(null);
+        return new Photo(
+            country: new Country(
+                id: 45,
+                name: 'Chile',
+                twoCharCode: 'CL',
+                threeCharCode: 'CHL',
+            ),
+            geoCoordinates: new GeoCoordinates(
+                id: 2559,
+                photoUuid: Uuid::fromString('8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'),
+                latitude: -33438084,
+                longitude: -33438084,
+                accuracy:  16,
+            ),
+            dimensions: new Dimensions(
+                width: 456,
+                height: 123,
+            ),
+            relevance: new Relevance(
+                cScore: 4,
+                pScore: 5,
+            ),
+            uuid: Uuid::fromString('8d7fb4b9-b496-478b-bd9e-14dc30a1ca71'),
+            dateTaken: new DateTimeImmutable("2012-10-21"),
+            description: "Note the spurs...",
+            directory: "RTW Trip\/16Chile\/03 - Valparaiso",
+            filename: "P1070237.JPG",
+            id: $photoId,
+            title: "Getting ready to dance",
+            town: "Valparaiso",
+            commentCount: 1,
+            faveCount: 1
+        );
+    }
 
-        $repository = new PhotoFaveRepository($db);
-        $result = $repository->getAnonymousFaveCount($this->photo);
-
-        $this->assertSame(0, $result);
+    private static function createUser(int $userId): User
+    {
+        return new User(
+            email: 'mail@example.com',
+            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+            name: 'Mark',
+            phone: '01234567890',
+            loginAttempts: 1,
+            loginDate: new DateTimeImmutable('2024-03-02 15:26:00'),
+            magicLink: '550e8400-e29b-41d4-a716-446655440000',
+            phoneCode: '9bR3xZ',
+            passcodeRoute: 'email',
+            id: $userId
+        );
     }
 }

@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Photos\Infrastructure\MySql;
 
+use DateTimeImmutable;
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
+use MyEspacio\Photos\Domain\Entity\Country;
+use MyEspacio\Photos\Domain\Entity\Dimensions;
+use MyEspacio\Photos\Domain\Entity\GeoCoordinates;
 use MyEspacio\Photos\Domain\Entity\Photo;
+use MyEspacio\Photos\Domain\Entity\Relevance;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -87,8 +91,13 @@ final class PhotoRepositoryTest extends TestCase
         GROUP BY photo_id
     ) AS fv ON fv.photo_id = photos.id';
 
-    public function testFetchById(): void
-    {
+    /** @param array<string, string> $databaseResult */
+    #[DataProvider('fetchByIdDataProvider')]
+    public function testFetchById(
+        int $photoId,
+        ?array $databaseResult,
+        ?Photo $expectedFunctionResult,
+    ): void {
         $db = $this->createMock(Connection::class);
 
         $db->expects($this->once())
@@ -96,11 +105,24 @@ final class PhotoRepositoryTest extends TestCase
             ->with(
                 self::PHOTO_PROPERTIES . ' WHERE photos.id = :photoId',
                 [
-                    'photoId' => 1
+                    'photoId' => $photoId
                 ]
             )
-            ->willReturn(
-                [
+            ->willReturn($databaseResult);
+
+        $repository = new PhotoRepository($db);
+        $actualResult = $repository->fetchById($photoId);
+
+        $this->assertEquals($expectedFunctionResult, $actualResult);
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    public static function fetchByIdDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                'photoId' => 2689,
+                'databaseResult' => [
                     'country_id' => '45',
                     'country_name' => 'Chile',
                     'two_char_code' => 'CL',
@@ -120,20 +142,113 @@ final class PhotoRepositoryTest extends TestCase
                     'title' => "Getting ready to dance",
                     'town' => "Valparaiso",
                     'comment_count' => '1',
-                    'fave_count' => '1'
-                ]
-            );
-
-        $repository = new PhotoRepository($db);
-        $result = $repository->fetchById(1);
-
-        $this->assertInstanceOf(Photo::class, $result);
+                    'fave_count' => '1',
+                    'cscore' => '4',
+                    'pscore' => '5',
+                ],
+                'expectedFunctionResult' => new Photo(
+                    country: new Country(
+                        id: 45,
+                        name: 'Chile',
+                        twoCharCode: 'CL',
+                        threeCharCode: 'CHL',
+                    ),
+                    geoCoordinates: new GeoCoordinates(
+                        id: 2559,
+                        photoUuid: Uuid::fromString('02175773-89e6-4ab6-b559-5c16998bd7cd'),
+                        latitude: -33438084,
+                        longitude: -33438084,
+                        accuracy:  16,
+                    ),
+                    dimensions: new Dimensions(
+                        width: 456,
+                        height: 123,
+                    ),
+                    relevance: new Relevance(
+                        cScore: 4,
+                        pScore: 5,
+                    ),
+                    uuid: Uuid::fromString('02175773-89e6-4ab6-b559-5c16998bd7cd'),
+                    dateTaken: new DateTimeImmutable("2012-10-21"),
+                    description: "Note the spurs...",
+                    directory: "RTW Trip\/16Chile\/03 - Valparaiso",
+                    filename: "P1070237.JPG",
+                    id: 2689,
+                    title: "Getting ready to dance",
+                    town: "Valparaiso",
+                    commentCount: 1,
+                    faveCount: 1
+                )
+            ],
+            'test_2' => [
+                'photoId' => 4521,
+                'databaseResult' => [
+                    'country_id' => '81',
+                    'country_name' => 'Japan',
+                    'two_char_code' => 'JP',
+                    'three_char_code' => 'JPN',
+                    'geo_id' => '7842',
+                    'latitude' => '35676691',
+                    'longitude' => '139650311',
+                    'accuracy' => '12',
+                    'width' => '1024',
+                    'height' => '768',
+                    'date_taken' => "2018-04-03",
+                    'description' => "Cherry blossoms in full bloom during hanami season",
+                    'directory' => "Asia Journey\/02Japan\/Tokyo\/Ueno Park",
+                    'filename' => "IMG_5829.JPG",
+                    'photo_id' => '4521',
+                    'photo_uuid' => 'f7d9c2e1-4a8b-4c3d-9e2f-8b7a6c5d4e3f',
+                    'title' => "Sakura at Ueno Park",
+                    'town' => "Tokyo",
+                    'comment_count' => '8',
+                    'fave_count' => '23',
+                    'cscore' => '9',
+                    'pscore' => '8',
+                ],
+                'expectedFunctionResult' => new Photo(
+                    country: new Country(
+                        id: 81,
+                        name: 'Japan',
+                        twoCharCode: 'JP',
+                        threeCharCode: 'JPN',
+                    ),
+                    geoCoordinates: new GeoCoordinates(
+                        id: 7842,
+                        photoUuid: Uuid::fromString('f7d9c2e1-4a8b-4c3d-9e2f-8b7a6c5d4e3f'),
+                        latitude: 35676691,
+                        longitude: 139650311,
+                        accuracy: 12,
+                    ),
+                    dimensions: new Dimensions(
+                        width: 1024,
+                        height: 768,
+                    ),
+                    relevance: new Relevance(
+                        cScore: 9,
+                        pScore: 8,
+                    ),
+                    uuid: Uuid::fromString('f7d9c2e1-4a8b-4c3d-9e2f-8b7a6c5d4e3f'),
+                    dateTaken: new DateTimeImmutable("2018-04-03"),
+                    description: "Cherry blossoms in full bloom during hanami season",
+                    directory: "Asia Journey\/02Japan\/Tokyo\/Ueno Park",
+                    filename: "IMG_5829.JPG",
+                    id: 4521,
+                    title: "Sakura at Ueno Park",
+                    town: "Tokyo",
+                    commentCount: 8,
+                    faveCount: 23
+                )
+            ],
+            'test_not_found' => [
+                'photoId' => 4521,
+                'databaseResult' => null,
+                'expectedFunctionResult' => null,
+            ],
+        ];
     }
 
-    /**
-     * @param array<string, string>|null $queryResult
-     * @throws Exception
-     */
+    /** @param array<string, string>|null $queryResult */
     #[DataProvider('fetchByUuidDataProvider')]
     public function testFetchByUuid(
         ?array $queryResult,
@@ -223,28 +338,12 @@ final class PhotoRepositoryTest extends TestCase
         ];
     }
 
-    public function testFetchByIdNotFound(): void
-    {
-        $db = $this->createMock(Connection::class);
-
-        $db->expects($this->once())
-            ->method('fetchOne')
-            ->with(
-                self::PHOTO_PROPERTIES . ' WHERE photos.id = :photoId',
-                [
-                    'photoId' => 1
-                ]
-            )
-            ->willReturn(null);
-
-        $repository = new PhotoRepository($db);
-        $result = $repository->fetchById(1);
-
-        $this->assertNull($result);
-    }
-
-    public function testTopPhotos(): void
-    {
+    /** @param array<int, array<string, string>> $databaseResult */
+    #[DataProvider('topPhotosDataProvider')]
+    public function testTopPhotos(
+        array $databaseResult,
+        PhotoCollection $expectedFunctionResult,
+    ): void {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchAll')
@@ -254,74 +353,20 @@ final class PhotoRepositoryTest extends TestCase
             LIMIT 100',
                 []
             )
-            ->willReturn([
-                [
-                    'country_id' => '45',
-                    'country_name' => 'Chile',
-                    'two_char_code' => 'CL',
-                    'three_char_code' => 'CHL',
-                    'geo_id' => '2559',
-                    'latitude' => '-33438084',
-                    'longitude' => '-33438084',
-                    'accuracy' =>  '16',
-                    'width' => '456',
-                    'height' => '123',
-                    'date_taken' => "2012-10-21",
-                    'description' => "Note the spurs...",
-                    'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
-                    'filename' => "P1070237.JPG",
-                    'photo_id' => '2689',
-                    'title' => "Getting ready to dance",
-                    'town' => "Valparaiso",
-                    'comment_count' => '1',
-                    'fave_count' => '1',
-                    'photo_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
-                ]
-            ]);
+            ->willReturn($databaseResult);
 
         $repository = new PhotoRepository($db);
-        $result = $repository->topPhotos();
+        $actualResult = $repository->topPhotos();
 
-        $this->assertInstanceOf(PhotoCollection::class, $result);
-        $this->assertCount(1, $result);
+        $this->assertEquals($expectedFunctionResult, $actualResult);
     }
 
-    public function testTopPhotosDatabaseError(): void
+    /** @return array<string, array<string, mixed>> */
+    public static function topPhotosDataProvider(): array
     {
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchAll')
-            ->with(
-                self::PHOTO_PROPERTIES .
-                'ORDER BY (comment_count + fave_count)
-            LIMIT 100',
-                []
-            )
-            ->willReturn([]);
-
-        $repository = new PhotoRepository($db);
-        $result = $repository->topPhotos();
-
-        $this->assertInstanceOf(PhotoCollection::class, $result);
-        $this->assertCount(0, $result);
-    }
-
-    public function testRandomSelection(): void
-    {
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('fetchAll')
-            ->with(
-                self::PHOTO_PROPERTIES .
-                ' WHERE photo_album.album_id = :albumId
-            ORDER BY RAND()
-            LIMIT 100',
-                [
-                    'albumId' => self::MY_FAVOURITES
-                ]
-            )
-            ->willReturn(
-                [
+        return [
+            'test_1' => [
+                'databaseResult' => [
                     [
                         'country_id' => '45',
                         'country_name' => 'Chile',
@@ -343,19 +388,46 @@ final class PhotoRepositoryTest extends TestCase
                         'comment_count' => '1',
                         'fave_count' => '1',
                         'photo_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
-                    ]
-                ]
-            );
-
-        $repository = new PhotoRepository($db);
-        $result = $repository->randomSelection();
-
-        $this->assertInstanceOf(PhotoCollection::class, $result);
-        $this->assertCount(1, $result);
+                    ],
+                ],
+                'expectedFunctionResult' => new PhotoCollection([
+                    [
+                        'country_id' => '45',
+                        'country_name' => 'Chile',
+                        'two_char_code' => 'CL',
+                        'three_char_code' => 'CHL',
+                        'geo_id' => '2559',
+                        'latitude' => '-33438084',
+                        'longitude' => '-33438084',
+                        'accuracy' =>  '16',
+                        'width' => '456',
+                        'height' => '123',
+                        'date_taken' => "2012-10-21",
+                        'description' => "Note the spurs...",
+                        'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
+                        'filename' => "P1070237.JPG",
+                        'photo_id' => '2689',
+                        'title' => "Getting ready to dance",
+                        'town' => "Valparaiso",
+                        'comment_count' => '1',
+                        'fave_count' => '1',
+                        'photo_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
+                    ],
+                ])
+            ],
+            'test_2' => [
+                'databaseResult' => [],
+                'expectedFunctionResult' => new PhotoCollection([]),
+            ]
+        ];
     }
 
-    public function testRandomSelectionDatabaseError(): void
-    {
+    /** @param array<string, array<string, string>> $databaseResult */
+    #[DataProvider('randomSelectionDataProvider')]
+    public function testRandomSelection(
+        array $databaseResult,
+        PhotoCollection $expectedFunctionResult,
+    ): void {
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('fetchAll')
@@ -368,20 +440,79 @@ final class PhotoRepositoryTest extends TestCase
                     'albumId' => self::MY_FAVOURITES
                 ]
             )
-            ->willReturn([]);
+            ->willReturn($databaseResult);
 
         $repository = new PhotoRepository($db);
-        $result = $repository->randomSelection();
+        $actualResult = $repository->randomSelection();
 
-        $this->assertInstanceOf(PhotoCollection::class, $result);
-        $this->assertCount(0, $result);
+        $this->assertEquals($expectedFunctionResult, $actualResult);
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    public static function randomSelectionDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                'databaseResult' => [
+                    [
+                        'country_id' => '45',
+                        'country_name' => 'Chile',
+                        'two_char_code' => 'CL',
+                        'three_char_code' => 'CHL',
+                        'geo_id' => '2559',
+                        'latitude' => '-33438084',
+                        'longitude' => '-33438084',
+                        'accuracy' =>  '16',
+                        'width' => '456',
+                        'height' => '123',
+                        'date_taken' => "2012-10-21",
+                        'description' => "Note the spurs...",
+                        'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
+                        'filename' => "P1070237.JPG",
+                        'photo_id' => '2689',
+                        'title' => "Getting ready to dance",
+                        'town' => "Valparaiso",
+                        'comment_count' => '1',
+                        'fave_count' => '1',
+                        'photo_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
+                    ],
+                ],
+                'expectedFunctionResult' => new PhotoCollection([
+                    [
+                        'country_id' => '45',
+                        'country_name' => 'Chile',
+                        'two_char_code' => 'CL',
+                        'three_char_code' => 'CHL',
+                        'geo_id' => '2559',
+                        'latitude' => '-33438084',
+                        'longitude' => '-33438084',
+                        'accuracy' =>  '16',
+                        'width' => '456',
+                        'height' => '123',
+                        'date_taken' => "2012-10-21",
+                        'description' => "Note the spurs...",
+                        'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
+                        'filename' => "P1070237.JPG",
+                        'photo_id' => '2689',
+                        'title' => "Getting ready to dance",
+                        'town' => "Valparaiso",
+                        'comment_count' => '1',
+                        'fave_count' => '1',
+                        'photo_uuid' => '51812b8b-a878-4e21-bc9a-e27350c43904'
+                    ],
+                ]),
+            ],
+            'test_2' => [
+                'databaseResult' => [],
+                'expectedFunctionResult' => new PhotoCollection([]),
+            ]
+        ];
     }
 
     /**
      * @param array<int, string> $queryTerms
      * @param array<int, string> $searchTerms
      * @param array<int, array<string, string>> $searchResults
-     * @throws Exception
      */
     #[DataProvider('searchDataProvider')]
     public function testSearch(
@@ -407,9 +538,7 @@ final class PhotoRepositoryTest extends TestCase
         $this->assertCount($searchCount, $results);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     public static function searchDataProvider(): array
     {
         return [

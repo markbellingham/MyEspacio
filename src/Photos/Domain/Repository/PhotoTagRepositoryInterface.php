@@ -9,5 +9,5 @@ use MyEspacio\Photos\Domain\Entity\Photo;
 
 interface PhotoTagRepositoryInterface
 {
-    public function getPhotoTags(Photo $photo): PhotoTagCollection;
+    public function fetchForPhoto(Photo $photo): PhotoTagCollection;
 }
