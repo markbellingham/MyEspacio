@@ -6,6 +6,7 @@ namespace MyEspacio\User\Infrastructure\MySql;
 
 use MyEspacio\Framework\Database\Connection;
 use MyEspacio\Framework\DataSet;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use Ramsey\Uuid\Uuid;
@@ -97,7 +98,7 @@ final readonly class UserRepository implements UserRepositoryInterface
             loginDate: null,
             magicLink: null,
             phoneCode: null,
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
     }

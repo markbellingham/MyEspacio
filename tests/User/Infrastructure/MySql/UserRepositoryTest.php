@@ -6,6 +6,7 @@ namespace Tests\User\Infrastructure\MySql;
 
 use DateTimeImmutable;
 use MyEspacio\Framework\Database\Connection;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Infrastructure\MySql\UserRepository;
 use PDOStatement;
@@ -28,7 +29,7 @@ final class UserRepositoryTest extends TestCase
             loginDate: new DateTimeImmutable('2024-03-02 15:26:00'),
             magicLink: '550e8400-e29b-41d4-a716-446655440000',
             phoneCode: '9bR3xZ',
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
     }

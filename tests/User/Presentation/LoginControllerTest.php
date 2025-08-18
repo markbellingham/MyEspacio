@@ -9,6 +9,7 @@ use Exception;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\User\Application\SendLoginCodeInterface;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Presentation\LoginController;
@@ -216,7 +217,7 @@ final class LoginControllerTest extends TestCase
             loginDate: null,
             magicLink: null,
             phoneCode: null,
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 
@@ -292,7 +293,7 @@ final class LoginControllerTest extends TestCase
             loginDate: null,
             magicLink: null,
             phoneCode: null,
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 
@@ -368,7 +369,7 @@ final class LoginControllerTest extends TestCase
             loginDate: null,
             magicLink: null,
             phoneCode: null,
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 
@@ -439,7 +440,7 @@ final class LoginControllerTest extends TestCase
             loginDate: null,
             magicLink: null,
             phoneCode: null,
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 
@@ -511,7 +512,7 @@ final class LoginControllerTest extends TestCase
             loginDate: new DateTimeImmutable(),
             magicLink: null,
             phoneCode: null,
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 
@@ -588,7 +589,7 @@ final class LoginControllerTest extends TestCase
             loginDate: $loginDate->modify('-' . (self::LOGIN_CODE_EXPIRY_TIME + 1) . ' minutes'),
             magicLink: null,
             phoneCode: 'ABC123',
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 
@@ -656,7 +657,7 @@ final class LoginControllerTest extends TestCase
             loginDate: $loginDate->modify('-' . (self::LOGIN_CODE_EXPIRY_TIME - 1) . ' minutes'),
             magicLink: null,
             phoneCode: 'ABC123',
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 
@@ -727,7 +728,7 @@ final class LoginControllerTest extends TestCase
             loginDate: $loginDate->modify('-' . (self::LOGIN_CODE_EXPIRY_TIME - 1) . ' minutes'),
             magicLink: null,
             phoneCode: 'ABC123',
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 

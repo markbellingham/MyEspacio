@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\User\Application\SendLoginCodeInterface;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Presentation\LoginController;
@@ -127,7 +128,7 @@ final class LoginControllerMagicLinkTest extends TestCase
             loginDate: $loginDate->modify('-' . (self::LOGIN_CODE_EXPIRY_TIME + 1) . ' minutes'),
             magicLink: 'e762349c-a60e-4428-b781-a076e161f1e3',
             phoneCode: 'ABC123',
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 
@@ -189,7 +190,7 @@ final class LoginControllerMagicLinkTest extends TestCase
             loginDate: $loginDate->modify('-' . (self::LOGIN_CODE_EXPIRY_TIME - 10) . ' minutes'),
             magicLink: 'e762349c-a60e-4428-b781-a076e161f1e3',
             phoneCode: null,
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 

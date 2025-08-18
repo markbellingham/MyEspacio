@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Photos\Domain\Entity;
 
+use DateTimeImmutable;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoFave;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -66,7 +68,7 @@ final class PhotoFaveTest extends TestCase
                     loginDate: new \DateTimeImmutable('2024-03-02 15:26:00'),
                     magicLink: '550e8400-e29b-41d4-a716-446655440000',
                     phoneCode: '9bR3xZ',
-                    passcodeRoute: 'email',
+                    passcodeRoute: PasscodeRoute::Email,
                     id: 1
                 )
             ],
@@ -104,10 +106,10 @@ final class PhotoFaveTest extends TestCase
                     name: 'Mark',
                     phone: '01234567890',
                     loginAttempts: 1,
-                    loginDate: new \DateTimeImmutable('2025-08-06 21:13:00'),
+                    loginDate: new DateTimeImmutable('2025-08-06 21:13:00'),
                     magicLink: 'cac4a5f5-9eae-461e-86cd-3d148f42e0f6',
                     phoneCode: 'abc123',
-                    passcodeRoute: 'phone',
+                    passcodeRoute: PasscodeRoute::Phone,
                     id: 5
                 )
             ],

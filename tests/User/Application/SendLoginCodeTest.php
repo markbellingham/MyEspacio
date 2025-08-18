@@ -8,6 +8,7 @@ use Exception;
 use MyEspacio\Framework\Messages\EmailInterface;
 use MyEspacio\User\Application\LoginEmailMessageInterface;
 use MyEspacio\User\Application\SendLoginCode;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -22,7 +23,7 @@ final class SendLoginCodeTest extends TestCase
             email: 'mail@example.com',
             uuid:Uuid::fromString('e762349c-a60e-4428-b781-a076e161f1e3'),
             name: 'Mark Bellingham',
-            passcodeRoute: 'email'
+            passcodeRoute: PasscodeRoute::Email
         );
     }
 
@@ -85,7 +86,7 @@ final class SendLoginCodeTest extends TestCase
 
     public function testSendToUserByText(): void
     {
-        $this->user->setPasscodeRoute('phone');
+        $this->user->setPasscodeRoute(PasscodeRoute::Phone);
         $loginEmailMessage = $this->createMock(LoginEmailMessageInterface::class);
         $emailInterface = $this->createMock(EmailInterface::class);
 

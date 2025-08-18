@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace MyEspacio\User\Domain;
 
 use DateTimeImmutable;
-use Exception;
 use InvalidArgumentException;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Model;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -18,11 +16,6 @@ use Ramsey\Uuid\UuidInterface;
 final class User extends Model
 {
     private bool $isLoggedIn = false;
-
-    private const array VALID_PASSCODE_ROUTES = [
-        'email',
-        'phone'
-    ];
 
     public function __construct(
         private string $email,
@@ -33,11 +26,10 @@ final class User extends Model
         private ?DateTimeImmutable $loginDate = null,
         private ?string $magicLink = null,
         private ?string $phoneCode = null,
-        private string $passcodeRoute = 'email',
+        private PasscodeRoute $passcodeRoute = PasscodeRoute::Email,
         private ?int $id = null
     ) {
         $this->emailIsValid($email);
-        $this->passcodeRouteIsValid($passcodeRoute);
     }
 
     public function jsonSerialize(): array
@@ -125,18 +117,9 @@ final class User extends Model
         return $this->loginDate;
     }
 
-    public function getLoginDateString(string $format = 'Y-m-d H:i:s'): ?string
+    public function setLoginDate(DateTimeImmutable $loginDate): void
     {
-        return $this->loginDate?->format($format);
-    }
-
-    public function setLoginDate(string $loginDate): void
-    {
-        try {
-            $this->loginDate = new DateTimeImmutable($loginDate);
-        } catch (Exception) {
-            throw new InvalidArgumentException('Could not create date instance');
-        }
+        $this->loginDate = $loginDate;
     }
 
     public function getMagicLink(): ?string
@@ -159,29 +142,20 @@ final class User extends Model
         $this->phoneCode = $phoneCode;
     }
 
-    public function getPasscodeRoute(): string
+    public function getPasscodeRoute(): PasscodeRoute
     {
         return $this->passcodeRoute;
     }
 
-    public function setPasscodeRoute(string $passcodeRoute): void
+    public function setPasscodeRoute(PasscodeRoute $passcodeRoute): void
     {
-        if ($this->passcodeRouteIsValid($passcodeRoute)) {
-            $this->passcodeRoute = $passcodeRoute;
-        }
+        $this->passcodeRoute = $passcodeRoute;
     }
 
     private function emailIsValid(string $email): bool
     {
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
             throw new InvalidArgumentException('Invalid email address');
-        }
-        return true;
-    }
-    private function passcodeRouteIsValid(string $passcodeRoute): bool
-    {
-        if (in_array($passcodeRoute, self::VALID_PASSCODE_ROUTES) === false) {
-            throw new InvalidArgumentException('Passcode route must be one of ' . implode(', ', self::VALID_PASSCODE_ROUTES));
         }
         return true;
     }
@@ -197,7 +171,7 @@ final class User extends Model
             loginDate: $data->utcDateTimeNull('login_date'),
             magicLink: $data->stringNull('magic_link'),
             phoneCode: $data->stringNull('phone_code'),
-            passcodeRoute: $data->string('passcode_route'),
+            passcodeRoute: PasscodeRoute::from($data->string('passcode_route')),
             id: $data->int('id')
         );
     }

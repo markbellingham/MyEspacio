@@ -9,6 +9,7 @@ use Exception;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\User\Application\SendLoginCodeInterface;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,7 +85,7 @@ final class LoginController
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 translationKey: 'login.code_sent',
-                translationVariables: ['passcode_route' => $this->user->getPasscodeRoute()]
+                translationVariables: ['passcode_route' => $this->user->getPasscodeRoute()->value]
             )
         );
     }
@@ -105,7 +106,7 @@ final class LoginController
             is_string($vars['phone'])
         ) {
             $this->user = $this->userRepository->getUserByPhoneNumber($vars['phone']);
-            $this->user?->setPasscodeRoute('phone');
+            $this->user?->setPasscodeRoute(PasscodeRoute::Phone);
         }
 
         return $this->user ?: null;
@@ -194,8 +195,11 @@ final class LoginController
 
     private function secondLoginRequestInTime(): bool
     {
+        $firstLoginTime = $this->user?->getLoginDate();
+        if ($firstLoginTime === null) {
+            return false;
+        }
         try {
-            $firstLoginTime = new DateTimeImmutable($this->user?->getLoginDateString() ?? '');
             $secondLoginTime = new DateTimeImmutable();
             $diff = $firstLoginTime->diff($secondLoginTime);
             $minutes = $diff->days * 24 * 60;

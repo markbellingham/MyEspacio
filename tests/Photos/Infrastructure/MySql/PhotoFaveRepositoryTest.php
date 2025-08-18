@@ -13,6 +13,7 @@ use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoFave;
 use MyEspacio\Photos\Domain\Entity\Relevance;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoFaveRepository;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -254,7 +255,7 @@ final class PhotoFaveRepositoryTest extends TestCase
             loginDate: new DateTimeImmutable('2024-03-02 15:26:00'),
             magicLink: '550e8400-e29b-41d4-a716-446655440000',
             phoneCode: '9bR3xZ',
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: $userId
         );
     }

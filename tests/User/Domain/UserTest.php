@@ -8,47 +8,94 @@ use DateTimeImmutable;
 use Exception;
 use InvalidArgumentException;
 use MyEspacio\Framework\DataSet;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class UserTest extends TestCase
 {
-    public function testUser(): void
-    {
+    /** @param array<string, string> $jsonSerialized */
+    #[DataProvider('modelDataProvider')]
+    public function testModel(
+        string $email,
+        UuidInterface $uuid,
+        string $name,
+        string $phone,
+        int $loginAttempts,
+        DateTimeImmutable $loginDate,
+        string $magicLink,
+        string $phoneCode,
+        PasscodeRoute $passcodeRoute,
+        int $id,
+        array $jsonSerialized,
+    ): void {
         $user = new User(
-            email: 'mail@example.com',
-            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
-            name: 'Mark',
-            phone: '01234567890',
-            loginAttempts: 1,
-            loginDate: new DateTimeImmutable('2024-03-02 15:26:00'),
-            magicLink: '550e8400-e29b-41d4-a716-446655440000',
-            phoneCode: '9bR3xZ',
-            passcodeRoute: 'email',
-            id: 1
+            $email,
+            $uuid,
+            $name,
+            $phone,
+            $loginAttempts,
+            $loginDate,
+            $magicLink,
+            $phoneCode,
+            $passcodeRoute,
+            $id,
         );
 
-        $this->assertEquals('mail@example.com', $user->getEmail());
-        $this->assertEquals('Mark', $user->getName());
-        $this->assertEquals('f47ac10b-58cc-4372-a567-0e02b2c3d479', $user->getUuid());
-        $this->assertSame(1, $user->getLoginAttempts());
-        $this->assertInstanceOf(DateTimeImmutable::class, $user->getLoginDate());
-        $this->assertEquals('2024-03-02 15:26:00', $user->getLoginDateString());
-        $this->assertEquals('02-03-2024 @ 15:26', $user->getLoginDateString('d-m-Y @ H:i'));
-        $this->assertEquals('550e8400-e29b-41d4-a716-446655440000', $user->getMagicLink());
-        $this->assertEquals('9bR3xZ', $user->getPhoneCode());
-        $this->assertEquals('email', $user->getPasscodeRoute());
-        $this->assertEquals('01234567890', $user->getPhone());
-        $this->assertSame(1, $user->getId());
+        $this->assertSame($email, $user->getEmail());
+        $this->assertSame($name, $user->getName());
+        $this->assertSame($uuid, $user->getUuid());
+        $this->assertSame($loginAttempts, $user->getLoginAttempts());
+        $this->assertSame($loginDate, $user->getLoginDate());
+        $this->assertSame($magicLink, $user->getMagicLink());
+        $this->assertSame($phoneCode, $user->getPhoneCode());
+        $this->assertSame($passcodeRoute, $user->getPasscodeRoute());
+        $this->assertSame($phone, $user->getPhone());
+        $this->assertSame($id, $user->getId());
 
-        $this->assertEquals(
-            [
+        $this->assertEquals($jsonSerialized, json_decode((string) json_encode($user), true));
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    public static function modelDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                'email' => 'mail@example.com',
+                'uuid' => Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
                 'name' => 'Mark',
-                'uuid' => 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+                'phone' => '01234567890',
+                'loginAttempts' => 1,
+                'loginDate' => new DateTimeImmutable('2024-03-02 15:26:00'),
+                'magicLink' => '550e8400-e29b-41d4-a716-446655440000',
+                'phoneCode' => '9bR3xZ',
+                'passcodeRoute' => PasscodeRoute::Email,
+                'id' => 1,
+                'jsonSerialized' => [
+                    'name' => 'Mark',
+                    'uuid' => 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+                ],
             ],
-            $user->jsonSerialize()
-        );
+            'test_2' => [
+                'email' => 'sarah.johnson@testdomain.org',
+                'uuid' => Uuid::fromString('a8b9c2d3-4e5f-6789-1234-567890abcdef'),
+                'name' => 'Sarah',
+                'phone' => '07891234567',
+                'loginAttempts' => 3,
+                'loginDate' => new DateTimeImmutable('2024-08-15 09:42:17'),
+                'magicLink' => 'c4a8f9e2-7b3d-4c1a-9f8e-2d6b5a4c3e1f',
+                'phoneCode' => '4kT7mP',
+                'passcodeRoute' => PasscodeRoute::Phone,
+                'id' => 2,
+                'jsonSerialized' => [
+                    'name' => 'Sarah',
+                    'uuid' => 'a8b9c2d3-4e5f-6789-1234-567890abcdef',
+                ]
+            ],
+        ];
     }
 
     public function testDefaultValues(): void
@@ -65,53 +112,119 @@ final class UserTest extends TestCase
         $this->assertNull($user->getPhoneCode());
         $this->assertNull($user->getPhone());
         $this->assertNull($user->getId());
-        $this->assertEquals('email', $user->getPasscodeRoute());
+        $this->assertEquals(PasscodeRoute::Email, $user->getPasscodeRoute());
         $this->assertEquals('Anonymous', $user->getName());
     }
 
-    public function testSetters(): void
-    {
+    #[DataProvider('settersDataProvider')]
+    public function testSetters(
+        UuidInterface $uuid,
+        string $name,
+        string $email,
+        int $loginAttempts,
+        DateTimeImmutable $loginDate,
+        string $phone,
+        bool $isLoggedIn,
+        int $id,
+        string $magicLink,
+        string $phoneCode,
+        PasscodeRoute $passcodeRoute,
+    ): void {
         $user = new User(
             email: 'mail@example.com',
             uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
             name: 'Anonymous'
         );
 
-        $user->setUuid(Uuid::fromString('a84e4c4f-110d-4f7f-8362-1d592aa8433e'));
-        $this->assertEquals(
-            'a84e4c4f-110d-4f7f-8362-1d592aa8433e',
-            $user->getUuid()
-        );
+        $this->assertEquals(Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'), $user->getUuid());
+        $user->setUuid($uuid);
+        $this->assertEquals($uuid, $user->getUuid());
 
-        $user->setName('Mark Bellingham');
-        $this->assertEquals('Mark Bellingham', $user->getName());
+        $this->assertSame('Anonymous', $user->getName());
+        $user->setName($name);
+        $this->assertEquals($name, $user->getName());
 
-        $user->setEmail('mail@example.com');
-        $this->assertEquals('mail@example.com', $user->getEmail());
+        $this->assertSame('mail@example.com', $user->getEmail());
+        $user->setEmail($email);
+        $this->assertEquals($email, $user->getEmail());
 
-        $user->setLoginAttempts(3);
-        $this->assertSame(3, $user->getLoginAttempts());
+        $this->assertNull($user->getLoginAttempts());
+        $user->setLoginAttempts($loginAttempts);
+        $this->assertSame($loginAttempts, $user->getLoginAttempts());
 
-        $user->setLoginDate('2024-03-03 20:42');
-        $this->assertInstanceOf(DateTimeImmutable::class, $user->getLoginDate());
+        $this->assertNull($user->getLoginDate());
+        $user->setLoginDate($loginDate);
+        $this->assertSame($loginDate, $user->getLoginDate());
 
-        $user->setPhone('01234567890');
-        $this->assertEquals('01234567890', $user->getPhone());
+        $this->assertNull($user->getPhone());
+        $user->setPhone($phone);
+        $this->assertEquals($phone, $user->getPhone());
 
-        $user->setIsLoggedIn(true);
-        $this->assertTrue($user->isLoggedIn());
+        $this->assertFalse($user->isLoggedIn());
+        $user->setIsLoggedIn($isLoggedIn);
+        $this->assertSame($isLoggedIn, $user->isLoggedIn());
 
-        $user->setId(1234);
-        $this->assertSame(1234, $user->getId());
+        $this->assertNull($user->getId());
+        $user->setId($id);
+        $this->assertSame($id, $user->getId());
 
-        $user->setMagicLink('550e8400-e29b-41d4-a716-446655440000');
-        $this->assertEquals('550e8400-e29b-41d4-a716-446655440000', $user->getMagicLink());
+        $this->assertNull($user->getMagicLink());
+        $user->setMagicLink($magicLink);
+        $this->assertEquals($magicLink, $user->getMagicLink());
 
-        $user->setPhoneCode('abc123');
-        $this->assertEquals('abc123', $user->getPhoneCode());
+        $this->assertNull($user->getPhoneCode());
+        $user->setPhoneCode($phoneCode);
+        $this->assertEquals($phoneCode, $user->getPhoneCode());
 
-        $user->setPasscodeRoute('phone');
-        $this->assertEquals('phone', $user->getPasscodeRoute());
+        $this->assertEquals(PasscodeRoute::Email, $user->getPasscodeRoute());
+        $user->setPasscodeRoute($passcodeRoute);
+        $this->assertEquals($passcodeRoute, $user->getPasscodeRoute());
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    public static function settersDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                'uuid' => Uuid::fromString('e8964cd1-1541-4bbf-9a85-400ed2399145'),
+                'name' => 'Mark Bellingham',
+                'email' => 'sendTo@domain.tld',
+                'loginAttempts' => 3,
+                'loginDate' => new DateTimeImmutable('2024-03-02 15:26:00'),
+                'phone' => '01234567890',
+                'isLoggedIn' => true,
+                'id' => 1234,
+                'magicLink' => '550e8400-e29b-41d4-a716-446655440000',
+                'phoneCode' => 'abc123',
+                'passcodeRoute' => PasscodeRoute::Phone,
+            ],
+            'test_2' => [
+                'uuid' => Uuid::fromString('a1b2c3d4-5678-90ab-cdef-1234567890ab'),
+                'name' => 'Alice Johnson',
+                'email' => 'alice@example.org',
+                'loginAttempts' => 0,
+                'loginDate' => new DateTimeImmutable('2025-01-15 09:45:30'),
+                'phone' => '+441234567890',
+                'isLoggedIn' => false,
+                'id' => 9876,
+                'magicLink' => '123e4567-e89b-12d3-a456-426614174000',
+                'phoneCode' => 'xyz789',
+                'passcodeRoute' => PasscodeRoute::Email,
+            ],
+            'test_null' => [
+                'uuid' => Uuid::fromString('a1b2c3d4-5678-90ab-cdef-1234567890ab'),
+                'name' => 'Alice Johnson',
+                'email' => 'alice@example.org',
+                'loginAttempts' => 0,
+                'loginDate' => new DateTimeImmutable('2025-01-15 09:45:30'),
+                'phone' => '+441234567890',
+                'isLoggedIn' => false,
+                'id' => 9876,
+                'magicLink' => '123e4567-e89b-12d3-a456-426614174000',
+                'phoneCode' => 'xyz789',
+                'passcodeRoute' => PasscodeRoute::Email,
+            ]
+        ];
     }
 
     public function testNonDefaultNullValues(): void
@@ -125,7 +238,7 @@ final class UserTest extends TestCase
             loginDate: new DateTimeImmutable('2024-03-02 15:26:00'),
             magicLink: '550e8400-e29b-41d4-a716-446655440000',
             phoneCode: '9bR3xZ',
-            passcodeRoute: 'email',
+            passcodeRoute: PasscodeRoute::Email,
             id: 1
         );
 
@@ -139,83 +252,110 @@ final class UserTest extends TestCase
         $this->assertNull($user->getPhoneCode());
     }
 
-    public function testUuidException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid UUID');
-
-        new User(
-            email: 'mail@example.com',
-            uuid: Uuid::fromString('Invalid UUID'),
-            name: 'Anonymous'
-        );
-    }
-
     public function testEmailException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid email address');
 
-        $user = new User(
+        new User(
             email: 'Invalid email',
             uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
             name: 'Anonymous'
         );
     }
 
-    public function testPasscodeRouteException(): void
-    {
-        $user = new User(
-            email: 'mail@example.com',
-            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
-            name: 'Anonymous'
-        );
+    #[DataProvider('createFromDataSetDataProvider')]
+    public function testCreateFromDataset(
+        DataSet $dataSet,
+        User $expectedModel,
+    ): void {
+        $actualModel = User::createFromDataSet($dataSet);
 
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Passcode route must be one of email, phone');
-        $user->setPasscodeRoute('Careless whispers');
+        $this->assertEquals($expectedModel, $actualModel);
     }
 
-    public function testLoginDateException(): void
+    /** @return array<string, array<string, mixed>> */
+    public static function createFromDataSetDataProvider(): array
     {
-        $user = new User(
-            email: 'mail@example.com',
-            uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
-            name: 'Anonymous'
-        );
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Could not create date instance');
-        $user->setLoginDate('Invalid date');
-    }
-
-    public function testCreateFromDataset(): void
-    {
-        $data = new DataSet([
-            'email' => 'mail@example.com',
-            'uuid' => 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-            'name' => 'Mark',
-            'phone' => '01234567890',
-            'login_attempts' => '1',
-            'login_date' => '2024-03-02 15:26:00',
-            'magic_link' => '550e8400-e29b-41d4-a716-446655440000',
-            'phone_code' => '9bR3xZ',
-            'passcode_route' => 'email',
-            'id' => '1'
-        ]);
-        $user = User::createFromDataSet($data);
-
-        $this->assertEquals('mail@example.com', $user->getEmail());
-        $this->assertEquals('Mark', $user->getName());
-        $this->assertEquals('f47ac10b-58cc-4372-a567-0e02b2c3d479', $user->getUuid()->toString());
-        $this->assertSame(1, $user->getLoginAttempts());
-        $this->assertInstanceOf(DateTimeImmutable::class, $user->getLoginDate());
-        $this->assertEquals('2024-03-02 15:26:00', $user->getLoginDateString());
-        $this->assertEquals('02-03-2024 @ 15:26', $user->getLoginDateString('d-m-Y @ H:i'));
-        $this->assertEquals('550e8400-e29b-41d4-a716-446655440000', $user->getMagicLink());
-        $this->assertEquals('9bR3xZ', $user->getPhoneCode());
-        $this->assertEquals('email', $user->getPasscodeRoute());
-        $this->assertEquals('01234567890', $user->getPhone());
-        $this->assertSame(1, $user->getId());
+        return [
+            'test_1' => [
+                'dataSet' => new DataSet([
+                    'email' => 'mail@example.com',
+                    'uuid' => 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+                    'name' => 'Mark',
+                    'phone' => '01234567890',
+                    'login_attempts' => '1',
+                    'login_date' => '2024-03-02 15:26:00',
+                    'magic_link' => '550e8400-e29b-41d4-a716-446655440000',
+                    'phone_code' => '9bR3xZ',
+                    'passcode_route' => 'email',
+                    'id' => '7'
+                ]),
+                'expectedModel' => new User(
+                    email: 'mail@example.com',
+                    uuid: Uuid::fromString('f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+                    name: 'Mark',
+                    phone: '01234567890',
+                    loginAttempts: 1,
+                    loginDate: new DateTimeImmutable('2024-03-02 15:26:00'),
+                    magicLink: '550e8400-e29b-41d4-a716-446655440000',
+                    phoneCode: '9bR3xZ',
+                    passcodeRoute: PasscodeRoute::Email,
+                    id: 7
+                ),
+            ],
+            'test_2' => [
+                'dataSet' => new DataSet([
+                    'email' => 'joe@bloggs.tld',
+                    'uuid' => '206c45b8-9dcc-418c-8efb-8959ad69aaea',
+                    'name' => 'Joe',
+                    'phone' => '07890123456',
+                    'login_attempts' => '1',
+                    'login_date' => '2025-08-18 20:33:00',
+                    'magic_link' => '5bae1895-cbc7-4e75-8044-db476168decd',
+                    'phone_code' => 'abc1234',
+                    'passcode_route' => 'phone',
+                    'id' => '7'
+                ]),
+                'expectedModel' => new User(
+                    email: 'joe@bloggs.tld',
+                    uuid: Uuid::fromString('206c45b8-9dcc-418c-8efb-8959ad69aaea'),
+                    name: 'Joe',
+                    phone: '07890123456',
+                    loginAttempts: 1,
+                    loginDate: new DateTimeImmutable('2025-08-18 20:33:00'),
+                    magicLink: '5bae1895-cbc7-4e75-8044-db476168decd',
+                    phoneCode: 'abc1234',
+                    passcodeRoute: PasscodeRoute::Phone,
+                    id: 7
+                ),
+            ],
+            'test_null' => [
+                'dataSet' => new DataSet([
+                    'email' => 'joe@bloggs.tld',
+                    'uuid' => '206c45b8-9dcc-418c-8efb-8959ad69aaea',
+                    'name' => 'Mark',
+                    'phone' => null,
+                    'login_attempts' => null,
+                    'login_date' => null,
+                    'magic_link' => null,
+                    'phone_code' => null,
+                    'passcode_route' => 'phone',
+                    'id' => null
+                ]),
+                'expectedModel' => new User(
+                    email: 'joe@bloggs.tld',
+                    uuid: Uuid::fromString('206c45b8-9dcc-418c-8efb-8959ad69aaea'),
+                    name: 'Mark',
+                    phone: null,
+                    loginAttempts: null,
+                    loginDate: null,
+                    magicLink: null,
+                    phoneCode: null,
+                    passcodeRoute: PasscodeRoute::Phone,
+                    id: null
+                ),
+            ],
+        ];
     }
 }

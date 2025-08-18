@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework\Database;
 
+use BackedEnum;
 use InvalidArgumentException;
 use MyEspacio\Framework\Model;
 use PDO;
@@ -12,6 +13,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
+use UnitEnum;
 
 final class PdoConnection implements Connection
 {
@@ -127,7 +129,14 @@ final class PdoConnection implements Connection
     private function getDefaultValueForParameter(ReflectionParameter $param): mixed
     {
         if ($param->isDefaultValueAvailable()) {
-            return $param->getDefaultValue();
+            $default = $param->getDefaultValue();
+            if ($default instanceof BackedEnum) {
+                return $default->value;
+            }
+            if ($default instanceof UnitEnum) {
+                return $default->name;
+            }
+            return $default;
         }
 
         if ($param->allowsNull()) {

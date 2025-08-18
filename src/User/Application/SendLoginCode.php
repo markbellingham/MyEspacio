@@ -6,6 +6,7 @@ namespace MyEspacio\User\Application;
 
 use Exception;
 use MyEspacio\Framework\Messages\EmailInterface;
+use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 
 final class SendLoginCode implements SendLoginCodeInterface
@@ -31,7 +32,7 @@ final class SendLoginCode implements SendLoginCodeInterface
 
     public function sendTo(User $user): bool
     {
-        if ($user->getPasscodeRoute() == 'email') {
+        if ($user->getPasscodeRoute() == PasscodeRoute::Email) {
             return $this->sendByEmail($user);
         } else {
             return $this->sendByText($user);

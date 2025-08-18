@@ -154,7 +154,6 @@ final class PhotoControllerTest extends TestCase
     /**
      * @param array<string, mixed> $vars
      * @param class-string $expectedClass
-     * @throws Exception
      */
     #[DataProvider('singlePhotoDataProvider')]
     public function testSinglePhoto(
