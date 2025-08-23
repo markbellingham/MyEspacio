@@ -50,14 +50,12 @@ class LanguageReader
      */
     private function replaceVariables(string $text, array $variables): string
     {
+        /** @var string $result */
         $result = preg_replace_callback(
             pattern: self::PLACEHOLDER_PATTERN,
             callback: fn($matches) => $variables[$matches[1]] ?: $matches[0],
             subject: $text
         );
-        if (is_string($result) === false) {
-            throw new RuntimeException('Failed to replace variables in text');
-        }
         return $result;
     }
 }

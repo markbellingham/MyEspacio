@@ -141,7 +141,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                         twoCharCode: 'IN',
                         threeCharCode:  'IND'
                     ),
-                    photos: new PhotoCollection([])
+                    photos: null
                 )
             ],
             'test_not_found' => [

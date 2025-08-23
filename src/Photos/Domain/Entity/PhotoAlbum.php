@@ -19,9 +19,6 @@ final class PhotoAlbum extends Model
         private ?Country $country = null,
         private ?PhotoCollection $photos = null
     ) {
-        if ($this->photos === null) {
-            $this->photos = new PhotoCollection([]);
-        }
     }
 
     public function getTitle(): string

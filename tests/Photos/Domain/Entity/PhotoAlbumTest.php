@@ -18,10 +18,10 @@ final class PhotoAlbumTest extends TestCase
     #[DataProvider('photoAlbumDataProvider')]
     public function testPhotoAlbum(
         string $title,
-        int $albumId,
+        ?int $albumId,
         ?UuidInterface $uuid,
         ?string $description,
-        Country $country,
+        ?Country $country,
         ?PhotoCollection $photos,
         array $jsonSerialized,
     ): void {
@@ -193,10 +193,25 @@ final class PhotoAlbumTest extends TestCase
                             'town' => "Paris",
                             'commentCount' => 2,
                             'faveCount' => 2
-                        ]
+                        ],
                     ],
                 ],
-            ]
+            ],
+            'test_null' => [
+                'title' => 'City Breaks',
+                'albumId' => null,
+                'uuid' => null,
+                'description' => null,
+                'country' => null,
+                'photos' => null,
+                'jsonSerialized' => [
+                    'title' => 'City Breaks',
+                    'album_uuid' => null,
+                    'description' => null,
+                    'country' => null,
+                    'photos' => [],
+                ],
+            ],
         ];
     }
 
@@ -212,8 +227,14 @@ final class PhotoAlbumTest extends TestCase
         $this->assertInstanceOf(PhotoCollection::class, $photoAlbum->getPhotos());
     }
 
-    public function testSetters(): void
-    {
+    #[DataProvider('settersDataProvider')]
+    public function testSetters(
+        string $title,
+        int $albumId,
+        UuidInterface $uuid,
+        string $description,
+        Country $country,
+    ): void {
         $photoAlbum = new PhotoAlbum();
 
         $this->assertSame('Unassigned', $photoAlbum->getTitle());
@@ -222,22 +243,48 @@ final class PhotoAlbumTest extends TestCase
         $this->assertNull($photoAlbum->getDescription());
         $this->assertNull($photoAlbum->getCountry());
 
-        $photoAlbum->setTitle('Yadda Yadda');
-        $photoAlbum->setAlbumId(1);
-        $photoAlbum->setUuid(Uuid::fromString('4b9d0175-6d47-4460-b48b-6385db446a30'));
-        $photoAlbum->setDescription('My favourite photos');
-        $photoAlbum->setCountry(new Country(
-            id: 1,
-            name: 'United Kingdom',
-            twoCharCode: 'GB',
-            threeCharCode: 'GBR'
-        ));
+        $photoAlbum->setTitle($title);
+        $photoAlbum->setAlbumId($albumId);
+        $photoAlbum->setUuid($uuid);
+        $photoAlbum->setDescription($description);
+        $photoAlbum->setCountry($country);
 
-        $this->assertSame('Yadda Yadda', $photoAlbum->getTitle());
-        $this->assertSame(1, $photoAlbum->getAlbumId());
-        $this->assertEquals(Uuid::fromString('4b9d0175-6d47-4460-b48b-6385db446a30'), $photoAlbum->getUuid());
-        $this->assertSame('My favourite photos', $photoAlbum->getDescription());
-        $this->assertInstanceOf(Country::class, $photoAlbum->getCountry());
+        $this->assertSame($title, $photoAlbum->getTitle());
+        $this->assertSame($albumId, $photoAlbum->getAlbumId());
+        $this->assertSame($uuid, $photoAlbum->getUuid());
+        $this->assertSame($description, $photoAlbum->getDescription());
+        $this->assertSame($country, $photoAlbum->getCountry());
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    public static function settersDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                'title' => 'City Breaks',
+                'albumId' => 2,
+                'uuid' => Uuid::fromString('4b9d0175-6d47-4460-b48b-6385db446a30'),
+                'description' => 'Photos from various city trips',
+                'country' => new Country(
+                    id: 1,
+                    name: 'United Kingdom',
+                    twoCharCode: 'GB',
+                    threeCharCode: 'GBR'
+                ),
+            ],
+            'test_2' => [
+                'title' => 'Yadda Yadda',
+                'albumId' => 1,
+                'uuid' => Uuid::fromString('b15c9449-4d88-4ccc-b421-0e63fb6b2b6f'),
+                'description' => 'My favourite photos',
+                'country' => new Country(
+                    id: 2,
+                    name: 'France',
+                    twoCharCode: 'FR',
+                    threeCharCode: 'FRA'
+                ),
+            ],
+        ];
     }
 
     public function testAlbumPhotos(): void

@@ -151,6 +151,35 @@ final class PhotoControllerTest extends TestCase
         ];
     }
 
+    public function testPhotoGridInvalidAlbumName(): void
+    {
+        $request = new Request();
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
+        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
+        $photoSearch = $this->createMock(PhotoSearchInterface::class);
+
+        $requestHandler->expects($this->once())
+            ->method('validate')
+            ->with($request)
+            ->willReturn(true);
+        $requestHandler->expects($this->never())
+            ->method('sendResponse');
+        $photoSearch->expects($this->never())
+            ->method('search');
+
+        $controller = new PhotoController(
+            $photoRepository,
+            $photoSearch,
+            $requestHandler
+        );
+
+        $actualResponse = $controller->photoGrid($request, ['album' => ['invalid' => 'data']]);
+
+        $this->assertSame(Response::class, get_class($actualResponse));
+        $this->assertSame('Invalid album name', $actualResponse->getContent());
+        $this->assertSame(400, $actualResponse->getStatusCode());
+    }
+
     /**
      * @param array<string, mixed> $vars
      * @param class-string $expectedClass
@@ -318,6 +347,34 @@ final class PhotoControllerTest extends TestCase
                 'text/html'
             ]
         ];
+    }
+
+    public function testSinglePhotoBadUuid(): void
+    {
+        $request = new Request();
+        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
+        $photoSearch = $this->createMock(PhotoSearchInterface::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
+
+        $photoRepository->expects($this->never())
+            ->method('fetchByUuid');
+        $requestHandler->expects($this->once())
+            ->method('validate')
+            ->with($request)
+            ->willReturn(true);
+        $requestHandler->expects($this->never())
+            ->method('sendResponse');
+
+        $controller = new PhotoController(
+            $photoRepository,
+            $photoSearch,
+            $requestHandler
+        );
+        $actualResult = $controller->singlePhoto($request, ['uuid' => ['bad' => 'data']]);
+
+        $this->assertSame(Response::class, get_class($actualResult));
+        $this->assertEquals('Invalid UUID', $actualResult->getContent());
+        $this->assertSame(400, $actualResult->getStatusCode());
     }
 
     public function testSinglePhotoHtmlNoToken(): void
