@@ -18,7 +18,7 @@ final class ControllerDiscoveryTest extends TestCase
             namespace: 'Tests\\Framework\\Routing\\Presentation'
         );
 
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             [
                 'Tests\\Framework\\Routing\\Presentation\\DummyController',
                 'Tests\\Framework\\Routing\\Presentation\\TestController',
