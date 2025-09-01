@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 use FastRoute\Dispatcher;
-use FastRoute\RouteCollector;
+use MyEspacio\Framework\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Tracy\Debugger;
-
-use function FastRoute\simpleDispatcher;
 
 // phpcs:disable
 define('ROOT_DIR', dirname(__DIR__));
@@ -35,14 +33,9 @@ function parseLanguage(Request $request): string
 
 $request->attributes->set('language', parseLanguage($request));
 
-$dispatcher = simpleDispatcher(
-    function (RouteCollector $r) {
-        $routes = include ROOT_DIR . '/src/Routes.php';
-        foreach ($routes as $route) {
-            $r->addRoute(...$route);
-        }
-    }
-);
+$router = new Router(['Contact', 'Home', 'Photos', 'User']);
+$dispatcher = $router->createDispatcher();
+
 $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getPathInfo());
 switch ($routeInfo[0]) {
     case Dispatcher::NOT_FOUND:

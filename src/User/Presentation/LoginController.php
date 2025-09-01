@@ -6,8 +6,11 @@ namespace MyEspacio\User\Presentation;
 
 use DateTimeImmutable;
 use Exception;
+use MyEspacio\Framework\BaseController;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
+use MyEspacio\Framework\Routing\HttpMethod;
+use MyEspacio\Framework\Routing\Route;
 use MyEspacio\User\Application\SendLoginCodeInterface;
 use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
@@ -16,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-final class LoginController
+final class LoginController extends BaseController
 {
     private ?User $user = null;
 
@@ -30,6 +33,7 @@ final class LoginController
     ) {
     }
 
+    #[Route('/login', HttpMethod::POST)]
     public function processLoginForm(Request $request): Response
     {
         $this->requestHandler->validate($request);
@@ -90,33 +94,8 @@ final class LoginController
         );
     }
 
-    /**
-     * @param array<string, mixed> $vars
-     * @return User|null
-     */
-    private function getUserByLoginValues(array $vars): ?User
-    {
-        if (
-            ($vars['email'] ?? '') !== '' &&
-            is_string($vars['email'])
-        ) {
-            $this->user = $this->userRepository->getUserByEmailAddress($vars['email']);
-        } elseif (
-            ($vars['phone'] ?? '') !== '' &&
-            is_string($vars['phone'])
-        ) {
-            $this->user = $this->userRepository->getUserByPhoneNumber($vars['phone']);
-            $this->user?->setPasscodeRoute(PasscodeRoute::Phone);
-        }
-
-        return $this->user ?: null;
-    }
-
-    /**
-     * @param Request $request
-     * @param array<string, mixed> $vars
-     * @return Response
-     */
+    /** @param array<string, mixed> $vars */
+    #[Route('/login/{magicLink: [a-zA-Z0-9]{40}}', HttpMethod::GET)]
     public function loginWithMagicLink(Request $request, array $vars): Response
     {
         $this->requestHandler->validate($request);
@@ -150,10 +129,39 @@ final class LoginController
         );
     }
 
-    /**
-     * @param array<string, mixed> $vars
-     * @return Response
-     */
+    #[Route('/logout', HttpMethod::POST)]
+    public function logout(Request $request): Response
+    {
+        $this->requestHandler->validate($request);
+
+        $this->session->remove('user');
+        return $this->requestHandler->sendResponse(
+            new ResponseData(
+                translationKey: 'login.logged_out'
+            )
+        );
+    }
+
+    /** @param array<string, mixed> $vars */
+    private function getUserByLoginValues(array $vars): ?User
+    {
+        if (
+            ($vars['email'] ?? '') !== '' &&
+            is_string($vars['email'])
+        ) {
+            $this->user = $this->userRepository->getUserByEmailAddress($vars['email']);
+        } elseif (
+            ($vars['phone'] ?? '') !== '' &&
+            is_string($vars['phone'])
+        ) {
+            $this->user = $this->userRepository->getUserByPhoneNumber($vars['phone']);
+            $this->user?->setPasscodeRoute(PasscodeRoute::Phone);
+        }
+
+        return $this->user ?: null;
+    }
+
+    /** @param array<string, mixed> $vars */
     private function logUserIn(array $vars): Response
     {
         if ($this->loginValuesCheckout($vars)) {
@@ -176,10 +184,7 @@ final class LoginController
         );
     }
 
-    /**
-     * @param array<string, mixed> $vars
-     * @return bool
-     */
+    /** @param array<string, mixed> $vars */
     private function loginValuesCheckout(array $vars): bool
     {
         if ($this->secondLoginRequestInTime() === false) {
@@ -215,17 +220,5 @@ final class LoginController
     {
         $this->user?->setIsLoggedIn(true);
         $this->session->set('user', $this->user);
-    }
-
-    public function logout(Request $request): Response
-    {
-        $this->requestHandler->validate($request);
-
-        $this->session->remove('user');
-        return $this->requestHandler->sendResponse(
-            new ResponseData(
-                translationKey: 'login.logged_out'
-            )
-        );
     }
 }

@@ -6,16 +6,19 @@ namespace MyEspacio\Contact\Presentation;
 
 use MyEspacio\Common\Application\CaptchaInterface;
 use MyEspacio\Contact\Domain\ContactMeMessage;
+use MyEspacio\Framework\BaseController;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Framework\Messages\EmailInterface;
+use MyEspacio\Framework\Routing\HttpMethod;
+use MyEspacio\Framework\Routing\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-final class ContactController
+final class ContactController extends BaseController
 {
     public const int CAPTCHA_ICONS_QUANTITY = 7;
 
@@ -27,11 +30,8 @@ final class ContactController
     ) {
     }
 
-    /**
-     * @param Request $request
-     * @param array<string, string> $vars
-     * @return Response
-     */
+    /** @param array<string, string> $vars */
+    #[Route('/contact', HttpMethod::GET)]
     public function show(Request $request, array $vars): Response
     {
         $valid = $this->requestHandler->validate($request);
@@ -51,6 +51,7 @@ final class ContactController
         );
     }
 
+    #[Route('/contact/send', HttpMethod::POST)]
     public function sendMessage(Request $request): Response
     {
         $vars = new DataSet($request->request->all());

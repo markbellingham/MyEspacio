@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace MyEspacio\Photos\Presentation;
 
+use MyEspacio\Framework\BaseController;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
+use MyEspacio\Framework\Routing\HttpMethod;
+use MyEspacio\Framework\Routing\Route;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
@@ -13,16 +16,17 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final readonly class PhotoController
+final class PhotoController extends BaseController
 {
     public function __construct(
-        private PhotoRepositoryInterface $photoRepository,
-        private PhotoSearchInterface $photoSearch,
-        private RequestHandlerInterface $requestHandler
+        private readonly PhotoRepositoryInterface $photoRepository,
+        private readonly PhotoSearchInterface $photoSearch,
+        private readonly RequestHandlerInterface $requestHandler
     ) {
     }
 
     /** @param array<string, mixed> $vars */
+    #[Route('/photos[/[{album:.+}]]', HttpMethod::GET)]
     public function photoGrid(Request $request, array $vars): Response
     {
         $valid = $this->requestHandler->validate($request);
@@ -48,6 +52,7 @@ final readonly class PhotoController
     }
 
     /** @param array<string, mixed> $vars */
+    #[Route('/photo/{uuid:.+}', HttpMethod::GET)]
     public function singlePhoto(Request $request, array $vars): Response
     {
         $valid = $this->requestHandler->validate($request);
