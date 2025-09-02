@@ -7,6 +7,7 @@ namespace MyEspacio\User\Presentation;
 use DateTimeImmutable;
 use Exception;
 use MyEspacio\Framework\BaseController;
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Framework\Routing\HttpMethod;
@@ -47,9 +48,10 @@ final class LoginController extends BaseController
             );
         }
 
-        $vars = json_decode($request->getContent(), true);
-        /** @var array<string, mixed> $vars */
-        $this->user = $this->getUserByLoginValues($vars);
+        /** @var array<string, mixed> $requestParams */
+        $requestParams = json_decode($request->getContent(), true);
+        $requestParams = new DataSet($requestParams);
+        $this->user = $this->getUserByLoginValues($requestParams);
         if ($this->user === null) {
             return $this->requestHandler->sendResponse(
                 new ResponseData(
@@ -59,8 +61,8 @@ final class LoginController extends BaseController
             );
         }
 
-        if (($vars['phone_code'] ?? '') !== '') {
-            return $this->logUserIn($vars);
+        if ($requestParams->string('phone_code') !== '') {
+            return $this->logUserIn($requestParams);
         }
 
         try {
@@ -94,15 +96,12 @@ final class LoginController extends BaseController
         );
     }
 
-    /** @param array<string, mixed> $vars */
     #[Route('/login/{magicLink: [a-zA-Z0-9]{40}}', HttpMethod::GET)]
-    public function loginWithMagicLink(Request $request, array $vars): Response
+    public function loginWithMagicLink(Request $request, DataSet $pathParams): Response
     {
         $this->requestHandler->validate($request);
 
-        if (is_string($vars['magicLink'])) {
-            $this->user = $this->userRepository->getUserFromMagicLink($vars['magicLink']);
-        }
+        $this->user = $this->userRepository->getUserFromMagicLink($pathParams->string('magicLink'));
         if ($this->user === null) {
             return $this->requestHandler->sendResponse(
                 new ResponseData(
@@ -142,29 +141,19 @@ final class LoginController extends BaseController
         );
     }
 
-    /** @param array<string, mixed> $vars */
-    private function getUserByLoginValues(array $vars): ?User
+    private function getUserByLoginValues(DataSet $requestParams): ?User
     {
-        if (
-            ($vars['email'] ?? '') !== '' &&
-            is_string($vars['email'])
-        ) {
-            $this->user = $this->userRepository->getUserByEmailAddress($vars['email']);
-        } elseif (
-            ($vars['phone'] ?? '') !== '' &&
-            is_string($vars['phone'])
-        ) {
-            $this->user = $this->userRepository->getUserByPhoneNumber($vars['phone']);
+        $this->user = $this->userRepository->getUserByEmailAddress($requestParams->string('email'));
+        if ($this->user === null) {
+            $this->user = $this->userRepository->getUserByPhoneNumber($requestParams->string('phone'));
             $this->user?->setPasscodeRoute(PasscodeRoute::Phone);
         }
-
-        return $this->user ?: null;
+        return $this->user;
     }
 
-    /** @param array<string, mixed> $vars */
-    private function logUserIn(array $vars): Response
+    private function logUserIn(DataSet $requestParams): Response
     {
-        if ($this->loginValuesCheckout($vars)) {
+        if ($this->loginValuesCheckout($requestParams)) {
             $this->setUserLoggedIn();
             return $this->requestHandler->sendResponse(
                 new ResponseData(
@@ -184,18 +173,13 @@ final class LoginController extends BaseController
         );
     }
 
-    /** @param array<string, mixed> $vars */
-    private function loginValuesCheckout(array $vars): bool
+    private function loginValuesCheckout(DataSet $requestParams): bool
     {
         if ($this->secondLoginRequestInTime() === false) {
             return false;
         }
 
-        if (isset($vars['phone_code']) && is_string($vars['phone_code'])) {
-            return trim($vars['phone_code']) === $this->user?->getPhoneCode();
-        }
-
-        return false;
+        return $requestParams->string('phone_code') === $this->user?->getPhoneCode();
     }
 
     private function secondLoginRequestInTime(): bool

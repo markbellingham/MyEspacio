@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\User\Presentation;
 
 use DateTimeImmutable;
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\User\Application\SendLoginCodeInterface;
@@ -54,10 +55,10 @@ final class LoginControllerMagicLinkTest extends TestCase
         $expectedResponse = [
             'message' => 'User not found'
         ];
-        $vars = [
+        $vars = new DataSet([
             'email' => 'test@example.tld',
             'magicLink' => 'e762349c-a60e-4428-b781-a076e161f1e3'
-        ];
+        ]);
         $request = Request::create(
             '/login',
             'POST',
@@ -102,10 +103,10 @@ final class LoginControllerMagicLinkTest extends TestCase
     public function testLoginWithMagicLinkOutOfTime(): void
     {
         $expectedResponse = ['error' => 'Could not log you in.'];
-        $vars = [
+        $vars = new DataSet([
             'email' => 'test@example.tld',
             'magicLink' => 'e762349c-a60e-4428-b781-a076e161f1e3'
-        ];
+        ]);
         $request = Request::create(
             '/login',
             'POST',
@@ -164,10 +165,10 @@ final class LoginControllerMagicLinkTest extends TestCase
 
     public function testLoginWithMagicLink(): void
     {
-        $vars = [
+        $vars = new DataSet([
             'email' => 'test@example.tld',
             'magicLink' => 'e762349c-a60e-4428-b781-a076e161f1e3'
-        ];
+        ]);
         $request = Request::create(
             '/login',
             'POST',

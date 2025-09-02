@@ -30,9 +30,8 @@ final class ContactController extends BaseController
     ) {
     }
 
-    /** @param array<string, string> $vars */
     #[Route('/contact', HttpMethod::GET)]
-    public function show(Request $request, array $vars): Response
+    public function show(Request $request): Response
     {
         $valid = $this->requestHandler->validate($request);
 

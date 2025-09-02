@@ -14,7 +14,6 @@ use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use MyEspacio\Photos\Presentation\PhotoController;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,15 +21,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class PhotoControllerTest extends TestCase
 {
-    /**
-     * @param array<string, string> $vars
-     * @param class-string $expectedResponseClassName
-     */
+    /** @param class-string $expectedResponseClassName */
     #[DataProvider('photoGridDataProvider')]
     public function testPhotoGrid(
         Request $request,
         bool $validated,
-        array $vars,
+        DataSet $vars,
         ?string $album,
         ?string $searchTerms,
         ResponseData $responseData,
@@ -74,7 +70,7 @@ final class PhotoControllerTest extends TestCase
             'json_photo_collection_search' => [
                 'request' => new Request(['search' => 'sunset'], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
                 'validated' => true,
-                'vars' => [],
+                'vars' => new DataSet(),
                 'album' => null,
                 'searchTerms' => 'sunset',
                 'responseData' => new ResponseData(
@@ -96,7 +92,7 @@ final class PhotoControllerTest extends TestCase
             'json_photo_album' => [
                 'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
                 'validated' => true,
-                'vars' => ['album' => 'mexico'],
+                'vars' => new DataSet(['album' => 'mexico']),
                 'album' => 'mexico',
                 'searchTerms' => null,
                 'responseData' => new ResponseData(
@@ -117,7 +113,7 @@ final class PhotoControllerTest extends TestCase
             'html_photo_collection_full_search' => [
                 'request' => new Request(['search' => 'sunset']),
                 'validated' => false,
-                'vars' => [],
+                'vars' => new DataSet(),
                 'album' => null,
                 'searchTerms' => 'sunset',
                 'responseData' => new ResponseData(
@@ -134,7 +130,7 @@ final class PhotoControllerTest extends TestCase
             'html_photo_album_full' => [
                 'request' => new Request(),
                 'validated' => false,
-                'vars' => ['album' => 'mexico'],
+                'vars' => new DataSet(['album' => 'mexico']),
                 'album' => 'mexico',
                 'searchTerms' => null,
                 'responseData' => new ResponseData(
@@ -148,46 +144,31 @@ final class PhotoControllerTest extends TestCase
                 'expectedResponseClassName' => Response::class,
                 'expectedResponseData' => '<div class="my-class">Some Content</div>',
             ],
+            'invalid_album_name' => [
+                'request' => new Request(),
+                'validated' => false,
+                'vars' => new DataSet(['album' => ['invalid' => 'data']]),
+                'album' => '{"invalid":"data"}',
+                'searchTerms' => null,
+                'responseData' => new ResponseData(
+                    data: [
+                        'photos' => new PhotoCollection([]),
+                    ],
+                    template: 'photos/PhotosNoAlbumView.html.twig'
+                ),
+                'expectedResponse' => new Response('<div class="my-class">Some Content</div>'),
+                'expectedSearchResult' => new PhotoCollection([]),
+                'expectedResponseClassName' => Response::class,
+                'expectedResponseData' => '<div class="my-class">Some Content</div>',
+            ]
         ];
     }
 
-    public function testPhotoGridInvalidAlbumName(): void
-    {
-        $request = new Request();
-        $requestHandler = $this->createMock(RequestHandlerInterface::class);
-        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
-        $photoSearch = $this->createMock(PhotoSearchInterface::class);
-
-        $requestHandler->expects($this->once())
-            ->method('validate')
-            ->with($request)
-            ->willReturn(true);
-        $requestHandler->expects($this->never())
-            ->method('sendResponse');
-        $photoSearch->expects($this->never())
-            ->method('search');
-
-        $controller = new PhotoController(
-            $photoRepository,
-            $photoSearch,
-            $requestHandler
-        );
-
-        $actualResponse = $controller->photoGrid($request, ['album' => ['invalid' => 'data']]);
-
-        $this->assertSame(Response::class, get_class($actualResponse));
-        $this->assertSame('Invalid album name', $actualResponse->getContent());
-        $this->assertSame(400, $actualResponse->getStatusCode());
-    }
-
-    /**
-     * @param array<string, mixed> $vars
-     * @param class-string $expectedClass
-     */
+    /** @param class-string $expectedClass */
     #[DataProvider('singlePhotoDataProvider')]
     public function testSinglePhoto(
         Request $request,
-        array $vars,
+        DataSet $vars,
         string $uuid,
         ?Photo $repositoryResult,
         string $expectedClass,
@@ -243,7 +224,7 @@ final class PhotoControllerTest extends TestCase
                         'HTTP_ACCEPT' => 'application/json'
                     ]
                 ),
-                ['uuid' => '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61'],
+                new DataSet(['uuid' => '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61']),
                 '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61',
                 Photo::createFromDataSet(new DataSet([
                     'country_id' => '45',
@@ -286,7 +267,7 @@ final class PhotoControllerTest extends TestCase
                         'HTTP_ACCEPT' => 'application/json'
                     ]
                 ),
-                ['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44'],
+                new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
                 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
                 null,
                 JsonResponse::class,
@@ -296,7 +277,7 @@ final class PhotoControllerTest extends TestCase
             ],
             'html_found' => [
                 new Request(),
-                ['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44'],
+                new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
                 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
                 Photo::createFromDataSet(new DataSet([
                     'country_id' => '45',
@@ -334,7 +315,7 @@ final class PhotoControllerTest extends TestCase
             ],
             'html_not_found' => [
                 new Request(),
-                ['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44'],
+                new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
                 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
                 null,
                 Response::class,
@@ -362,15 +343,24 @@ final class PhotoControllerTest extends TestCase
             ->method('validate')
             ->with($request)
             ->willReturn(true);
-        $requestHandler->expects($this->never())
-            ->method('sendResponse');
+        $requestHandler->expects($this->once())
+            ->method('sendResponse')
+            ->with(new ResponseData(
+                data: [],
+                statusCode: Response::HTTP_BAD_REQUEST,
+                translationKey: 'photos.invalid_uuid'
+            ))
+            ->willReturn(new Response('Invalid UUID', Response::HTTP_BAD_REQUEST));
 
         $controller = new PhotoController(
             $photoRepository,
             $photoSearch,
             $requestHandler
         );
-        $actualResult = $controller->singlePhoto($request, ['uuid' => ['bad' => 'data']]);
+        $actualResult = $controller->singlePhoto(
+            $request,
+            new DataSet(['uuid' => ['bad' => 'data']])
+        );
 
         $this->assertSame(Response::class, get_class($actualResult));
         $this->assertEquals('Invalid UUID', $actualResult->getContent());
@@ -411,7 +401,10 @@ final class PhotoControllerTest extends TestCase
             $photoSearch,
             $requestHandler
         );
-        $actualResult = $controller->singlePhoto($request, ['uuid' => 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d']);
+        $actualResult = $controller->singlePhoto(
+            $request,
+            new DataSet(['uuid' => 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d'])
+        );
 
         $this->assertInstanceOf(Response::class, $actualResult);
         $this->assertEquals($expectedResult, $actualResult->getContent());

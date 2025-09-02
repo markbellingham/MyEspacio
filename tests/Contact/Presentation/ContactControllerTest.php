@@ -78,7 +78,7 @@ final class ContactControllerTest extends TestCase
         $request = new Request();
         $controller = new ContactController($requestHandler, $session, $email, $captcha);
 
-        $response = $controller->show($request, []);
+        $response = $controller->show($request);
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals($expectedResponse, $response->getContent());
@@ -102,7 +102,7 @@ final class ContactControllerTest extends TestCase
 
         $request = new Request();
         $controller = new ContactController($requestHandler, $session, $email, $captcha);
-        $response = $controller->show($request, []);
+        $response = $controller->show($request);
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals($expectedResponse, $response->getContent());

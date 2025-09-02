@@ -16,5 +16,8 @@ return [
         'code_sent' => "Veuillez vérifier votre %{passcode_route} pour le code de connexion",
         'error' => 'Impossible de vous connecter.',
         'user_not_found' => 'Utilisateur non trouvé',
-    ]
+    ],
+    'photos' => [
+        'invalid_uuid' => "La photo n'existe pas.",
+    ],
 ];

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use FastRoute\Dispatcher;
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,7 +47,7 @@ switch ($routeInfo[0]) {
         break;
     case Dispatcher::FOUND:
         [$controllerName, $method] = explode('#', $routeInfo[1]);
-        $vars = $routeInfo[2];
+        $vars = new DataSet($routeInfo[2]);
         $container = include 'Dependencies.php';
         $controller = $container->get($controllerName);
         $response = $controller->$method($request, $vars);

@@ -16,5 +16,8 @@ return [
         'code_sent' => "Por favor revisa tu %{passcode_route} para el código de inicio de sesión",
         'error' => 'No se pudo iniciar sesión.',
         'user_not_found' => 'Usuario no encontrado',
-    ]
+    ],
+    'photos' => [
+        'invalid_uuid' => 'La foto no existe.',
+    ],
 ];

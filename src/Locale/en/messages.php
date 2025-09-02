@@ -16,5 +16,8 @@ return [
         'code_sent' => 'Please check your %{passcode_route} for the login code',
         'error' => 'Could not log you in.',
         'user_not_found' => 'User not found',
-    ]
+    ],
+    'photos' => [
+        'invalid_uuid' => 'The photo was not found.',
+    ],
 ];

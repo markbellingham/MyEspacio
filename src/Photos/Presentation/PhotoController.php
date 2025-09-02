@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MyEspacio\Photos\Presentation;
 
 use MyEspacio\Framework\BaseController;
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Framework\Routing\HttpMethod;
@@ -12,6 +13,7 @@ use MyEspacio\Framework\Routing\Route;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
+use Ramsey\Uuid\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,22 +27,20 @@ final class PhotoController extends BaseController
     ) {
     }
 
-    /** @param array<string, mixed> $vars */
     #[Route('/photos[/[{album:.+}]]', HttpMethod::GET)]
-    public function photoGrid(Request $request, array $vars): Response
+    public function photoGrid(Request $request, DataSet $pathParams): Response
     {
         $valid = $this->requestHandler->validate($request);
-        $albumName = $vars['album'] ?? null;
-        if (!is_null($albumName) && !is_string($albumName)) {
-            return new Response('Invalid album name', Response::HTTP_BAD_REQUEST);
-        }
+
         $results = $this->photoSearch->search(
-            albumName: $albumName,
+            albumName: $pathParams->stringNull('album'),
             searchTerms: $request->query->getString('search')
         );
+
         $template = is_a($results, PhotoAlbum::class)
             ? 'photos/PhotoAlbumView.html.twig'
             : 'photos/PhotosNoAlbumView.html.twig';
+
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: [
@@ -51,21 +51,29 @@ final class PhotoController extends BaseController
         );
     }
 
-    /** @param array<string, mixed> $vars */
     #[Route('/photo/{uuid:.+}', HttpMethod::GET)]
-    public function singlePhoto(Request $request, array $vars): Response
+    public function singlePhoto(Request $request, DataSet $pathParams): Response
     {
         $valid = $this->requestHandler->validate($request);
-        $uuidString = $vars['uuid'] ?? '';
-        if (is_string($uuidString) === false) {
-            return new Response('Invalid UUID', Response::HTTP_BAD_REQUEST);
+        $uuidString = $pathParams->string('uuid');
+
+        try {
+            $uuid = Uuid::fromString($uuidString);
+            $photo = $this->photoRepository->fetchByUuid($uuid);
+        } catch (InvalidArgumentException $e) {
+            return $this->requestHandler->sendResponse(
+                new ResponseData(
+                    data: [],
+                    statusCode: Response::HTTP_BAD_REQUEST,
+                    translationKey: 'photos.invalid_uuid'
+                )
+            );
         }
-        $uuid = Uuid::fromString($uuidString);
 
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: [
-                    'photo' => $this->photoRepository->fetchByUuid($uuid)
+                    'photo' => $photo
                 ],
                 template: 'photos/SinglePhoto.html.twig'
             )
