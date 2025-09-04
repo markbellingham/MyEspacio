@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use FastRoute\Dispatcher;
 use MyEspacio\Framework\DataSet;
+use MyEspacio\Framework\Localisation\Language;
+use MyEspacio\Framework\Localisation\LanguageDetector;
 use MyEspacio\Framework\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,22 +19,10 @@ require ROOT_DIR . '/vendor/autoload.php';
 Debugger::enable();
 $request = Request::createFromGlobals();
 
-function parseLanguage(Request $request): string
-{
-    $supportedLanguages = ['en','es','fr'];
-    $path = $request->getPathInfo();
-    if (preg_match('#^/([a-zA-Z]{2})(/|$)#', $path, $matches)) {
-        $language = $matches[1];
-        if (in_array($language, $supportedLanguages)) {
-            $newPath = substr($path, 3);
-            $request->server->set('REQUEST_URI', $newPath);
-            return $language;
-        }
-    }
-    return 'en';
-}
-
-$request->attributes->set('language', parseLanguage($request));
+$languageDetector = new LanguageDetector(Language::cases());
+$language = $languageDetector->getFromPath($request);
+$request->attributes->set('language', $language->value);
+$request->server->set('REQUEST_URI', $languageDetector->removeLanguagePrefix($request));
 
 $router = new Router(['Contact', 'Home', 'Photos', 'User']);
 $dispatcher = $router->createDispatcher();
