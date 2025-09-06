@@ -7,6 +7,10 @@ include:
   - template: Security/SAST.gitlab-ci.yml
   - component: gitlab.com/gitlab-components/code-quality/code-quality@main
 
+semgrep-sast:
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: "latest"
+
 test_php:
   stage: test
   image: php:8.4-cli

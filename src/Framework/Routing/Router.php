@@ -9,7 +9,7 @@ use FastRoute\RouteCollector;
 
 use function FastRoute\simpleDispatcher;
 
-final readonly class Router
+final readonly class Router implements RouterInterface
 {
     /** @param array<int, string> $modules */
     public function __construct(
