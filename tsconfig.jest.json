@@ -1,0 +1,11 @@
+// tsconfig.jest.json (put this in project root)
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist-tests",
+    "types": ["jest", "node"],
+    "lib": ["DOM", "ES2022"]
+  },
+  "include": ["web/ts", "tests/Ts"]
+}

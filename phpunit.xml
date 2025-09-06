@@ -4,7 +4,7 @@
         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.2/phpunit.xsd"
         backupGlobals="false"
         colors="true"
-        bootstrap="tests/bootstrap.php"
+        bootstrap="tests/Php/bootstrap.php"
         testdox="false"
         displayDetailsOnIncompleteTests="true"
         displayDetailsOnSkippedTests="true"
@@ -20,7 +20,7 @@
 
   <testsuites>
     <testsuite name="MyEspacio Tests">
-      <directory>tests</directory>
+      <directory>tests/Php</directory>
     </testsuite>
   </testsuites>
 
@@ -32,7 +32,7 @@
 
   <source>
     <include>
-      <directory>src</directory>
+      <directory>src/Php</directory>
     </include>
   </source>
 
