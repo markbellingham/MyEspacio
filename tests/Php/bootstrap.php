@@ -1,10 +1,15 @@
 <?php
 
-// tests/bootstrap.php
 declare(strict_types=1);
 
+// Disable coding standard warnings
 // phpcs:disable
-const ROOT_DIR = __DIR__ . '/../../../MyEspacio';
+// ROOT_DIR → project root regardless of folder name
+define("ROOT_DIR", dirname(__DIR__, 2));
+
 define('CONFIG', require ROOT_DIR . '/config/config.php');
+
+// Autoload dependencies
 require ROOT_DIR . '/vendor/autoload.php';
-//phpcs:enable
+
+// phpcs:enable
