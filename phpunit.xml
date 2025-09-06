@@ -32,7 +32,7 @@
 
   <source>
     <include>
-      <directory>src/Php</directory>
+      <directory>src</directory>
     </include>
   </source>
 
