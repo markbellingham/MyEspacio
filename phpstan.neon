@@ -5,7 +5,7 @@ parameters:
         - src/
         - tests/
     bootstrapFiles:
-        - phpstan-bootstrap.php
+        - tests/bootstrap.php
     ignoreErrors:
         - '#Call to method PHPUnit\\Framework\\Assert::assert(?:InstanceOf|Same)\(\) with .+ will always evaluate to true#'
         - '#method\.alreadyNarrowedType#'
