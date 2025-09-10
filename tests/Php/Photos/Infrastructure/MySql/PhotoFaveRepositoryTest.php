@@ -15,6 +15,7 @@ use MyEspacio\Photos\Domain\Entity\Relevance;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoFaveRepository;
 use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
+use MyEspacio\User\Infrastructure\MySql\UserRepository;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -23,8 +24,9 @@ use Ramsey\Uuid\Uuid;
 final class PhotoFaveRepositoryTest extends TestCase
 {
     /** @param array<string, int> $queryParameters */
-    #[DataProvider('addDataProvider')]
-    public function testAdd(
+    #[DataProvider('saveDataProvider')]
+    public function testSave(
+        string $query,
         array $queryParameters,
         PhotoFave $photoFave,
         bool $statementHasErrors,
@@ -34,10 +36,7 @@ final class PhotoFaveRepositoryTest extends TestCase
         $db = $this->createMock(Connection::class);
         $db->expects($this->once())
             ->method('run')
-            ->with(
-                'INSERT INTO pictures.photo_faves (user_id, photo_id) VALUES (:userId, :photoId)',
-                $queryParameters
-            )
+            ->with($query, $queryParameters)
             ->willReturn($statement);
         $db->expects($this->once())
             ->method('statementHasErrors')
@@ -45,27 +44,41 @@ final class PhotoFaveRepositoryTest extends TestCase
             ->willReturn($statementHasErrors);
 
         $repository = new PhotoFaveRepository($db);
-        $actualResult = $repository->add($photoFave);
+        $actualResult = $repository->save($photoFave);
         $this->assertSame($expectedFunctionResult, $actualResult);
     }
 
     /** @return array<string, array<string, mixed>> */
-    public static function addDataProvider(): array
+    public static function saveDataProvider(): array
     {
         return [
             'success' => [
+                'query' => 'INSERT INTO pictures.photo_faves (user_id, photo_id) VALUES (:userId, :photoId)',
                 'queryParameters' => [
-                    'userId' => 1,
+                    'userId' => 2,
                     'photoId' => 2689,
                 ],
                 'photoFave' => new PhotoFave(
                     photo: self::createPhoto(2689),
-                    user: self::createUser(1),
+                    user: self::createUser(2),
+                ),
+                'statementHasErrors' => false,
+                'expectedFunctionResult' => true,
+            ],
+            'anonymous_user' => [
+                'query' => 'INSERT INTO pictures.anon_photo_faves (photo_id) VALUES (:photoId)',
+                'queryParameters' => [
+                    'photoId' => 2689,
+                ],
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(2689),
+                    user: UserRepository::getAnonymousUser(),
                 ),
                 'statementHasErrors' => false,
                 'expectedFunctionResult' => true,
             ],
             'failure' => [
+                'query' => 'INSERT INTO pictures.photo_faves (user_id, photo_id) VALUES (:userId, :photoId)',
                 'queryParameters' => [
                     'userId' => 10,
                     'photoId' => 1000,
@@ -76,63 +89,19 @@ final class PhotoFaveRepositoryTest extends TestCase
                 ),
                 'statementHasErrors' => true,
                 'expectedFunctionResult' => false,
-            ]
-        ];
-    }
-
-    /** @param array<string, int> $queryParameters */
-    #[DataProvider('addAnonymousDataProvider')]
-    public function testAddAnonymous(
-        array $queryParameters,
-        bool $statementHasErrors,
-        PhotoFave $photoFave,
-        bool $expectedFunctionResult,
-    ): void {
-        $statement = $this->createMock(PDOStatement::class);
-        $db = $this->createMock(Connection::class);
-        $db->expects($this->once())
-            ->method('run')
-            ->with(
-                'INSERT INTO pictures.anon_photo_faves (photo_id) VALUES (:photoId)',
-                $queryParameters
-            )
-            ->willReturn($statement);
-        $db->expects($this->once())
-            ->method('statementHasErrors')
-            ->with($statement)
-            ->willReturn($statementHasErrors);
-
-        $repository = new PhotoFaveRepository($db);
-        $actualResult = $repository->addAnonymous($photoFave);
-        $this->assertSame($expectedFunctionResult, $actualResult);
-    }
-
-    /** @return array<string, array<string, mixed>> */
-    public static function addAnonymousDataProvider(): array
-    {
-        return [
-            'success' => [
-                'queryParameters' => [
-                    'photoId' => 3,
-                ],
-                'statementHasErrors' => false,
-                'photoFave' => new PhotoFave(
-                    self::createPhoto(3),
-                    self::createUser(1),
-                ),
-                'expectedFunctionResult' => true,
             ],
-            'failure' => [
+            'anonymous_failure' => [
+                'query' => 'INSERT INTO pictures.anon_photo_faves (photo_id) VALUES (:photoId)',
                 'queryParameters' => [
-                    'photoId' => 77,
+                    'photoId' => 2689,
                 ],
-                'statementHasErrors' => true,
                 'photoFave' => new PhotoFave(
-                    self::createPhoto(77),
-                    self::createUser(1),
+                    photo: self::createPhoto(2689),
+                    user: UserRepository::getAnonymousUser(),
                 ),
+                'statementHasErrors' => true,
                 'expectedFunctionResult' => false,
-            ]
+            ],
         ];
     }
 

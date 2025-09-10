@@ -18,6 +18,7 @@ use MyEspacio\Photos\Domain\Repository\PhotoFaveRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use MyEspacio\Photos\Presentation\PhotoFaveController;
 use MyEspacio\User\Domain\User;
+use MyEspacio\User\Infrastructure\MySql\UserRepository;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -196,6 +197,29 @@ final class PhotoFaveControllerTest extends TestCase
                 ),
                 'expectedResponse' => new Response('The photo was saved as a favourite.', Response::HTTP_OK),
             ],
+            'anonymous_user' => [
+                'validated' => true,
+                'sessionInvocationCount' => 1,
+                'sessionUser' => null,
+                'uuid' => Uuid::fromString('041b71c7-b94f-42e1-bfda-fa58d3349603'),
+                'photoRepositoryInvocationCount' => 1,
+                'photo' => self::createPhoto(Uuid::fromString('041b71c7-b94f-42e1-bfda-fa58d3349603')),
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(Uuid::fromString('041b71c7-b94f-42e1-bfda-fa58d3349603')),
+                    user: UserRepository::getAnonymousUser(),
+                ),
+                'photoFaveRepositoryInvocationCount' => 1,
+                'photoFaveSaveResult' => true,
+                'request' => new Request(),
+                'pathParameters' => new DataSet([
+                    'uuid' => '041b71c7-b94f-42e1-bfda-fa58d3349603',
+                ]),
+                'responseData' => new ResponseData(
+                    statusCode: Response::HTTP_OK,
+                    translationKey: 'photos.fave_saved',
+                ),
+                'expectedResponse' => new Response('The photo was saved as a favourite.', Response::HTTP_OK),
+            ]
         ];
     }
 
