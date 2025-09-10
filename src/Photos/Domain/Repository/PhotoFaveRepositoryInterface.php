@@ -9,6 +9,8 @@ use MyEspacio\Photos\Domain\Entity\PhotoFave;
 
 interface PhotoFaveRepositoryInterface
 {
+    public function save(PhotoFave $fave): bool;
+
     public function add(PhotoFave $fave): bool;
 
     public function addAnonymous(PhotoFave $fave): bool;

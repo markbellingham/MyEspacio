@@ -87,7 +87,7 @@ final readonly class UserRepository implements UserRepositoryInterface
         return $this->db->statementHasErrors($stmt) === false && $stmt->rowCount() === 1;
     }
 
-    public function getAnonymousUser(): User
+    public static function getAnonymousUser(): User
     {
         return new User(
             email: 'website@markbellingham.uk',

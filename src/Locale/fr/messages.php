@@ -7,6 +7,9 @@ return [
         'email_fail' => 'Désolé, une erreur s\'est produite lors de l\'envoi du message. Veuillez réessayer ultérieurement.',
         'form_fail' => 'Désolé, il y a un problème avec le formulaire.'
     ],
+    'general' => [
+        'server_error' => 'Désolé, il y a eu une erreur. Veuillez réessayer plus tard.',
+    ],
     'login' => [
         'already_logged_in' => 'Vous êtes déjà connecté',
         'generic_error' => "Quelque chose s'est mal passé, veuillez contacter l'administrateur du site web",
@@ -19,5 +22,7 @@ return [
     ],
     'photos' => [
         'invalid_uuid' => "La photo n'existe pas.",
+        'not_found' => "La photo n'existe pas.",
+        'fave_saved' => 'La photo a été enregistrée comme favori.',
     ],
 ];

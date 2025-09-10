@@ -7,6 +7,9 @@ return [
         'email_fail' => 'Lo sentimos, hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.',
         'form_fail' => 'Lo sentimos, hay un problema con el formulario.'
     ],
+    'general' => [
+        'server_error' => 'Lo siento, hubo un error. Por favor, inténtalo de nuevo más tarde.',
+    ],
     'login' => [
         'already_logged_in' => 'Ya has iniciado sesión',
         'generic_error' => 'Algo salió mal, por favor contacta al administrador del sitio web',
@@ -19,5 +22,7 @@ return [
     ],
     'photos' => [
         'invalid_uuid' => 'La foto no existe.',
+        'not_found' => 'La foto no existe.',
+        'fave_saved' => 'La foto se ha guardado como favorita.',
     ],
 ];

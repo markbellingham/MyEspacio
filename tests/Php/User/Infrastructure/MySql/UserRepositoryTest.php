@@ -291,9 +291,7 @@ final class UserRepositoryTest extends TestCase
 
     public function testGetAnonymousUser(): void
     {
-        $db = $this->createMock(Connection::class);
-        $repository = new UserRepository($db);
-        $result = $repository->getAnonymousUser();
+        $result = UserRepository::getAnonymousUser();
         $this->assertInstanceOf(User::class, $result);
         $this->assertSame(1, $result->getId());
     }

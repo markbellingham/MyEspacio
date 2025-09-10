@@ -7,6 +7,9 @@ return [
         'email_fail' => 'Sorry, there was an error sending the message. Please try again later.',
         'form_fail' => 'Sorry, there is a problem with the form.'
     ],
+    'general' => [
+        'server_error' => 'Sorry, there was an error. Please try again later.',
+    ],
     'login' => [
         'already_logged_in' => 'You are already logged in',
         'generic_error' => 'Something went wrong, please contact the website administrator',
@@ -19,5 +22,7 @@ return [
     ],
     'photos' => [
         'invalid_uuid' => 'The photo was not found.',
+        'not_found' => 'The photo was not found.',
+        'fave_saved' => 'The photo was saved as a favourite.'
     ],
 ];

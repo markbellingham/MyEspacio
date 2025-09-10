@@ -11,9 +11,19 @@ use MyEspacio\Photos\Domain\Repository\PhotoFaveRepositoryInterface;
 
 final readonly class PhotoFaveRepository implements PhotoFaveRepositoryInterface
 {
+    private const int ANONYMOUSE_USER_ID = 1;
+
     public function __construct(
         private Connection $db
     ) {
+    }
+
+    public function save(PhotoFave $fave): bool
+    {
+        if ($fave->getUser()->getId() === self::ANONYMOUSE_USER_ID) {
+            return $this->addAnonymous($fave);
+        }
+        return $this->add($fave);
     }
 
     public function add(PhotoFave $fave): bool

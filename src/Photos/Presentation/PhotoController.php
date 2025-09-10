@@ -13,8 +13,6 @@ use MyEspacio\Framework\Routing\Route;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
-use Ramsey\Uuid\Exception\InvalidArgumentException;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -55,12 +53,9 @@ final class PhotoController extends BaseController
     public function singlePhoto(Request $request, DataSet $pathParams): Response
     {
         $valid = $this->requestHandler->validate($request);
-        $uuidString = $pathParams->string('uuid');
+        $uuid = $pathParams->uuidNull('uuid');
 
-        try {
-            $uuid = Uuid::fromString($uuidString);
-            $photo = $this->photoRepository->fetchByUuid($uuid);
-        } catch (InvalidArgumentException $e) {
+        if ($uuid === null) {
             return $this->requestHandler->sendResponse(
                 new ResponseData(
                     data: [],
@@ -69,6 +64,8 @@ final class PhotoController extends BaseController
                 )
             );
         }
+
+        $photo = $this->photoRepository->fetchByUuid($uuid);
 
         return $this->requestHandler->sendResponse(
             new ResponseData(
