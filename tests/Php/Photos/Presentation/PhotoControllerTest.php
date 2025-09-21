@@ -8,9 +8,11 @@ use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
 use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
+use MyEspacio\Photos\Domain\Collection\PhotoAlbumCollection;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
+use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use MyEspacio\Photos\Presentation\PhotoController;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -35,7 +37,11 @@ final class PhotoControllerTest extends TestCase
         string $expectedResponseClassName,
         string $expectedResponseData
     ): void {
+        $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
+        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
+        $photoSearch = $this->createMock(PhotoSearchInterface::class);
+
         $requestHandler->expects($this->once())
             ->method('validate')
             ->with($request)
@@ -44,14 +50,16 @@ final class PhotoControllerTest extends TestCase
             ->method('sendResponse')
             ->with($responseData)
             ->willReturn($expectedResponse);
-        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
-        $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $photoSearch->expects($this->once())
             ->method('search')
             ->with($album, $searchTerms)
             ->willReturn($expectedSearchResult);
+        $albumRepository->expects($this->once())
+            ->method('fetchAll')
+            ->willReturn(new PhotoAlbumCollection([]));
 
         $controller = new PhotoController(
+            $albumRepository,
             $photoRepository,
             $photoSearch,
             $requestHandler
@@ -75,19 +83,21 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => 'sunset',
                 'responseData' => new ResponseData(
                     data: [
+                        'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([])
                     ],
                     template: 'photos/PhotosNoAlbumView.html.twig'
                 ),
                 'expectedResponse' => new JsonResponse(
                     [
+                        'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([])
                     ],
                     Response::HTTP_OK
                 ),
                 'expectedSearchResult' => new PhotoCollection([]),
                 'expectedResponseClassName' => JsonResponse::class,
-                'expectedResponseData' => '{"photos":[]}',
+                'expectedResponseData' => '{"albums":[],"photos":[]}',
             ],
             'json_photo_album' => [
                 'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
@@ -97,18 +107,20 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => null,
                 'responseData' => new ResponseData(
                     data: [
+                        'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoAlbum()
                     ],
                     template: 'photos/PhotoAlbumView.html.twig'
                 ),
                 'expectedResponse' => new JsonResponse(
                     [
+                        'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoAlbum(),
                     ]
                 ),
                 'expectedSearchResult' => new PhotoAlbum(),
                 'expectedResponseClassName' => JsonResponse::class,
-                'expectedResponseData' => '{"photos":{"title":"Unassigned","description":null,"album_uuid":null,"country":null,"photos":[]}}',
+                'expectedResponseData' => '{"albums":[],"photos":{"title":"Unassigned","description":null,"album_uuid":null,"country":null,"photos":[]}}',
             ],
             'html_photo_collection_full_search' => [
                 'request' => new Request(['search' => 'sunset']),
@@ -118,6 +130,7 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => 'sunset',
                 'responseData' => new ResponseData(
                     data: [
+                        'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([]),
                     ],
                     template: 'photos/PhotosNoAlbumView.html.twig'
@@ -135,6 +148,7 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => null,
                 'responseData' => new ResponseData(
                     data: [
+                        'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoAlbum(),
                     ],
                     template: 'photos/PhotoAlbumView.html.twig'
@@ -152,6 +166,7 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => null,
                 'responseData' => new ResponseData(
                     data: [
+                        'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([]),
                     ],
                     template: 'photos/PhotosNoAlbumView.html.twig'
@@ -176,13 +191,15 @@ final class PhotoControllerTest extends TestCase
         string $expectedResult,
         string $expectedContentType
     ): void {
+        $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
+        $photoSearch = $this->createMock(PhotoSearchInterface::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
+
         $photoRepository->expects($this->once())
             ->method('fetchByUuid')
             ->with($uuid)
             ->willReturn($repositoryResult);
-        $photoSearch = $this->createMock(PhotoSearchInterface::class);
-        $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $requestHandler->expects($this->once())
             ->method('validate')
             ->with($request)
@@ -198,6 +215,7 @@ final class PhotoControllerTest extends TestCase
             ->willReturn($expectedResponse);
 
         $controller = new PhotoController(
+            $albumRepository,
             $photoRepository,
             $photoSearch,
             $requestHandler
@@ -333,6 +351,7 @@ final class PhotoControllerTest extends TestCase
     public function testSinglePhotoBadUuid(): void
     {
         $request = new Request();
+        $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
@@ -353,6 +372,7 @@ final class PhotoControllerTest extends TestCase
             ->willReturn(new Response('Invalid UUID', Response::HTTP_BAD_REQUEST));
 
         $controller = new PhotoController(
+            $albumRepository,
             $photoRepository,
             $photoSearch,
             $requestHandler
@@ -372,12 +392,14 @@ final class PhotoControllerTest extends TestCase
         $request = new Request(['uuid' => 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d']);
         $expectedResult = '<html lang="en"><body>Some content</body></html>';
 
+        $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
+        $photoSearch = $this->createMock(PhotoSearchInterface::class);
+        $requestHandler = $this->createMock(RequestHandlerInterface::class);
+
         $photoRepository->expects($this->once())
             ->method('fetchByUuid')
             ->willReturn(null);
-        $photoSearch = $this->createMock(PhotoSearchInterface::class);
-        $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $requestHandler->expects($this->once())
             ->method('validate')
             ->with($request)
@@ -397,6 +419,7 @@ final class PhotoControllerTest extends TestCase
             ));
 
         $controller = new PhotoController(
+            $albumRepository,
             $photoRepository,
             $photoSearch,
             $requestHandler

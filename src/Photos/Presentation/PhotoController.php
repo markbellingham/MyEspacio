@@ -12,6 +12,7 @@ use MyEspacio\Framework\Routing\HttpMethod;
 use MyEspacio\Framework\Routing\Route;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
+use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class PhotoController extends BaseController
 {
     public function __construct(
+        private readonly PhotoAlbumRepositoryInterface $albumRepository,
         private readonly PhotoRepositoryInterface $photoRepository,
         private readonly PhotoSearchInterface $photoSearch,
         private readonly RequestHandlerInterface $requestHandler
@@ -34,6 +36,7 @@ final class PhotoController extends BaseController
             albumName: $pathParams->stringNull('album'),
             searchTerms: $request->query->getString('search')
         );
+        $albums = $this->albumRepository->fetchAll();
 
         $template = is_a($results, PhotoAlbum::class)
             ? 'photos/PhotoAlbumView.html.twig'
@@ -42,6 +45,7 @@ final class PhotoController extends BaseController
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: [
+                    'albums' => $albums,
                     'photos' => $results
                 ],
                 template: $template

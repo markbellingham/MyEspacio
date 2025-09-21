@@ -4,7 +4,7 @@
 
 {% block page_content %}
 <div class="row" id="photo-search-bar">
-    {{ include('photos/PhotoSearchBar.html.twig', { directories: directories }) }}
+    {{ include('photos/PhotoSearchBar.html.twig', { albums: albums }) }}
 </div>
     {{ include('photos/PhotoGrid.html.twig', { photos: photos }) }}
 {% endblock %}

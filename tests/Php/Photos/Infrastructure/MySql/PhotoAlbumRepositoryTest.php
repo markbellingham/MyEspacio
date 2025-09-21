@@ -166,7 +166,8 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 'SELECT albums.album_id, albums.uuid AS album_uuid, albums.title, albums.description, albums.country_id, 
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
-            LEFT JOIN pictures.countries ON albums.country_id = countries.id',
+            LEFT JOIN pictures.countries ON albums.country_id = countries.id
+            ORDER BY albums.title',
                 []
             )
             ->willReturn($databaseResult);
