@@ -1,5 +1,6 @@
 /** @type {import('jest').Config} */
 module.exports = {
+    cache: true,
     preset: "ts-jest",
     testEnvironment: "jsdom",
     roots: ["<rootDir>/tests/Ts"],

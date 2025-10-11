@@ -1,0 +1,28 @@
+<div class="row" id="photo-search-bar">
+    <div class="col-sm-3 p-0">
+        <input aria-label="photo search input" type="text" class="form-control" id="photo-search-input" placeholder="Search">
+    </div>
+    <div class="col-sm-3 p-0">
+        <select aria-label="photo album select" id="photo-album-select" class="form-select">
+            <option value=""> --- </option>
+            {% for album in albums  %}
+                <option value='{{ album.title }}'>{{ album.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-sm-3 p-0 d-grid gap-2 d-md-block">
+        <input type="radio" class="btn-check" name="photo_radio" id="photo-search-btn" autocomplete="off">
+        <label class="btn btn-outline-success" for="photo-search-btn">Search</label>
+
+        <input type="radio" class="btn-check" name="photo_radio" id="most-popular-photos-btn" autocomplete="off">
+        <label class="btn btn-outline-primary" for="most-popular-photos-btn">Most Popular</label>
+
+        <input type="radio" class="btn-check" name="photo_radio" id="my-favourite-photos-btn" autocomplete="off">
+        <label class="btn btn-outline-info" for="my-favourite-photos-btn">Your Favourites</label>
+    </div>
+    <div class="col-sm-3 p-0">
+        <button class="close-btn btn btn-outline-danger float-end">
+            <i class="bi bi-x"></i> Close
+        </button>
+    </div>
+</div>

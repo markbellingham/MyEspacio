@@ -5,6 +5,7 @@
 import {PhotoViewer} from "../../../web/ts/pictures/PhotoViewer";
 import {HttpRequestInterface} from "../../../web/ts/types";
 import {Notification} from "../../../web/ts/framework/Notification";
+import {UrlStateManager} from "../../../web/ts/framework/UrlStateManager";
 
 describe("PhotoViewer", () => {
     let photoGrid: HTMLDivElement;
@@ -13,6 +14,7 @@ describe("PhotoViewer", () => {
     let mockHttp: jest.Mocked<HttpRequestInterface>;
     let mockNotify: jest.Mocked<Notification>;
     let contentElement: HTMLDivElement;
+    let mockUrlStateManager: jest.Mocked<UrlStateManager>;
 
     beforeEach(() => {
         document.body.innerHTML = "";
@@ -50,8 +52,28 @@ describe("PhotoViewer", () => {
         mockNotify = {
             error: jest.fn()
         } as any;
+        mockUrlStateManager = {
+            updatePath: jest.fn(),
+            getCurrentPath: jest.fn().mockReturnValue("/photos"),
+            back: jest.fn(),
+            updateParam: jest.fn(),
+            updateParams: jest.fn(),
+            getParam: jest.fn(),
+            getParams: jest.fn(),
+            getPathSegments: jest.fn(),
+            updateState: jest.fn(),
+            getState: jest.fn(),
+            replaceState: jest.fn(),
+            navigateTo: jest.fn(),
+            onStateChange: jest.fn(),
+            clearParams: jest.fn(),
+            hasParam: jest.fn(),
+            getFullURL: jest.fn(),
+            parseURL: jest.fn(),
+            destroy: jest.fn()
+        } as any;
 
-        new PhotoViewer(photoGrid, photoView, closeButton, mockHttp, mockNotify);
+        new PhotoViewer(photoGrid, photoView, closeButton, mockHttp, mockNotify, mockUrlStateManager);
     });
 
     it("updates view with photo content on image click", async () => {
@@ -64,8 +86,7 @@ describe("PhotoViewer", () => {
 
         expect(contentElement.innerHTML).toContain("photo details");
         expect(photoView.classList.contains("active")).toBe(true);
-        expect(photoGrid.classList.contains("single-column")).toBe(true);
-        expect(document.body.style.overflow).toBe("hidden");
+        expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith("/photo/test-uuid");
     });
 
     it("replaces full HTML if response starts with <!doctype", async () => {
@@ -85,6 +106,7 @@ describe("PhotoViewer", () => {
         await new Promise(process.nextTick);
 
         expect(innerHTMLSetter).toHaveBeenCalledWith("<!DOCTYPE html><html lang='en_GB'><body>replaced</body></html>");
+        expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith("/photo/test-uuid");
     });
 
     it("notifies error on invalid response", async () => {
@@ -96,30 +118,25 @@ describe("PhotoViewer", () => {
         await new Promise(process.nextTick);
 
         expect(mockNotify.error).toHaveBeenCalledWith("Error loading photo.");
+        expect(mockUrlStateManager.updatePath).not.toHaveBeenCalled();
     });
 
     it("closes photo view on close button click", () => {
         photoView.classList.add("active");
-        photoGrid.classList.add("single-column");
-        document.body.style.overflow = "hidden";
 
         closeButton.click();
 
         expect(photoView.classList.contains("active")).toBe(false);
-        expect(photoGrid.classList.contains("single-column")).toBe(false);
-        expect(document.body.style.overflow).toBe("");
+        expect(mockUrlStateManager.back).toHaveBeenCalledWith("/photos");
     });
 
     it("closes photo view on Escape key when active", () => {
         photoView.classList.add("active");
-        photoGrid.classList.add("single-column");
-        document.body.style.overflow = "hidden";
 
         const escapeEvent = new KeyboardEvent("keydown", { key: "Escape" });
         document.dispatchEvent(escapeEvent);
 
         expect(photoView.classList.contains("active")).toBe(false);
-        expect(photoGrid.classList.contains("single-column")).toBe(false);
-        expect(document.body.style.overflow).toBe("");
+        expect(mockUrlStateManager.back).toHaveBeenCalledWith("/photos");
     });
 });

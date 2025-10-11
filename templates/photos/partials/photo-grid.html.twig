@@ -3,13 +3,13 @@
         {% for key, photo in photos %}
             <div class="grid-item {{ key == 0 ? '' : 'mt-2' }}">
                 <img
-                        loading="lazy"
-                        width="{{ photo.width }}"
-                        height="{{ photo.height }}"
-                        src="/resources/pictures/{{ photo.directory }}/thumbs_md/{{ photo.filename }}"
-                        alt="{{ photo.title }}"
-                        data-uuid="{{ photo.uuid.toString() }}"
-                        class="thumbnail"
+                    loading="lazy"
+                    width="{{ photo.width }}"
+                    height="{{ photo.height }}"
+                    src="/resources/pictures/{{ photo.directory }}/thumbs_md/{{ photo.filename }}"
+                    alt="{{ photo.title }}"
+                    data-uuid="{{ photo.uuid.toString() }}"
+                    class="thumbnail"
                 />
                 <div class="img-overlay">
                     <h5>{{ photo.title }}</h5>
@@ -27,15 +27,5 @@
                 </div>
             </div>
         {% endfor %}
-    </div>
-    <div id="photo-view">
-        <div class="photo-view-header">
-            <button class="close-btn btn btn-outline-danger">
-                <i class="bi bi-x"></i> Close
-            </button>
-        </div>
-        <div class="photo-view-content">
-
-        </div>
     </div>
 </div>

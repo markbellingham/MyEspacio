@@ -1,4 +1,4 @@
-import {URLStateManager} from "../../../web/ts/framework/UrlStateManager";
+import {UrlStateManager} from "../../../web/ts/framework/UrlStateManager";
 
 const mockLocation = (href: string) => {
     const url = new URL(href);
@@ -16,7 +16,7 @@ const mockLocation = (href: string) => {
 };
 
 describe("URLStateManager", () => {
-    let manager: URLStateManager;
+    let manager: UrlStateManager;
 
     beforeEach(() => {
         mockLocation("http://localhost/");
@@ -30,7 +30,7 @@ describe("URLStateManager", () => {
                 mockLocation(url.toString());
             }
         });
-        manager = new URLStateManager();
+        manager = new UrlStateManager();
         jest.clearAllMocks();
     });
 
@@ -444,7 +444,7 @@ describe("URLStateManager", () => {
             const addEventListenerSpy = jest.spyOn(window, "addEventListener");
             const removeEventListenerSpy = jest.spyOn(window, "removeEventListener");
             
-            const newManager = new URLStateManager();
+            const newManager = new UrlStateManager();
             
             expect(addEventListenerSpy).toHaveBeenCalledWith("popstate", expect.any(Function));
             

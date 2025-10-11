@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Php\Php\Photos\Presentation;
+namespace Tests\Php\Photos\Presentation;
 
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
@@ -86,7 +86,7 @@ final class PhotoControllerTest extends TestCase
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([])
                     ],
-                    template: 'photos/PhotosNoAlbumView.html.twig'
+                    template: 'photos/photos.html.twig'
                 ),
                 'expectedResponse' => new JsonResponse(
                     [
@@ -110,7 +110,7 @@ final class PhotoControllerTest extends TestCase
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoAlbum()
                     ],
-                    template: 'photos/PhotoAlbumView.html.twig'
+                    template: 'photos/photo-album.html.twig'
                 ),
                 'expectedResponse' => new JsonResponse(
                     [
@@ -133,7 +133,7 @@ final class PhotoControllerTest extends TestCase
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([]),
                     ],
-                    template: 'photos/PhotosNoAlbumView.html.twig'
+                    template: 'photos/photos.html.twig'
                 ),
                 'expectedResponse' => new Response('<div class="my-class">Some Content</div>'),
                 'expectedSearchResult' => new PhotoCollection([]),
@@ -151,7 +151,7 @@ final class PhotoControllerTest extends TestCase
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoAlbum(),
                     ],
-                    template: 'photos/PhotoAlbumView.html.twig'
+                    template: 'photos/photo-album.html.twig'
                 ),
                 'expectedResponse' => new Response('<div class="my-class">Some Content</div>'),
                 'expectedSearchResult' => new PhotoAlbum(),
@@ -169,7 +169,7 @@ final class PhotoControllerTest extends TestCase
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([]),
                     ],
-                    template: 'photos/PhotosNoAlbumView.html.twig'
+                    template: 'photos/photos.html.twig'
                 ),
                 'expectedResponse' => new Response('<div class="my-class">Some Content</div>'),
                 'expectedSearchResult' => new PhotoCollection([]),
@@ -210,7 +210,7 @@ final class PhotoControllerTest extends TestCase
                 data: [
                     'photo' => $repositoryResult
                 ],
-                template: 'photos/SinglePhoto.html.twig'
+                template: 'photos/partials/single-photo.html.twig'
             ))
             ->willReturn($expectedResponse);
 
@@ -400,6 +400,12 @@ final class PhotoControllerTest extends TestCase
         $photoRepository->expects($this->once())
             ->method('fetchByUuid')
             ->willReturn(null);
+        $photoSearch->expects($this->once())
+            ->method('search')
+            ->willReturn(new PhotoCollection([]));
+        $albumRepository->expects($this->once())
+            ->method('fetchAll')
+            ->willReturn(new PhotoAlbumCollection([]));
         $requestHandler->expects($this->once())
             ->method('validate')
             ->with($request)
@@ -409,8 +415,10 @@ final class PhotoControllerTest extends TestCase
             ->with(new ResponseData(
                 data: [
                     'photo' => null,
+                    'albums' => new PhotoAlbumCollection([]),
+                    'photos' => new PhotoCollection([]),
                 ],
-                template: 'photos/SinglePhoto.html.twig'
+                template: 'photos/photos.html.twig'
             ))
             ->willReturn(new Response(
                 $expectedResult,

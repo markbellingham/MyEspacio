@@ -64,7 +64,7 @@ final class PhotoSearch implements PhotoSearchInterface
 
     private function isAlbum(?string $album): ?PhotoAlbum
     {
-        if ($album === null) {
+        if ($album === null || $album === 'all') {
             return null;
         }
         return $this->photoAlbumRepository->fetchByName(trim($album));

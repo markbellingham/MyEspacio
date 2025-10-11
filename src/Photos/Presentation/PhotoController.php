@@ -11,6 +11,7 @@ use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Framework\Routing\HttpMethod;
 use MyEspacio\Framework\Routing\Route;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
+use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
@@ -32,21 +33,21 @@ final class PhotoController extends BaseController
     {
         $valid = $this->requestHandler->validate($request);
 
-        $results = $this->photoSearch->search(
+        $photos = $this->photoSearch->search(
             albumName: $pathParams->stringNull('album'),
             searchTerms: $request->query->getString('search')
         );
         $albums = $this->albumRepository->fetchAll();
 
-        $template = is_a($results, PhotoAlbum::class)
-            ? 'photos/PhotoAlbumView.html.twig'
-            : 'photos/PhotosNoAlbumView.html.twig';
+        $template = is_a($photos, PhotoAlbum::class)
+            ? 'photos/photo-album.html.twig'
+            : 'photos/photos.html.twig';
 
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: [
                     'albums' => $albums,
-                    'photos' => $results
+                    'photos' => $photos
                 ],
                 template: $template
             )
@@ -54,6 +55,7 @@ final class PhotoController extends BaseController
     }
 
     #[Route('/photo/{uuid:.+}', HttpMethod::GET)]
+    #[Route('/photos/{album:.+}/photo/{uuid:.+}', HttpMethod::GET)]
     public function singlePhoto(Request $request, DataSet $pathParams): Response
     {
         $valid = $this->requestHandler->validate($request);
@@ -69,15 +71,35 @@ final class PhotoController extends BaseController
             );
         }
 
-        $photo = $this->photoRepository->fetchByUuid($uuid);
+        $data = [];
+        $data['photo'] = $this->photoRepository->fetchByUuid($uuid);
+
+        if ($valid === false) {
+            $data['albums'] = $this->albumRepository->fetchAll();
+            $data['photos'] = $this->photoSearch->search(
+                albumName: $pathParams->stringNull('album'),
+                searchTerms: $request->query->getString('search')
+            );
+        }
+
+        $template = $this->determineTemplate($valid, $data['photos'] ?? null);
 
         return $this->requestHandler->sendResponse(
             new ResponseData(
-                data: [
-                    'photo' => $photo
-                ],
-                template: 'photos/SinglePhoto.html.twig'
+                data: $data,
+                template: $template
             )
         );
+    }
+
+    private function determineTemplate(bool $validRequest, PhotoAlbum|PhotoCollection|null $photos): string
+    {
+        if ($validRequest) {
+            return 'photos/partials/single-photo.html.twig';
+        }
+        if ($photos instanceof PhotoAlbum) {
+            return 'photos/photo-album.html.twig';
+        }
+        return 'photos/photos.html.twig';
     }
 }

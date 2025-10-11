@@ -1,6 +1,6 @@
 export type StateChangeCallback = (params: URLSearchParams, path: string, isInitialLoad: boolean) => void;
 
-export class URLStateManager {
+export class UrlStateManager {
     private stateChangeCallbacks: Set<StateChangeCallback> = new Set();
     private isInitialized = false;
     private readonly handlePopState: () => void; // Store bound function for proper cleanup
@@ -247,6 +247,16 @@ export class URLStateManager {
         });
     }
 
+    back(fallbackPath: string = "/") {
+        const referrer = document.referrer;
+
+        if (referrer && referrer.startsWith(window.location.origin)) {
+            window.history.back();
+        } else {
+            this.updatePath(fallbackPath);
+        }
+    }
+
     /**
      * Destroy the URL state manager and clean up event listeners
      */
@@ -257,5 +267,4 @@ export class URLStateManager {
     }
 }
 
-const urlManager = new URLStateManager();
-export default urlManager;
+export const urlStateManager = new UrlStateManager();

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% set title = 'Photos' %}
+
+{% block page_content %}
+    {{ include('photos/partials/photo-search-bar.html.twig', { albums: albums }) }}
+    {{ include('photos/partials/photo-placeholder.html.twig') }}
+    <div id="photo-album-header">
+        <h2>{{ photos.getTitle() }}</h2>
+        <p>{{ photos.getDescription() }}</p>
+    </div>
+    {{ include('photos/partials/photo-grid.html.twig', { photos: photos.getPhotos() }) }}
+{% endblock %}

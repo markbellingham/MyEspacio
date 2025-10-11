@@ -1,0 +1,7 @@
+<div id="photo-view" class="{% if photo is defined %}active{% endif %}">
+    <div class="photo-view-content">
+        {% if photo is defined %}
+            {{ include('photos/partials/single-photo.html.twig') }}
+        {% endif %}
+    </div>
+</div>

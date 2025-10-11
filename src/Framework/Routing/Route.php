@@ -6,7 +6,7 @@ namespace MyEspacio\Framework\Routing;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 final class Route
 {
     public function __construct(

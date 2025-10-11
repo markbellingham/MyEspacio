@@ -45,7 +45,6 @@
 /* Photo View */
 #photo-view {
     flex: 0;
-    width: 0;
     display: none;
     padding: 10px;
     flex-direction: column;

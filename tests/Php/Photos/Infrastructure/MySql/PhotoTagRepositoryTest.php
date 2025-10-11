@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Php\Php\Photos\Infrastructure\MySql;
+namespace Tests\Php\Photos\Infrastructure\MySql;
 
 use DateTimeImmutable;
 use MyEspacio\Framework\Database\Connection;

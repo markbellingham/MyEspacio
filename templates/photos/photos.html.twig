@@ -1,0 +1,9 @@
+{% extends'base.html.twig' %}
+
+{% set title = 'Photos' %}
+
+{% block page_content %}
+    {{ include('photos/partials/photo-search-bar.html.twig', { albums: albums }) }}
+    {{ include('photos/partials/photo-placeholder.html.twig') }}
+    {{ include('photos/partials/photo-grid.html.twig', { photos: photos }) }}
+{% endblock %}

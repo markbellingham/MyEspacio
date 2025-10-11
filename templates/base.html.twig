@@ -2,7 +2,7 @@
 <body>
 <ul class="notifications"></ul>
 <div id="container" class="row">
-    <div class="row mb-0">
+    <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8"></div>
         <div class="col-md-2" id="user-login-controls">
@@ -10,10 +10,10 @@
         </div>
     </div>
 
-    <div id="main-page" class="row mt-10">
+    <div id="main-page" class="row">
         <input type="hidden" name="layout" id="layout-token" value="{{ get_token('layout') }}">
         <div class="col-md-2">
-            <ul class="nav flex-column" id="main-nav" style="height: 80vh">
+            <ul class="nav flex-column" id="main-nav">
                 <li class="nav-item"><a href="/home" class="nav-link"><i class="bi bi-house"></i> Home</a></li>
                 <li class="nav-item"><a href="/photos" class="nav-link"><i class="bi bi-camera"></i> Photos</a></li>
                 <li class="nav-item"><a href="/contact" class="nav-link"><i class="bi bi-chat-text"></i> Contact</a></li>

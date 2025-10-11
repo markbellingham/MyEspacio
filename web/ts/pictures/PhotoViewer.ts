@@ -1,6 +1,7 @@
 import {HttpRequestInterface} from "../types";
 import requestHeaders from "../framework/RequestHeaders";
 import {Notification} from "../framework/Notification";
+import {UrlStateManager} from "../framework/UrlStateManager";
 
 export class PhotoViewer {
 
@@ -10,6 +11,7 @@ export class PhotoViewer {
         private closeButton: HTMLButtonElement,
         private httpRequest: HttpRequestInterface,
         private notify: Notification,
+        private urlStateManager: UrlStateManager,
     ) {
         this.events();
     }
@@ -27,7 +29,8 @@ export class PhotoViewer {
         if (!image?.dataset.uuid) {
             return;
         }
-        this.httpRequest.query(`/photo/${image.dataset.uuid}`, {
+        const url = `/photo/${image.dataset.uuid}`;
+        this.httpRequest.query(url, {
             headers: requestHeaders.html(),
         })
             .then((data: unknown) => {
@@ -36,6 +39,7 @@ export class PhotoViewer {
                     return;
                 }
                 this.updateView(data);
+                this.urlStateManager.updatePath(url);
             });
     }
 
@@ -55,16 +59,14 @@ export class PhotoViewer {
             }
         }
         this.photoView.classList.add("active");
-        this.photoGrid.classList.add("single-column");
-        document.body.style.overflow = "hidden";
         this.closeButton.scrollIntoView({behavior: "smooth"});
     }
 
     private handleClose()
     {
         this.photoView.classList.remove("active");
-        this.photoGrid.classList.remove("single-column");
         document.body.style.overflow = "";
+        this.urlStateManager.back("/photos");
     }
 
     private handleKeyDown(event: KeyboardEvent)

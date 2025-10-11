@@ -1,6 +1,7 @@
 import {PhotoViewer} from "./PhotoViewer";
 import {httpRequest} from "../framework/HttpRequest";
 import {notify} from "../framework/Notification";
+import {urlStateManager} from "../framework/UrlStateManager";
 
 document.addEventListener("DOMContentLoaded", function () {
     const photoGrid = document.querySelector("#photo-grid") as HTMLDivElement | null;
@@ -13,5 +14,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    new PhotoViewer(photoGrid, photoView, closeBtn, httpRequest, notify);
+    new PhotoViewer(
+        photoGrid,
+        photoView,
+        closeBtn,
+        httpRequest,
+        notify,
+        urlStateManager
+    );
 });
