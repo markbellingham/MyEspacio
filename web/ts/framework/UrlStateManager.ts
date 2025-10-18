@@ -4,6 +4,8 @@ export class UrlStateManager {
     private stateChangeCallbacks: Set<StateChangeCallback> = new Set();
     private isInitialized = false;
     private readonly handlePopState: () => void; // Store bound function for proper cleanup
+    private navigationHistory: string[] = []; // Track navigation history
+    private currentHistoryIndex = -1; // Track current position in history
 
     constructor() {
         // Bind the handler once for proper cleanup
@@ -16,6 +18,10 @@ export class UrlStateManager {
      */
     private init(): void {
         if (this.isInitialized) return;
+
+        // Initialize history with current URL
+        this.navigationHistory = [window.location.pathname];
+        this.currentHistoryIndex = 0;
 
         // Listen for browser navigation (back/forward)
         window.addEventListener("popstate", this.handlePopState);
@@ -219,8 +225,28 @@ export class UrlStateManager {
      */
     private updateURL(url: URL): void {
         if (url.toString() !== window.location.href) {
+            // Add to navigation history
+            const newPath = url.pathname;
+            this.addToHistory(newPath);
+
             window.history.pushState(null, "", url.toString());
             this.notifyStateChange();
+        }
+    }
+
+    /**
+     * Add a path to the navigation history
+     */
+    private addToHistory(path: string): void {
+        // Remove any forward history if we're not at the end
+        if (this.currentHistoryIndex < this.navigationHistory.length - 1) {
+            this.navigationHistory = this.navigationHistory.slice(0, this.currentHistoryIndex + 1);
+        }
+
+        // Don't add duplicate consecutive entries
+        if (this.navigationHistory[this.currentHistoryIndex] !== path) {
+            this.navigationHistory.push(path);
+            this.currentHistoryIndex++;
         }
     }
 
@@ -228,6 +254,13 @@ export class UrlStateManager {
      * Handle browser back/forward navigation
      */
     private handlePopStateEvent(): void {
+        // Update our internal history tracking when user uses browser back/forward
+        const currentPath = window.location.pathname;
+        const historyIndex = this.navigationHistory.lastIndexOf(currentPath);
+        if (historyIndex !== -1) {
+            this.currentHistoryIndex = historyIndex;
+        }
+
         this.notifyStateChange();
     }
 
@@ -248,13 +281,31 @@ export class UrlStateManager {
     }
 
     back(fallbackPath: string = "/") {
-        const referrer = document.referrer;
-
-        if (referrer && referrer.startsWith(window.location.origin)) {
+        // Check if we have a previous path in our internal history
+        if (this.currentHistoryIndex > 0) {
+            this.currentHistoryIndex--;
             window.history.back();
         } else {
+            // No previous history, use fallback
             this.updatePath(fallbackPath);
         }
+    }
+
+    /**
+     * Get the previous path from navigation history
+     */
+    getPreviousPath(): string | null {
+        if (this.currentHistoryIndex > 0) {
+            return this.navigationHistory[this.currentHistoryIndex - 1];
+        }
+        return null;
+    }
+
+    /**
+     * Check if there's a previous page in history
+     */
+    canGoBack(): boolean {
+        return this.currentHistoryIndex > 0;
     }
 
     /**

@@ -29,6 +29,12 @@ export class PhotoViewer {
         if (!image?.dataset.uuid) {
             return;
         }
+        const pathSegments = this.urlStateManager.getPathSegments();
+        let albumContext = "all";
+        if (pathSegments.length >= 2 && pathSegments[0] === "photos" && pathSegments[1] !== "") {
+            albumContext = pathSegments[1];
+        }
+
         const url = `/photo/${image.dataset.uuid}`;
         this.httpRequest.query(url, {
             headers: requestHeaders.html(),
@@ -39,7 +45,7 @@ export class PhotoViewer {
                     return;
                 }
                 this.updateView(data);
-                this.urlStateManager.updatePath(url);
+                this.urlStateManager.updatePath(`photos/${albumContext}` + url);
             });
     }
 

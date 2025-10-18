@@ -1,8 +1,20 @@
+// typescript
 import {UrlStateManager} from "../../../web/ts/framework/UrlStateManager";
 
 const mockLocation = (href: string) => {
     const url = new URL(href);
+    try {
+        // Remove the existing location property so we can redefine it reliably across tests
+        // (some environments have a non-configurable window.location by default)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        delete (window as any).location;
+    } catch (e) {
+        // ignore deletion errors and attempt to redefine below
+    }
+
     Object.defineProperty(window, "location", {
+        configurable: true,
         value: {
             href: url.href,
             origin: url.origin,
@@ -30,6 +42,9 @@ describe("URLStateManager", () => {
                 mockLocation(url.toString());
             }
         });
+        jest.spyOn(window.history, "back").mockImplementation(() => {
+            // Mock implementation - normally would trigger popstate
+        });
         manager = new UrlStateManager();
         jest.clearAllMocks();
     });
@@ -37,6 +52,93 @@ describe("URLStateManager", () => {
     afterEach(() => {
         manager.destroy();
         jest.restoreAllMocks();
+    });
+
+    describe("Navigation history", () => {
+        it("should track navigation history", () => {
+            manager.updatePath("/first");
+            manager.updatePath("/second");
+            manager.updatePath("/third");
+
+            expect(manager.canGoBack()).toBe(true);
+            expect(manager.getPreviousPath()).toBe("/second");
+        });
+
+        it("should handle back navigation with history", () => {
+            const mockBack = jest.spyOn(window.history, "back");
+
+            manager.updatePath("/first");
+            manager.updatePath("/second");
+
+            manager.back("/fallback");
+
+            expect(mockBack).toHaveBeenCalled();
+            expect(manager.getPreviousPath()).toBe("/");
+        });
+
+        it("should use fallback when no history available", () => {
+            const mockPushState = jest.spyOn(window.history, "pushState");
+
+            manager.back("/fallback");
+
+            expect(mockPushState).toHaveBeenCalledWith(null, "", "http://localhost/fallback");
+            expect(window.location.pathname).toBe("/fallback");
+        });
+
+        it("should not add duplicate consecutive paths to history", () => {
+            manager.updatePath("/same");
+            manager.updatePath("/same");
+            manager.updatePath("/different");
+
+            manager.back();
+            expect(manager.getPreviousPath()).toBe("/");
+        });
+
+        it("should handle forward history cleanup when navigating from middle of history", () => {
+            const manager = new UrlStateManager();
+            manager.updatePath("/first");
+            manager.updatePath("/second");
+            manager.updatePath("/third");
+
+            // Go back once (now at "/second")
+            manager.back();
+
+            // Now navigate to a new path, which should clear forward history
+            manager.updatePath("/new");
+
+            // Expectations
+            expect(manager.getCurrentPath()).toBe("/new");
+
+            expect(manager.canGoBack()).toBe(true);
+            expect(manager.getPreviousPath()).toBe("/second");
+        });
+
+        it("should return null for previous path when at start", () => {
+            expect(manager.getPreviousPath()).toBeNull();
+            expect(manager.canGoBack()).toBe(false);
+        });
+
+        it("should update history index on popstate events", () => {
+            manager.updatePath("/first");
+            manager.updatePath("/second");
+
+            // Simulate browser back navigation
+            mockLocation("http://localhost/first");
+            manager["handlePopStateEvent"]();
+
+            expect(manager.getPreviousPath()).toBe("/");
+        });
+
+        it("should handle popstate to unknown path", () => {
+            manager.updatePath("/known");
+
+            // Simulate navigation to unknown path via browser
+            mockLocation("http://localhost/unknown");
+            manager["handlePopStateEvent"]();
+
+            // Should still function without throwing errors
+            expect(() => manager.canGoBack()).not.toThrow();
+        });
     });
 
     describe("Parameter management", () => {
@@ -118,21 +220,21 @@ describe("URLStateManager", () => {
 
         it("should get current path", () => {
             mockLocation("http://localhost/test/path");
-            
+
             const path = manager.getCurrentPath();
             expect(path).toBe("/test/path");
         });
 
         it("should get path segments", () => {
             mockLocation("http://localhost/test/path/segments");
-            
+
             const segments = manager.getPathSegments();
             expect(segments).toEqual(["test", "path", "segments"]);
         });
 
         it("should return empty array for root path", () => {
             mockLocation("http://localhost/");
-            
+
             const segments = manager.getPathSegments();
             expect(segments).toEqual([]);
         });
@@ -227,7 +329,7 @@ describe("URLStateManager", () => {
         it("should update only path with updateState", () => {
             mockLocation("http://localhost/old-path?existing=param");
             const mockPushState = jest.spyOn(window.history, "pushState");
-            
+
             manager.updateState("/new-path");
 
             expect(mockPushState).toHaveBeenCalledWith(null, "", "http://localhost/new-path?existing=param");
@@ -238,7 +340,7 @@ describe("URLStateManager", () => {
         it("should update only parameters with updateState", () => {
             mockLocation("http://localhost/existing-path");
             const mockPushState = jest.spyOn(window.history, "pushState");
-            
+
             manager.updateState(undefined, { search: "test", filter: "active" });
 
             expect(mockPushState).toHaveBeenCalledWith(null, "", "http://localhost/existing-path?search=test&filter=active");
@@ -249,12 +351,12 @@ describe("URLStateManager", () => {
         it("should delete parameters with null values in updateState", () => {
             mockLocation("http://localhost/path?search=old&page=1&filter=active");
             const mockPushState = jest.spyOn(window.history, "pushState");
-            
+
             manager.updateState("/new-path", { search: "new", page: null, category: "books" });
 
             expect(mockPushState).toHaveBeenCalled();
             expect(window.location.pathname).toBe("/new-path");
-            
+
             // Check individual parameters instead of exact URL string order
             const url = new URL(mockPushState.mock.calls[0][2] as string);
             expect(url.searchParams.get("search")).toBe("new");
@@ -266,7 +368,7 @@ describe("URLStateManager", () => {
         it("should not update URL if no changes are made with updateState", () => {
             mockLocation("http://localhost/path");
             const mockPushState = jest.spyOn(window.history, "pushState");
-            
+
             manager.updateState("/path", {});
 
             expect(mockPushState).not.toHaveBeenCalled();
@@ -276,7 +378,7 @@ describe("URLStateManager", () => {
     describe("State retrieval", () => {
         it("should get complete current state", () => {
             mockLocation("http://localhost/test/path/segments?search=value&page=2");
-            
+
             const state = manager.getState();
 
             expect(state.path).toBe("/test/path/segments");
@@ -287,7 +389,7 @@ describe("URLStateManager", () => {
 
         it("should get state with empty parameters", () => {
             mockLocation("http://localhost/path");
-            
+
             const state = manager.getState();
 
             expect(state.path).toBe("/path");
@@ -297,7 +399,7 @@ describe("URLStateManager", () => {
 
         it("should get state for root path", () => {
             mockLocation("http://localhost/");
-            
+
             const state = manager.getState();
 
             expect(state.path).toBe("/");
@@ -311,7 +413,7 @@ describe("URLStateManager", () => {
             const mockReplaceState = jest.spyOn(window.history, "replaceState");
             const callback = jest.fn();
             manager.onStateChange(callback);
-            
+
             manager.replaceState("/new-path", { search: "test", page: "1" });
 
             expect(mockReplaceState).toHaveBeenCalledWith(null, "", "http://localhost/new-path?search=test&page=1");
@@ -327,7 +429,7 @@ describe("URLStateManager", () => {
         it("should replace only path with replaceState", () => {
             mockLocation("http://localhost/old-path?existing=param");
             const mockReplaceState = jest.spyOn(window.history, "replaceState");
-            
+
             manager.replaceState("/new-path");
 
             expect(mockReplaceState).toHaveBeenCalledWith(null, "", "http://localhost/new-path?existing=param");
@@ -338,7 +440,7 @@ describe("URLStateManager", () => {
         it("should replace only parameters with replaceState", () => {
             mockLocation("http://localhost/existing-path");
             const mockReplaceState = jest.spyOn(window.history, "replaceState");
-            
+
             manager.replaceState(undefined, { search: "test", category: "books" });
 
             expect(mockReplaceState).toHaveBeenCalledWith(null, "", "http://localhost/existing-path?search=test&category=books");
@@ -349,7 +451,7 @@ describe("URLStateManager", () => {
         it("should delete parameters with null values in replaceState", () => {
             mockLocation("http://localhost/path?search=old&page=1&filter=active");
             const mockReplaceState = jest.spyOn(window.history, "replaceState");
-            
+
             manager.replaceState("/path", { search: null, page: "2", filter: "" });
 
             expect(mockReplaceState).toHaveBeenCalledWith(null, "", "http://localhost/path?page=2");
@@ -379,7 +481,7 @@ describe("URLStateManager", () => {
         it("should create absolute URL from path in navigateTo", () => {
             mockLocation("http://localhost/current/path?existing=param");
             const mockPushState = jest.spyOn(window.history, "pushState");
-            
+
             manager.navigateTo("/completely/new/path", { fresh: "start" });
 
             expect(mockPushState).toHaveBeenCalledWith(null, "", "http://localhost/completely/new/path?fresh=start");
@@ -390,7 +492,7 @@ describe("URLStateManager", () => {
         it("should trigger state change callback on navigateTo", () => {
             const callback = jest.fn();
             manager.onStateChange(callback);
-            
+
             manager.navigateTo("/new-section", { tab: "overview" });
 
             expect(callback).toHaveBeenCalledWith(
@@ -405,10 +507,10 @@ describe("URLStateManager", () => {
         it("should handle popstate events", () => {
             const callback = jest.fn();
             manager.onStateChange(callback);
-            
+
             // Simulate browser back/forward navigation
             mockLocation("http://localhost/new-path?param=value");
-            
+
             // Trigger the popstate event handler directly
             manager["handlePopStateEvent"]();
 
@@ -425,9 +527,9 @@ describe("URLStateManager", () => {
         it("should handle popstate event with no parameters", () => {
             const callback = jest.fn();
             manager.onStateChange(callback);
-            
+
             mockLocation("http://localhost/simple-path");
-            
+
             manager["handlePopStateEvent"]();
 
             expect(callback).toHaveBeenCalledWith(
@@ -443,15 +545,15 @@ describe("URLStateManager", () => {
         it("should handle popstate event listener setup and cleanup", () => {
             const addEventListenerSpy = jest.spyOn(window, "addEventListener");
             const removeEventListenerSpy = jest.spyOn(window, "removeEventListener");
-            
+
             const newManager = new UrlStateManager();
-            
+
             expect(addEventListenerSpy).toHaveBeenCalledWith("popstate", expect.any(Function));
-            
+
             newManager.destroy();
-            
+
             expect(removeEventListenerSpy).toHaveBeenCalledWith("popstate", expect.any(Function));
-            
+
             addEventListenerSpy.mockRestore();
             removeEventListenerSpy.mockRestore();
         });
@@ -478,3 +580,4 @@ describe("URLStateManager", () => {
         });
     });
 });
+http://localhost:8080/photos/all/photo/423d5e75-be98-11ef-9133-de3e9d57dc4c

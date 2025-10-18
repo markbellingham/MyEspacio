@@ -53,15 +53,12 @@ describe("PhotoViewer", () => {
             error: jest.fn()
         } as any;
         mockUrlStateManager = {
-            updatePath: jest.fn(),
             getCurrentPath: jest.fn().mockReturnValue("/photos"),
             back: jest.fn(),
             updateParam: jest.fn(),
             updateParams: jest.fn(),
             getParam: jest.fn(),
             getParams: jest.fn(),
-            getPathSegments: jest.fn(),
-            updateState: jest.fn(),
             getState: jest.fn(),
             replaceState: jest.fn(),
             navigateTo: jest.fn(),
@@ -70,7 +67,9 @@ describe("PhotoViewer", () => {
             hasParam: jest.fn(),
             getFullURL: jest.fn(),
             parseURL: jest.fn(),
-            destroy: jest.fn()
+            destroy: jest.fn(),
+            getPathSegments: jest.fn().mockReturnValue(["photos", "test-album"]),
+            updatePath: jest.fn(),
         } as any;
 
         new PhotoViewer(photoGrid, photoView, closeButton, mockHttp, mockNotify, mockUrlStateManager);
@@ -86,7 +85,7 @@ describe("PhotoViewer", () => {
 
         expect(contentElement.innerHTML).toContain("photo details");
         expect(photoView.classList.contains("active")).toBe(true);
-        expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith("/photo/test-uuid");
+        expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith("photos/test-album/photo/test-uuid");
     });
 
     it("replaces full HTML if response starts with <!doctype", async () => {
@@ -106,7 +105,7 @@ describe("PhotoViewer", () => {
         await new Promise(process.nextTick);
 
         expect(innerHTMLSetter).toHaveBeenCalledWith("<!DOCTYPE html><html lang='en_GB'><body>replaced</body></html>");
-        expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith("/photo/test-uuid");
+        expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith("photos/test-album/photo/test-uuid");
     });
 
     it("notifies error on invalid response", async () => {
