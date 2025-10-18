@@ -9,6 +9,7 @@ use LogicException;
 use MyEspacio\Framework\Routing\RouteRegistrar;
 use PHPUnit\Framework\TestCase;
 use Tests\Php\Framework\Routing\Presentation\ConflictingRouteController;
+use Tests\Php\Framework\Routing\Presentation\PriorityTestController;
 use Tests\Php\Framework\Routing\Presentation\TestController;
 
 final class RouteRegistrarTest extends TestCase
@@ -50,5 +51,28 @@ final class RouteRegistrarTest extends TestCase
             TestController::class,
             ConflictingRouteController::class
         ]);
+    }
+
+    public function testRoutesAreRegisteredInPriorityOrder(): void
+    {
+        $collector = $this->createMock(RouteCollector::class);
+
+        $expectedOrder = [
+            ['DELETE', '/test', PriorityTestController::class . '#defaultPriority'],  // priority: 0
+            ['POST', '/test', PriorityTestController::class . '#highPriority'],      // priority: 1
+            ['PUT', '/test', PriorityTestController::class . '#mediumPriority'],     // priority: 2
+            ['GET', '/test', PriorityTestController::class . '#lowPriority'],       // priority: 3
+        ];
+
+        $actualOrder = [];
+        $collector->expects($this->exactly(4))
+            ->method('addRoute')
+            ->willReturnCallback(function ($method, $path, $handler) use (&$actualOrder) {
+                $actualOrder[] = [$method, $path, $handler];
+            });
+
+        RouteRegistrar::registerRoutes($collector, [PriorityTestController::class]);
+
+        $this->assertSame($expectedOrder, $actualOrder, 'Routes should be registered in priority order (lower priority numbers first)');
     }
 }

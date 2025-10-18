@@ -28,7 +28,7 @@ final class PhotoController extends BaseController
     ) {
     }
 
-    #[Route('/photos[/[{album:.+}]]', HttpMethod::GET)]
+    #[Route('/photos[/[{album:.+}]]', HttpMethod::GET, priority: 2)]
     public function photoGrid(Request $request, DataSet $pathParams): Response
     {
         $valid = $this->requestHandler->validate($request);
@@ -55,7 +55,7 @@ final class PhotoController extends BaseController
     }
 
     #[Route('/photo/{uuid:.+}', HttpMethod::GET)]
-    #[Route('/photos/{album:.+}/photo/{uuid:.+}', HttpMethod::GET)]
+    #[Route('/photos/{album:.+}/photo/{uuid:.+}', HttpMethod::GET, priority: 1)]
     public function singlePhoto(Request $request, DataSet $pathParams): Response
     {
         $valid = $this->requestHandler->validate($request);

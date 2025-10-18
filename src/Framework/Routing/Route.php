@@ -11,7 +11,8 @@ final class Route
 {
     public function __construct(
         public string $path,
-        public HttpMethod $method
+        public HttpMethod $method,
+        public int $priority = 1,
     ) {
     }
 }

@@ -580,4 +580,3 @@ describe("URLStateManager", () => {
         });
     });
 });
-http://localhost:8080/photos/all/photo/423d5e75-be98-11ef-9133-de3e9d57dc4c

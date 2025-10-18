@@ -22,6 +22,7 @@ final class ControllerDiscoveryTest extends TestCase
             [
                 'Tests\\Php\\Framework\\Routing\\Presentation\\DummyController',
                 'Tests\\Php\\Framework\\Routing\\Presentation\\TestController',
+                'Tests\\Php\\Framework\\Routing\\Presentation\\PriorityTestController',
                 'Tests\\Php\\Framework\\Routing\\Presentation\\ConflictingRouteController',
             ],
             $classes
