@@ -16,14 +16,14 @@ export class PhotoViewer {
         this.events();
     }
 
-    private events()
+    private events(): void
     {
         this.photoGrid.addEventListener("click", this.handlePhotoClick.bind(this));
-        this.closeButton.addEventListener("click", this.handleClose.bind(this));
+        this.closeButton.addEventListener("click", this.closeSinglePhoto.bind(this));
         document.addEventListener("keydown", this.handleKeyDown.bind(this));
     }
 
-    private handlePhotoClick(event: MouseEvent)
+    private handlePhotoClick(event: MouseEvent): void
     {
         const image = (event.target as HTMLElement).closest(".grid-item img") as HTMLImageElement | null;
         if (!image?.dataset.uuid) {
@@ -44,12 +44,26 @@ export class PhotoViewer {
                     this.notify.error("Error loading photo.");
                     return;
                 }
-                this.updateView(data);
+                this.openSinglePhoto(data);
                 this.urlStateManager.updatePath(`photos/${albumContext}` + url);
             });
     }
 
-    private updateView(data: string)
+    public updatePhotoGrid(data: string): void
+    {
+        if (this.photoViewIsOpen()) {
+            this.closeSinglePhoto();
+        }
+
+        if (data.trimStart().toLowerCase().startsWith("<!doctype")) {
+            document.documentElement.innerHTML = data;
+        } else {
+            this.photoGrid.innerHTML = data;
+        }
+    }
+
+
+    openSinglePhoto(data: string): void
     {
         if(data.trimStart().toLowerCase().startsWith("<!doctype")) {
             const htmlElement = document.documentElement;
@@ -65,20 +79,30 @@ export class PhotoViewer {
             }
         }
         this.photoView.classList.add("active");
+        this.closeButton.classList.add("visible");
         this.closeButton.scrollIntoView({behavior: "smooth"});
     }
 
-    private handleClose()
+    closeSinglePhoto(): void
     {
+        if (! this.photoViewIsOpen()) {
+            return;
+        }
         this.photoView.classList.remove("active");
         document.body.style.overflow = "";
         this.urlStateManager.back("/photos");
+        this.closeButton.classList.remove("visible");
     }
 
-    private handleKeyDown(event: KeyboardEvent)
+    private photoViewIsOpen(): boolean
+    {
+        return this.photoView.classList.contains("active");
+    }
+
+    private handleKeyDown(event: KeyboardEvent): void
     {
         if (event.key === "Escape" && this.photoView.classList.contains("active")) {
-            this.handleClose();
+            this.closeSinglePhoto();
         }
     }
 }

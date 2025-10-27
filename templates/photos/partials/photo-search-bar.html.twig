@@ -21,7 +21,7 @@
         <label class="btn btn-outline-info" for="my-favourite-photos-btn">Your Favourites</label>
     </div>
     <div class="col-sm-3 p-0">
-        <button class="close-btn btn btn-outline-danger float-end">
+        <button class="close-btn btn btn-outline-danger float-end {% if photo is defined %}active{% endif %}">
             <i class="bi bi-x"></i> Close
         </button>
     </div>

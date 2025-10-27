@@ -39,9 +39,7 @@ final class PhotoController extends BaseController
         );
         $albums = $this->albumRepository->fetchAll();
 
-        $template = is_a($photos, PhotoAlbum::class)
-            ? 'photos/photo-album.html.twig'
-            : 'photos/photos.html.twig';
+        $template = $this->determineAlbumTemplate($valid, $photos);
 
         return $this->requestHandler->sendResponse(
             new ResponseData(
@@ -82,7 +80,7 @@ final class PhotoController extends BaseController
             );
         }
 
-        $template = $this->determineTemplate($valid, $data['photos'] ?? null);
+        $template = $this->determinePhotoTemplate($valid, $data['photos'] ?? null);
 
         return $this->requestHandler->sendResponse(
             new ResponseData(
@@ -92,7 +90,21 @@ final class PhotoController extends BaseController
         );
     }
 
-    private function determineTemplate(bool $validRequest, PhotoAlbum|PhotoCollection|null $photos): string
+    private function determineAlbumTemplate(bool $validRequest, PhotoAlbum|PhotoCollection|null $photos): string
+    {
+        if ($validRequest && $photos instanceof PhotoCollection) {
+            return 'photos/partials/photo-grid.html.twig';
+        }
+        if ($validRequest && $photos instanceof PhotoAlbum) {
+            return 'photos/partials/album-grid.html.twig';
+        }
+        if ($photos instanceof PhotoAlbum) {
+            return 'photos/photo-album.html.twig';
+        }
+        return 'photos/photos.html.twig';
+    }
+
+    private function determinePhotoTemplate(bool $validRequest, PhotoAlbum|PhotoCollection|null $photos): string
     {
         if ($validRequest) {
             return 'photos/partials/single-photo.html.twig';

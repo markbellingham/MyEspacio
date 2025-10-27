@@ -47,11 +47,10 @@ describe("PhotoViewer", () => {
 
         mockHttp = {
             query: jest.fn()
-        };
-
+        } as unknown as jest.Mocked<HttpRequestInterface>;
         mockNotify = {
             error: jest.fn()
-        } as any;
+        } as unknown as jest.Mocked<Notification>;
         mockUrlStateManager = {
             getCurrentPath: jest.fn().mockReturnValue("/photos"),
             back: jest.fn(),
@@ -70,7 +69,7 @@ describe("PhotoViewer", () => {
             destroy: jest.fn(),
             getPathSegments: jest.fn().mockReturnValue(["photos", "test-album"]),
             updatePath: jest.fn(),
-        } as any;
+        } as unknown as jest.Mocked<UrlStateManager>;
 
         new PhotoViewer(photoGrid, photoView, closeButton, mockHttp, mockNotify, mockUrlStateManager);
     });
@@ -85,6 +84,7 @@ describe("PhotoViewer", () => {
 
         expect(contentElement.innerHTML).toContain("photo details");
         expect(photoView.classList.contains("active")).toBe(true);
+        expect(closeButton.classList.contains("visible")).toBe(true);
         expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith("photos/test-album/photo/test-uuid");
     });
 
@@ -105,11 +105,14 @@ describe("PhotoViewer", () => {
         await new Promise(process.nextTick);
 
         expect(innerHTMLSetter).toHaveBeenCalledWith("<!DOCTYPE html><html lang='en_GB'><body>replaced</body></html>");
+        expect(closeButton.classList.contains("visible")).toBe(true);
         expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith("photos/test-album/photo/test-uuid");
     });
 
     it("notifies error on invalid response", async () => {
-        mockHttp.query.mockResolvedValue({unexpected: "object"} as any);
+        mockHttp.query.mockResolvedValue({
+            unexpected: "object"
+        } as unknown as string);
 
         const img = photoGrid.querySelector("img")!;
         img.click();
@@ -122,20 +125,88 @@ describe("PhotoViewer", () => {
 
     it("closes photo view on close button click", () => {
         photoView.classList.add("active");
+        closeButton.classList.add("visible");
 
         closeButton.click();
 
         expect(photoView.classList.contains("active")).toBe(false);
+        expect(closeButton.classList.contains("visible")).toBe(false);
         expect(mockUrlStateManager.back).toHaveBeenCalledWith("/photos");
     });
 
     it("closes photo view on Escape key when active", () => {
         photoView.classList.add("active");
+        closeButton.classList.add("visible");
 
         const escapeEvent = new KeyboardEvent("keydown", { key: "Escape" });
         document.dispatchEvent(escapeEvent);
 
         expect(photoView.classList.contains("active")).toBe(false);
+        expect(closeButton.classList.contains("visible")).toBe(false);
         expect(mockUrlStateManager.back).toHaveBeenCalledWith("/photos");
+    });
+
+    it("does not process click on element without valid image or uuid", () => {
+        // Create a div without an image
+        const invalidDiv = document.createElement("div");
+        invalidDiv.classList.add("grid-item");
+        photoGrid.appendChild(invalidDiv);
+
+        invalidDiv.click();
+
+        expect(mockHttp.query).not.toHaveBeenCalled();
+        expect(mockUrlStateManager.updatePath).not.toHaveBeenCalled();
+    });
+
+    it("does not perform close actions when photo view is not open", () => {
+        // Ensure photo view is not active
+        photoView.classList.remove("active");
+
+        const photoViewer = new PhotoViewer(photoGrid, photoView, closeButton, mockHttp, mockNotify, mockUrlStateManager);
+        photoViewer.closeSinglePhoto();
+
+        expect(mockUrlStateManager.back).not.toHaveBeenCalled();
+        expect(closeButton.classList.contains("visible")).toBe(false);
+    });
+
+    describe("updatePhotoGrid", () => {
+        let photoViewer: PhotoViewer;
+
+        beforeEach(() => {
+            photoViewer = new PhotoViewer(photoGrid, photoView, closeButton, mockHttp, mockNotify, mockUrlStateManager);
+        });
+
+        it("closes open photo before updating grid", () => {
+            photoView.classList.add("active");
+            closeButton.classList.add("visible");
+
+            photoViewer.updatePhotoGrid("<div>new grid content</div>");
+
+            expect(photoView.classList.contains("active")).toBe(false);
+            expect(closeButton.classList.contains("visible")).toBe(false);
+            expect(photoGrid.innerHTML).toBe("<div>new grid content</div>");
+            expect(mockUrlStateManager.back).toHaveBeenCalledWith("/photos");
+        });
+
+        it("updates grid without closing when no photo is open", () => {
+            photoViewer.updatePhotoGrid("<div>new grid content</div>");
+
+            expect(photoGrid.innerHTML).toBe("<div>new grid content</div>");
+            expect(mockUrlStateManager.back).not.toHaveBeenCalled();
+        });
+
+        it("replaces full HTML if response starts with <!doctype", () => {
+            const mockHtmlElement = document.createElement("html");
+            const innerHTMLSetter = jest.spyOn(mockHtmlElement, "innerHTML", "set");
+
+            Object.defineProperty(document, "documentElement", {
+                configurable: true,
+                get: () => mockHtmlElement,
+            });
+
+            photoViewer.updatePhotoGrid("<!DOCTYPE html><html lang='en'><body>new content</body></html>");
+
+            expect(innerHTMLSetter).toHaveBeenCalledWith("<!DOCTYPE html><html lang='en'><body>new content</body></html>");
+        });
     });
 });

@@ -15,7 +15,7 @@ final class PhotoSearch implements PhotoSearchInterface
     const array NON_ALBUM_SEARCHES = [
         self::POPULAR_PHOTOS_KEYWORD
     ];
-    private const string COMMON_SEARCH_TERMS_DIVISORS = '/[\s\/\-_.,;]+/';
+    private const string COMMON_SEARCH_TERMS_DIVISORS = '/\s[$\/\-_.,;]+/';
 
     private int $paramCount;
     /** @var array<int, string> */
@@ -30,7 +30,7 @@ final class PhotoSearch implements PhotoSearchInterface
     public function search(?string $albumName, ?string $searchTerms): PhotoCollection|PhotoAlbum
     {
         $this->parseSearchParams($searchTerms);
-        $album = $this->isAlbum($albumName);
+        $album = $this->isAlbum(urldecode((string) $albumName));
 
         if ($album && $this->paramCount === 0) {
             return $this->albumPhotos($album);
@@ -64,7 +64,7 @@ final class PhotoSearch implements PhotoSearchInterface
 
     private function isAlbum(?string $album): ?PhotoAlbum
     {
-        if ($album === null || $album === 'all') {
+        if (in_array($album, [null, '', 'all'])) {
             return null;
         }
         return $this->photoAlbumRepository->fetchByName(trim($album));

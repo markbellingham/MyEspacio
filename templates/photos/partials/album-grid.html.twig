@@ -1,0 +1,5 @@
+<div id="photo-album-header">
+    <h2>{{ photos.getTitle() }}</h2>
+    <p>{{ photos.getDescription() }}</p>
+</div>
+{{ include('photos/partials/photo-grid.html.twig', { photos: photos.getPhotos() }) }}

@@ -86,7 +86,7 @@ final class PhotoControllerTest extends TestCase
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([])
                     ],
-                    template: 'photos/photos.html.twig'
+                    template: 'photos/partials/photo-grid.html.twig'
                 ),
                 'expectedResponse' => new JsonResponse(
                     [
@@ -110,7 +110,7 @@ final class PhotoControllerTest extends TestCase
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoAlbum()
                     ],
-                    template: 'photos/photo-album.html.twig'
+                    template: 'photos/partials/album-grid.html.twig'
                 ),
                 'expectedResponse' => new JsonResponse(
                     [

@@ -36,12 +36,6 @@
     width: 100%;
 }
 
-#photo-grid.single-column {
-    flex: 0.2;
-    column-count: 1;
-    max-width: 320px;
-}
-
 /* Photo View */
 #photo-view {
     flex: 0;
@@ -54,6 +48,12 @@
 #photo-view.active {
     flex: 0.8;
     display: flex;
+}
+.close-btn {
+    display: none;
+}
+.close-btn.visible {
+    display: block;
 }
 
 /* Photos Container */
