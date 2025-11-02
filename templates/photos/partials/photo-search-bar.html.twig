@@ -1,27 +1,46 @@
 <div class="row" id="photo-search-bar">
-    <div class="col-sm-3 p-0">
-        <input aria-label="photo search input" type="text" class="form-control" id="photo-search-input" placeholder="Search">
+    <div class="col-sm-5 p-0">
+        <div class="input-group">
+            <input aria-label="photo search input"
+                   type="text"
+                   class="form-control"
+                   id="photo-search-input"
+                   value="{{ search ?? '' }}"
+                   placeholder="Search">
+            <input type="button" class="btn-check" id="photo-search-btn" autocomplete="off">
+            <label class="btn btn-outline-success" for="photo-search-btn">Search</label>
+            <input type="button" class="btn-check" id="clear-search-btn" autocomplete="off">
+            <label class="btn btn-outline-success" for="clear-search-btn">Clear</label>
+        </div>
     </div>
-    <div class="col-sm-3 p-0">
-        <select aria-label="photo album select" id="photo-album-select" class="form-select">
+    <div class="col-sm-3 p-0 ps-2">
+        <select aria-label="photo album select" id="photo-album-select" class="form-select" autocomplete="off">
             <option value=""> --- </option>
+            {% set currentCountry = null %}
             {% for album in albums  %}
-                <option value='{{ album.title }}'>{{ album.title }}</option>
+                {% set selected = ((albumName|lower) == (album.title|lower)) ? 'selected' : '' %}
+                {% set countryName = album.country ? album.country.name : 'Miscellaneous' %}
+                {% if countryName != currentCountry %}
+                    {% if currentCountry is not null %}
+                        </optgroup>
+                    {% endif %}
+                    <optgroup label="{{ countryName }}">
+                    {% set currentCountry = countryName %}
+                {% endif %}
+                <option value='{{ album.title }}' {{ selected }}>{{ album.title }}</option>
             {% endfor %}
+            </optgroup>
         </select>
     </div>
     <div class="col-sm-3 p-0 d-grid gap-2 d-md-block">
-        <input type="radio" class="btn-check" name="photo_radio" id="photo-search-btn" autocomplete="off">
-        <label class="btn btn-outline-success" for="photo-search-btn">Search</label>
-
         <input type="radio" class="btn-check" name="photo_radio" id="most-popular-photos-btn" autocomplete="off">
         <label class="btn btn-outline-primary" for="most-popular-photos-btn">Most Popular</label>
 
         <input type="radio" class="btn-check" name="photo_radio" id="my-favourite-photos-btn" autocomplete="off">
         <label class="btn btn-outline-info" for="my-favourite-photos-btn">Your Favourites</label>
     </div>
-    <div class="col-sm-3 p-0">
-        <button class="close-btn btn btn-outline-danger float-end {% if photo is defined %}active{% endif %}">
+    <div class="col-sm-1 p-0">
+        <button class="close-btn btn btn-outline-danger float-end {% if photo is defined %}visible{% endif %}">
             <i class="bi bi-x"></i> Close
         </button>
     </div>

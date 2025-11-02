@@ -83,21 +83,25 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => 'sunset',
                 'responseData' => new ResponseData(
                     data: [
+                        'albumName' => null,
                         'albums' => new PhotoAlbumCollection([]),
-                        'photos' => new PhotoCollection([])
+                        'photos' => new PhotoCollection([]),
+                        'search' => 'sunset',
                     ],
                     template: 'photos/partials/photo-grid.html.twig'
                 ),
                 'expectedResponse' => new JsonResponse(
                     [
+                        'albumName' => null,
                         'albums' => new PhotoAlbumCollection([]),
-                        'photos' => new PhotoCollection([])
+                        'photos' => new PhotoCollection([]),
+                        'search' => 'sunset',
                     ],
                     Response::HTTP_OK
                 ),
                 'expectedSearchResult' => new PhotoCollection([]),
                 'expectedResponseClassName' => JsonResponse::class,
-                'expectedResponseData' => '{"albums":[],"photos":[]}',
+                'expectedResponseData' => '{"albumName":null,"albums":[],"photos":[],"search":"sunset"}',
             ],
             'json_photo_album' => [
                 'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
@@ -107,20 +111,24 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => null,
                 'responseData' => new ResponseData(
                     data: [
+                        'albumName' => 'mexico',
                         'albums' => new PhotoAlbumCollection([]),
-                        'photos' => new PhotoAlbum()
+                        'photos' => new PhotoAlbum(),
+                        'search' => null,
                     ],
                     template: 'photos/partials/album-grid.html.twig'
                 ),
                 'expectedResponse' => new JsonResponse(
                     [
+                        'albumName' => 'mexico',
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoAlbum(),
+                        'search' => null,
                     ]
                 ),
                 'expectedSearchResult' => new PhotoAlbum(),
                 'expectedResponseClassName' => JsonResponse::class,
-                'expectedResponseData' => '{"albums":[],"photos":{"title":"Unassigned","description":null,"album_uuid":null,"country":null,"photos":[]}}',
+                'expectedResponseData' => '{"albumName":"mexico","albums":[],"photos":{"title":"Unassigned","description":null,"album_uuid":null,"country":null,"photos":[]},"search":null}',
             ],
             'html_photo_collection_full_search' => [
                 'request' => new Request(['search' => 'sunset']),
@@ -130,8 +138,10 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => 'sunset',
                 'responseData' => new ResponseData(
                     data: [
+                        'albumName' => null,
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([]),
+                        'search' => 'sunset',
                     ],
                     template: 'photos/photos.html.twig'
                 ),
@@ -148,8 +158,10 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => null,
                 'responseData' => new ResponseData(
                     data: [
+                        'albumName' => 'mexico',
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoAlbum(),
+                        'search' => null,
                     ],
                     template: 'photos/photo-album.html.twig'
                 ),
@@ -166,8 +178,10 @@ final class PhotoControllerTest extends TestCase
                 'searchTerms' => null,
                 'responseData' => new ResponseData(
                     data: [
+                        'albumName' => '{"invalid":"data"}',
                         'albums' => new PhotoAlbumCollection([]),
                         'photos' => new PhotoCollection([]),
+                        'search' => null,
                     ],
                     template: 'photos/photos.html.twig'
                 ),
@@ -414,9 +428,10 @@ final class PhotoControllerTest extends TestCase
             ->method('sendResponse')
             ->with(new ResponseData(
                 data: [
-                    'photo' => null,
+                    'albumName' => null,
                     'albums' => new PhotoAlbumCollection([]),
                     'photos' => new PhotoCollection([]),
+                    'search' => '',
                 ],
                 template: 'photos/photos.html.twig'
             ))

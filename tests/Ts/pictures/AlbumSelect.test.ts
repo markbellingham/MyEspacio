@@ -34,6 +34,7 @@ describe("AlbumSelect", () => {
         } as unknown as jest.Mocked<HttpRequestInterface>;
         mockUrlStateManager = {
             updatePath: jest.fn(),
+            getParams: jest.fn().mockReturnValue({} as Record<string, string>),
         } as unknown as jest.Mocked<UrlStateManager>;
         mockNotify = {
             error: jest.fn(),
@@ -48,26 +49,49 @@ describe("AlbumSelect", () => {
         );
     });
 
-    it("updates photo grid when album is selected", async () => {
-        const returnedHtml = "<div>photo grid</div>";
-        const url = "/photos/album1";
-        mockHttp.query.mockResolvedValue(returnedHtml);
+    afterEach(() => {
+        document.body.innerHTML = "";
+    });
 
-        const option = albumSelectElement.options[0];
+    test.each([
+        [
+            "without params",
+            0,
+            {} as Record<string, string>,
+            "/photos/album1",
+            "<div>photo grid</div>"
+        ],
+        [
+            "with params",
+            1,
+            {search: "search term", page: "2"} as Record<string, string>,
+            "/photos/album2?search=search+term&page=2",
+            "<div>different photo grid</div>"
+        ],
+    ])("updates photo grid when album is selected", async (
+        _title: string,
+        selectedOption: number,
+        params: Record<string, string>,
+        expectedUrl: string,
+        returnedHtml: string
+    ) => {
+        mockHttp.query.mockResolvedValue(returnedHtml);
+        mockUrlStateManager.getParams.mockReturnValue(params);
+
+        const option = albumSelectElement.options[selectedOption];
         option.selected = true;
         albumSelectElement.dispatchEvent(new Event("change"));
 
         await Promise.resolve();
 
-        expect(mockHttp.query).toHaveBeenCalledWith(url, expect.any(Object));
+        expect(mockHttp.query).toHaveBeenCalledWith(expectedUrl, expect.any(Object));
         expect(mockPhotoViewer.updatePhotoGrid).toHaveBeenCalledWith(returnedHtml);
-        expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith(url);
+        expect(mockUrlStateManager.updatePath).toHaveBeenCalledWith(expectedUrl);
     });
 
     it("Shows error if data is not a string", async () => {
-        const returnedValue = {unexpected: "object"};
         const url = "/photos/album1";
-        mockHttp.query.mockResolvedValue(returnedValue);
+        mockHttp.query.mockResolvedValue({unexpected: "object"});
 
         const option = albumSelectElement.options[0];
         option.selected = true;

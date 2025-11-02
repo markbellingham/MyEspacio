@@ -32,10 +32,12 @@ final class PhotoController extends BaseController
     public function photoGrid(Request $request, DataSet $pathParams): Response
     {
         $valid = $this->requestHandler->validate($request);
+        $albumName = $pathParams->stringNull('album');
+        $searchTerms = $request->query->getString('search');
 
         $photos = $this->photoSearch->search(
-            albumName: $pathParams->stringNull('album'),
-            searchTerms: $request->query->getString('search')
+            albumName: $albumName,
+            searchTerms: $searchTerms
         );
         $albums = $this->albumRepository->fetchAll();
 
@@ -44,8 +46,10 @@ final class PhotoController extends BaseController
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: [
+                    'albumName' => $albumName,
                     'albums' => $albums,
-                    'photos' => $photos
+                    'photos' => $photos,
+                    'search' => $searchTerms,
                 ],
                 template: $template
             )
@@ -58,6 +62,8 @@ final class PhotoController extends BaseController
     {
         $valid = $this->requestHandler->validate($request);
         $uuid = $pathParams->uuidNull('uuid');
+        $searchTerms = $request->query->getString('search');
+        $albumName = $pathParams->stringNull('album');
 
         if ($uuid === null) {
             return $this->requestHandler->sendResponse(
@@ -73,11 +79,15 @@ final class PhotoController extends BaseController
         $data['photo'] = $this->photoRepository->fetchByUuid($uuid);
 
         if ($valid === false) {
-            $data['albums'] = $this->albumRepository->fetchAll();
-            $data['photos'] = $this->photoSearch->search(
-                albumName: $pathParams->stringNull('album'),
-                searchTerms: $request->query->getString('search')
-            );
+            $data = [
+                'albumName' => $albumName,
+                'albums' => $this->albumRepository->fetchAll(),
+                'photos' => $this->photoSearch->search(
+                    albumName: $albumName,
+                    searchTerms: $searchTerms
+                ),
+                'search' => $searchTerms,
+            ];
         }
 
         $template = $this->determinePhotoTemplate($valid, $data['photos'] ?? null);

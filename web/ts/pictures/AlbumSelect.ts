@@ -23,7 +23,10 @@ export class AlbumSelect {
     private handleAlbumChange(event: Event): void
     {
         const album = (event.target as HTMLSelectElement).value;
-        const url = `/photos/${album}`;
+        let url = `/photos/${album}`;
+        if (Object.keys(this.urlStateManager.getParams()).length > 0) {
+            url += `?${new URLSearchParams(this.urlStateManager.getParams()).toString()}`;
+        }
         this.httpRequest.query(url, {
             headers: requestHeaders.html(),
         })

@@ -3,16 +3,20 @@ import {httpRequest} from "../framework/HttpRequest";
 import {notify} from "../framework/Notification";
 import {urlStateManager} from "../framework/UrlStateManager";
 import {AlbumSelect} from "./AlbumSelect";
+import {PhotoSearch} from "./PhotoSearch";
 
 document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector("#photo-search-input") as HTMLInputElement;
+    const searchButton = document.querySelector("#photo-search-btn") as HTMLButtonElement;
+    const clearButton = document.querySelector("#clear-search-btn") as HTMLButtonElement;
     const albumSelect = document.querySelector("#photo-album-select") as HTMLSelectElement | null;
     const photoGrid = document.querySelector("#photos") as HTMLDivElement | null;
     const photoView = document.querySelector("#photo-view") as HTMLDivElement | null;
     const closeBtn = document.querySelector(".close-btn") as HTMLButtonElement | null;
 
-    if (!photoGrid || !photoView || !closeBtn || !albumSelect) {
-        // console.error({photoGrid, photoView, closeBtn, albumSelect});
-        // console.error("PhotoViewer: Required elements not found in DOM.");
+    if (!photoGrid || !photoView || !closeBtn || !albumSelect || !searchInput || !searchButton) {
+        console.error({photoGrid, photoView, closeBtn, albumSelect, searchInput, searchButton});
+        console.error("PhotoViewer: Required elements not found in DOM.");
         return;
     }
 
@@ -23,6 +27,15 @@ document.addEventListener("DOMContentLoaded", function () {
         httpRequest,
         notify,
         urlStateManager
+    );
+    new PhotoSearch(
+        searchInput,
+        searchButton,
+        clearButton,
+        photoViewer,
+        httpRequest,
+        urlStateManager,
+        notify,
     );
     new AlbumSelect(
         albumSelect,

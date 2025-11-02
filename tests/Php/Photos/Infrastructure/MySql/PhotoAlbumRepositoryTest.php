@@ -167,7 +167,7 @@ final class PhotoAlbumRepositoryTest extends TestCase
                 countries.name AS country_name, countries.two_char_code, countries.three_char_code
             FROM pictures.albums
             LEFT JOIN pictures.countries ON albums.country_id = countries.id
-            ORDER BY albums.title',
+            ORDER BY countries.name, albums.title',
                 []
             )
             ->willReturn($databaseResult);

@@ -3,6 +3,7 @@
 </div>
 <div class="photo-details">
     <h2 class="text-primary">{{ photo.title }}</h2>
+    <h4 class="text-dark-emphasis">{{ photo.town }}, {{ photo.country.name }}</h4>
     {% if photo.description %}
         <div>
             <p>{{ photo.description|raw }}</p>
