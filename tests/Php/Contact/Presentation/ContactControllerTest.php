@@ -91,13 +91,49 @@ final class ContactControllerTest extends TestCase
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
 
-        $expectedResponse = 'Rendered HTML Root Content';
+        $captchaIcons = new CaptchaIconCollection([
+            [
+                'icon_id' => '1',
+                'icon' => '<i class="bi bi-phone-vibrate"></i>',
+                'name' => 'Mobile'
+            ],
+            [
+                'icon_id' => '2',
+                'icon' => '<i class="bi bi-keyboard"></i>',
+                'name' => 'Keyboard'
+            ]
+        ]);
+        $expectedResponse = 'Rendered HTML Content';
+        $selectedIcon = new CaptchaIcon(
+            iconId: 1,
+            icon: '<i class="bi bi-phone-vibrate"></i>',
+            name: 'Mobile',
+            colour: 'btn-warning'
+        );
 
+        $captcha->expects($this->once())
+            ->method('getIcons')
+            ->with(ContactController::CAPTCHA_ICONS_QUANTITY)
+            ->willReturn($captchaIcons);
+        $captcha->expects($this->once())
+            ->method('getSelectedIcon')
+            ->willReturn($selectedIcon);
+        $captcha->expects($this->once())
+            ->method('getEncryptedIcon')
+            ->willReturn('');
         $requestHandler->expects($this->once())
             ->method('validate')
             ->willReturn(false);
         $requestHandler->expects($this->once())
             ->method('sendResponse')
+            ->with(new ResponseData(
+                data: [
+                    'icons' => $captchaIcons,
+                    'captcha1' => $selectedIcon,
+                    'captcha2' => '',
+                ],
+                template: 'contact/Contact.html.twig',
+            ))
             ->willReturn(new Response($expectedResponse));
 
         $request = new Request();

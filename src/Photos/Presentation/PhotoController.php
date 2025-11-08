@@ -14,6 +14,7 @@ use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
+use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +23,7 @@ final class PhotoController extends BaseController
 {
     public function __construct(
         private readonly PhotoAlbumRepositoryInterface $albumRepository,
+        private readonly PhotoCommentRepositoryInterface $commentRepository,
         private readonly PhotoRepositoryInterface $photoRepository,
         private readonly PhotoSearchInterface $photoSearch,
         private readonly RequestHandlerInterface $requestHandler
@@ -77,9 +79,19 @@ final class PhotoController extends BaseController
 
         $data = [];
         $data['photo'] = $this->photoRepository->fetchByUuid($uuid);
+        if ($data['photo'] === null) {
+            return $this->requestHandler->sendResponse(
+                new ResponseData(
+                    data: [],
+                    statusCode: Response::HTTP_NOT_FOUND,
+                    translationKey: 'photos.not_found'
+                )
+            );
+        }
+        $data['comments'] = $this->commentRepository->fetchForPhoto($data['photo']);
 
         if ($valid === false) {
-            $data = [
+            $data += [
                 'albumName' => $albumName,
                 'albums' => $this->albumRepository->fetchAll(),
                 'photos' => $this->photoSearch->search(

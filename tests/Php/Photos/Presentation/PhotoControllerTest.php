@@ -10,13 +10,17 @@ use MyEspacio\Framework\Http\ResponseData;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Collection\PhotoAlbumCollection;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
+use MyEspacio\Photos\Domain\Collection\PhotoCommentCollection;
+use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
+use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use MyEspacio\Photos\Presentation\PhotoController;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,6 +42,7 @@ final class PhotoControllerTest extends TestCase
         string $expectedResponseData
     ): void {
         $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
+        $commentRepository = $this->createMock(PhotoCommentRepositoryInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
@@ -60,6 +65,7 @@ final class PhotoControllerTest extends TestCase
 
         $controller = new PhotoController(
             $albumRepository,
+            $commentRepository,
             $photoRepository,
             $photoSearch,
             $requestHandler
@@ -196,169 +202,259 @@ final class PhotoControllerTest extends TestCase
     /** @param class-string $expectedClass */
     #[DataProvider('singlePhotoDataProvider')]
     public function testSinglePhoto(
+        bool $validRequest,
         Request $request,
-        DataSet $vars,
+        DataSet $pathParams,
         string $uuid,
         ?Photo $repositoryResult,
+        int $commentRepositoryInvocationCount,
+        int $fetchAlbumsInvocationCount,
+        int $photoSearchInvocationCount,
+        PhotoAlbum|PhotoCollection $photoSearchResult,
+        ResponseData $responseData,
         string $expectedClass,
         Response $expectedResponse,
-        string $expectedResult,
+        string $expectedResponseContent,
         string $expectedContentType
     ): void {
         $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
+        $commentRepository = $this->createMock(PhotoCommentRepositoryInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
 
+        $requestHandler->expects($this->once())
+            ->method('validate')
+            ->with($request)
+            ->willReturn($validRequest);
         $photoRepository->expects($this->once())
             ->method('fetchByUuid')
             ->with($uuid)
             ->willReturn($repositoryResult);
-        $requestHandler->expects($this->once())
-            ->method('validate')
-            ->with($request)
-            ->willReturn(true);
+        $photoSearch->expects($this->exactly($photoSearchInvocationCount))
+            ->method('search')
+            ->willReturn($photoSearchResult);
+        $albumRepository->expects($this->exactly($fetchAlbumsInvocationCount))
+            ->method('fetchAll')
+            ->willReturn(new PhotoAlbumCollection([]));
+        $commentRepository->expects($this->exactly($commentRepositoryInvocationCount))
+            ->method('fetchForPhoto')
+            ->with($repositoryResult)
+            ->willReturn(new PhotoCommentCollection([]));
         $requestHandler->expects($this->once())
             ->method('sendResponse')
-            ->with(new ResponseData(
-                data: [
-                    'photo' => $repositoryResult
-                ],
-                template: 'photos/partials/single-photo.html.twig'
-            ))
+            ->with($responseData)
             ->willReturn($expectedResponse);
 
         $controller = new PhotoController(
             $albumRepository,
+            $commentRepository,
             $photoRepository,
             $photoSearch,
             $requestHandler
         );
-        $actualResult = $controller->singlePhoto($request, $vars);
+        $actualResult = $controller->singlePhoto($request, $pathParams);
 
         $this->assertInstanceOf($expectedClass, $actualResult);
-        $this->assertEquals($expectedResult, $actualResult->getContent());
-        $this->assertStringContainsString($expectedContentType, (string) $actualResult->headers->get('Content-Type'));
+        $this->assertEquals($expectedResponseContent, $actualResult->getContent());
+        $this->assertStringContainsString(
+            $expectedContentType,
+            (string) $actualResult->headers->get('Content-Type')
+        );
     }
 
-    /** @return array<string, array<int, mixed>> */
+    /** @return array<string, array<string, mixed>> */
     public static function singlePhotoDataProvider(): array
     {
         return [
             'json_found' => [
-                new Request(
-                    [],
-                    [],
-                    [],
-                    [],
-                    [],
-                    [
-                        'HTTP_ACCEPT' => 'application/json'
-                    ]
+                'validRequest' => true,
+                'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
+                'pathParams' => new DataSet(['uuid' => '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61']),
+                'uuid' => '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61',
+                'repositoryResult' => self::createPhoto(5689),
+                'commentRepositoryInvocationCount' => 1,
+                'fetchAlbumsInvocationCount' => 0,
+                'photoSearchInvocationCount' => 0,
+                'photoSearchResult' => new PhotoCollection([]),
+                'responseData' => new ResponseData(
+                    data: [
+                        'comments' => new PhotoCommentCollection([]),
+                        'photo' => self::createPhoto(5689),
+                    ],
+                    template: 'photos/partials/single-photo.html.twig'
                 ),
-                new DataSet(['uuid' => '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61']),
-                '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61',
-                Photo::createFromDataSet(new DataSet([
-                    'country_id' => '45',
-                    'country_name' => 'Chile',
-                    'two_char_code' => 'CL',
-                    'three_char_code' => 'CHL',
-                    'geo_id' => '2559',
-                    'photo_id' => '2689',
-                    'photo_uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd',
-                    'latitude' => '-33438084',
-                    'longitude' => '-33438084',
-                    'accuracy' =>  '16',
-                    'width' => '456',
-                    'height' => '123',
-                    'cscore' => '4',
-                    'pscore' => '5',
-                    'date_taken' => "2012-10-21",
-                    'description' => "Note the spurs...",
-                    'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
-                    'filename' => "P1070237.JPG",
-                    'title' => "Getting ready to dance",
-                    'town' => "Valparaiso",
-                    'comment_count' => '1',
-                    'fave_count' => '1',
-                    'uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30'
-                ])),
-                JsonResponse::class,
-                new JsonResponse(['photo' => null]),
-                '{"photo":null}',
-                'application/json'
+                'expectedClass' => JsonResponse::class,
+                'expectedResponse' => new JsonResponse([
+                    'photo' => null
+                ]),
+                'expectedResponseContent' => '{"photo":null}',
+                'expectedContentType' => 'application/json',
             ],
             'json_not_found' => [
-                new Request(
-                    [],
-                    [],
-                    [],
-                    [],
-                    [],
-                    [
-                        'HTTP_ACCEPT' => 'application/json'
-                    ]
+                'validRequest' => true,
+                'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
+                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
+                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
+                'repositoryResult' => null,
+                'commentRepositoryInvocationCount' => 0,
+                'fetchAlbumsInvocationCount' => 0,
+                'photoSearchInvocationCount' => 0,
+                'photoSearchResult' => new PhotoCollection([]),
+                'responseData' => new ResponseData(
+                    data: [],
+                    statusCode: 404,
+                    template: null,
+                    translationKey: 'photos.not_found',
+                    translationVariables: [],
                 ),
-                new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
-                'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
-                null,
-                JsonResponse::class,
-                new JsonResponse(['photo' => null]),
-                '{"photo":null}',
-                'application/json'
+                'expectedClass' => JsonResponse::class,
+                'expectedResponse' => new JsonResponse(['photo' => null]),
+                'expectedResponseContent' => '{"photo":null}',
+                'expectedContentType' => 'application/json',
             ],
-            'html_found' => [
-                new Request(),
-                new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
-                'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
-                Photo::createFromDataSet(new DataSet([
-                    'country_id' => '45',
-                    'country_name' => 'Chile',
-                    'two_char_code' => 'CL',
-                    'three_char_code' => 'CHL',
-                    'geo_id' => '2559',
-                    'photo_id' => '2689',
-                    'photo_uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd',
-                    'latitude' => '-33438084',
-                    'longitude' => '-33438084',
-                    'accuracy' =>  '16',
-                    'width' => '456',
-                    'height' => '123',
-                    'cscore' => '4',
-                    'pscore' => '5',
-                    'date_taken' => "2012-10-21",
-                    'description' => "Note the spurs...",
-                    'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
-                    'filename' => "P1070237.JPG",
-                    'title' => "Getting ready to dance",
-                    'town' => "Valparaiso",
-                    'comment_count' => '1',
-                    'fave_count' => '1',
-                    'uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd'
-                ])),
-                Response::class,
-                new Response(
-                    '<!DOCTYPE html><html lang="en-GB"><head><title>Test</title></head><body><div>Hello World</div></body></html>',
+            'html_photo_found' => [
+                'validRequest' => true,
+                'request' => new Request(),
+                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
+                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
+                'repositoryResult' => self::createPhoto(1234),
+                'commentRepositoryInvocationCount' => 1,
+                'fetchAlbumsInvocationCount' => 0,
+                'photoSearchInvocationCount' => 0,
+                'photoSearchResult' => new PhotoCollection([]),
+                'responseData' => new ResponseData(
+                    data: [
+                        'comments' => new PhotoCommentCollection([]),
+                        'photo' => self::createPhoto(1234),
+                    ],
+                    template: 'photos/partials/single-photo.html.twig'
+                ),
+                'expectedClass' => Response::class,
+                'expectedResponse' => new Response(
+                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
                     Response::HTTP_OK,
                     ['Content-Type' => 'text/html']
                 ),
-                '<!DOCTYPE html><html lang="en-GB"><head><title>Test</title></head><body><div>Hello World</div></body></html>',
-                'text/html'
+                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
+                'expectedContentType' => 'text/html',
+            ],
+            'html_full_page_with_album' => [
+                'validRequest' => false,
+                'request' => new Request(),
+                'pathParams' => new DataSet(['album' => 'Mexico', 'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
+                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
+                'repositoryResult' => self::createPhoto(4321),
+                'commentRepositoryInvocationCount' => 1,
+                'fetchAlbumsInvocationCount' => 1,
+                'photoSearchInvocationCount' => 1,
+                'photoSearchResult' => self::createPhotoAlbum(1234),
+                'responseData' => new ResponseData(
+                    data: [
+                        'albumName' => 'Mexico',
+                        'albums' => new PhotoAlbumCollection([]),
+                        'comments' => new PhotoCommentCollection([]),
+                        'photo' => self::createPhoto(4321),
+                        'photos' => self::createPhotoAlbum(1234),
+                        'search' => '',
+                    ],
+                    template: 'photos/photo-album.html.twig'
+                ),
+                'expectedClass' => Response::class,
+                'expectedResponse' => new Response(
+                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
+                    Response::HTTP_OK,
+                    ['Content-Type' => 'text/html']
+                ),
+                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
+                'expectedContentType' => 'text/html',
+            ],
+            'html_full_page_no_album' => [
+                'validRequest' => false,
+                'request' => new Request(),
+                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
+                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
+                'repositoryResult' => self::createPhoto(1122),
+                'commentRepositoryInvocationCount' => 1,
+                'fetchAlbumsInvocationCount' => 1,
+                'photoSearchInvocationCount' => 1,
+                'photoSearchResult' => new PhotoCollection([]),
+                'responseData' => new ResponseData(
+                    data: [
+                        'albumName' => null,
+                        'albums' => new PhotoAlbumCollection([]),
+                        'comments' => new PhotoCommentCollection([]),
+                        'photo' => self::createPhoto(1122),
+                        'photos' => new PhotoCollection([]),
+                        'search' => '',
+                    ],
+                    template: 'photos/photos.html.twig'
+                ),
+                'expectedClass' => Response::class,
+                'expectedResponse' => new Response(
+                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
+                    Response::HTTP_OK,
+                    ['Content-Type' => 'text/html']
+                ),
+                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
+                'expectedContentType' => 'text/html',
+            ],
+            'html_full_page_with_search' => [
+                'validRequest' => false,
+                'request' => new Request(['search' => 'test']),
+                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
+                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
+                'repositoryResult' => self::createPhoto(1122),
+                'commentRepositoryInvocationCount' => 1,
+                'fetchAlbumsInvocationCount' => 1,
+                'photoSearchInvocationCount' => 1,
+                'photoSearchResult' => new PhotoCollection([]),
+                'responseData' => new ResponseData(
+                    data: [
+                        'albumName' => null,
+                        'albums' => new PhotoAlbumCollection([]),
+                        'comments' => new PhotoCommentCollection([]),
+                        'photo' => self::createPhoto(1122),
+                        'photos' => new PhotoCollection([]),
+                        'search' => 'test',
+                    ],
+                    template: 'photos/photos.html.twig'
+                ),
+                'expectedClass' => Response::class,
+                'expectedResponse' => new Response(
+                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
+                    Response::HTTP_OK,
+                    ['Content-Type' => 'text/html']
+                ),
+                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
+                'expectedContentType' => 'text/html',
             ],
             'html_not_found' => [
-                new Request(),
-                new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
-                'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
-                null,
-                Response::class,
-                new Response(
-                    '<!DOCTYPE html><html lang="en-GB"><head><title>Test</title></head><body><div>Hello World</div></body></html>',
+                'validRequest' => true,
+                'request' => new Request(),
+                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
+                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
+                'repositoryResult' => null,
+                'commentRepositoryInvocationCount' => 0,
+                'fetchAlbumsInvocationCount' => 0,
+                'photoSearchInvocationCount' => 0,
+                'photoSearchResult' => new PhotoCollection([]),
+                'responseData' => new ResponseData(
+                    data: [],
+                    statusCode: 404,
+                    template: null,
+                    translationKey: 'photos.not_found',
+                    translationVariables: [],
+                ),
+                'expectedClass' => Response::class,
+                'expectedResponse' => new Response(
+                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
                     Response::HTTP_OK,
                     ['Content-Type' => 'text/html']
                 ),
-                '<!DOCTYPE html><html lang="en-GB"><head><title>Test</title></head><body><div>Hello World</div></body></html>',
-                'text/html'
-            ]
+                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
+                'expectedContentType' => 'text/html',
+            ],
         ];
     }
 
@@ -366,6 +462,7 @@ final class PhotoControllerTest extends TestCase
     {
         $request = new Request();
         $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
+        $commentRepository = $this->createMock(PhotoCommentRepositoryInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
@@ -387,6 +484,7 @@ final class PhotoControllerTest extends TestCase
 
         $controller = new PhotoController(
             $albumRepository,
+            $commentRepository,
             $photoRepository,
             $photoSearch,
             $requestHandler
@@ -407,6 +505,7 @@ final class PhotoControllerTest extends TestCase
         $expectedResult = '<html lang="en"><body>Some content</body></html>';
 
         $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
+        $commentRepository = $this->createMock(PhotoCommentRepositoryInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
@@ -414,12 +513,10 @@ final class PhotoControllerTest extends TestCase
         $photoRepository->expects($this->once())
             ->method('fetchByUuid')
             ->willReturn(null);
-        $photoSearch->expects($this->once())
-            ->method('search')
-            ->willReturn(new PhotoCollection([]));
-        $albumRepository->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn(new PhotoAlbumCollection([]));
+        $photoSearch->expects($this->never())
+            ->method('search');
+        $albumRepository->expects($this->never())
+            ->method('fetchAll');
         $requestHandler->expects($this->once())
             ->method('validate')
             ->with($request)
@@ -427,13 +524,11 @@ final class PhotoControllerTest extends TestCase
         $requestHandler->expects($this->once())
             ->method('sendResponse')
             ->with(new ResponseData(
-                data: [
-                    'albumName' => null,
-                    'albums' => new PhotoAlbumCollection([]),
-                    'photos' => new PhotoCollection([]),
-                    'search' => '',
-                ],
-                template: 'photos/photos.html.twig'
+                data: [],
+                statusCode: 404,
+                template: null,
+                translationKey: 'photos.not_found',
+                translationVariables: [],
             ))
             ->willReturn(new Response(
                 $expectedResult,
@@ -443,6 +538,7 @@ final class PhotoControllerTest extends TestCase
 
         $controller = new PhotoController(
             $albumRepository,
+            $commentRepository,
             $photoRepository,
             $photoSearch,
             $requestHandler
@@ -455,5 +551,50 @@ final class PhotoControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $actualResult);
         $this->assertEquals($expectedResult, $actualResult->getContent());
         $this->assertStringContainsString('text/html', (string) $actualResult->headers->get('Content-Type'));
+    }
+
+    private static function createPhoto(?int $id = null): Photo
+    {
+        return Photo::createFromDataSet(new DataSet([
+            'country_id' => '45',
+            'country_name' => 'Chile',
+            'two_char_code' => 'CL',
+            'three_char_code' => 'CHL',
+            'geo_id' => '2559',
+            'photo_id' => $id,
+            'photo_uuid' => '02175773-89e6-4ab6-b559-5c16998bd7cd',
+            'latitude' => '-33438084',
+            'longitude' => '-33438084',
+            'accuracy' =>  '16',
+            'width' => '456',
+            'height' => '123',
+            'cscore' => '4',
+            'pscore' => '5',
+            'date_taken' => "2012-10-21",
+            'description' => "Note the spurs...",
+            'directory' => "RTW Trip\/16Chile\/03 - Valparaiso",
+            'filename' => "P1070237.JPG",
+            'title' => "Getting ready to dance",
+            'town' => "Valparaiso",
+            'comment_count' => '1',
+            'fave_count' => '1',
+            'uuid' => '4b9d0175-6d47-4460-b48b-6385db446a30'
+        ]));
+    }
+
+    private static function createPhotoAlbum(?int $id = null): PhotoAlbum
+    {
+        return new PhotoAlbum(
+            title: 'Tulum',
+            albumId: $id,
+            uuid: Uuid::fromString('120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211'),
+            description: '',
+            country: new Country(
+                id: 142,
+                name: 'Mexico',
+                twoCharCode: 'MX',
+                threeCharCode: 'MEX'
+            )
+        );
     }
 }

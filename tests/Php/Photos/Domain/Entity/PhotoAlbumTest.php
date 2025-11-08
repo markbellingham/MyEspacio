@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Php\Php\Photos\Domain\Entity;
 
+use MyEspacio\Framework\DataSet;
 use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
@@ -328,5 +329,66 @@ final class PhotoAlbumTest extends TestCase
 
         $this->assertCount(1, $photoAlbum->getPhotos());
         $this->assertEquals($photos, $photoAlbum->getPhotos());
+    }
+
+    #[DataProvider('createFromDataSetDataProvider')]
+    public function testCreateFromDataSet(
+        DataSet $dataset,
+        PhotoAlbum $expectedModel,
+    ): void {
+        $actualModel = PhotoAlbum::createFromDataSet($dataset);
+        $this->assertEquals($expectedModel, $actualModel);
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function createFromDataSetDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                'dataset' => new DataSet([
+                    'title' => 'Tulum',
+                    'album_id' => '86',
+                    'album_uuid' => '120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211',
+                    'description' => null,
+                    'country_id' => '142',
+                    'country_name' => 'Mexico',
+                    'two_char_code' => 'MX',
+                    'three_char_code' => 'MEX'
+                ]),
+                'expectedModel' => new PhotoAlbum(
+                    title: 'Tulum',
+                    albumId: 86,
+                    uuid: Uuid::fromString('120f05ed-fda7-4a3b-8a4a-bbf9bb6f8211'),
+                    description: '',
+                    country: new Country(
+                        id: 142,
+                        name: 'Mexico',
+                        twoCharCode: 'MX',
+                        threeCharCode: 'MEX'
+                    )
+                ),
+            ],
+            'test_null' => [
+                'dataset' => new DataSet([
+                    'title' => 'Tulum',
+                    'album_id' => null,
+                    'album_uuid' => null,
+                    'description' => null,
+                    'country_id' => null,
+                    'country_name' => null,
+                    'two_char_code' => null,
+                    'three_char_code' => null,
+                ]),
+                'expectedModel' => new PhotoAlbum(
+                    title: 'Tulum',
+                    albumId: null,
+                    uuid: null,
+                    description: null,
+                    country: null
+                ),
+            ],
+        ];
     }
 }

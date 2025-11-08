@@ -182,10 +182,14 @@ final class PhotoCommentRepositoryTest extends TestCase
                 photo_comments.comment, 
                 photo_comments.created, 
                 photo_comments.title,
-                users.name AS username
+                photos.uuid AS photo_uuid,
+                users.name AS username,
+                users.uuid AS user_uuid
             FROM pictures.photo_comments
-            LEFT JOIN project.users ON users.id = photo_comments.user_id
-            WHERE photo_comments.photo_id = :photoId AND photo_comments.verified = 1',
+            INNER JOIN pictures.photos ON photos.id = photo_comments.photo_id
+            INNER JOIN project.users ON users.id = photo_comments.user_id
+            WHERE photo_comments.photo_id = :photoId AND photo_comments.verified = 1
+            ORDER BY photo_comments.created',
                 [
                     'photoId' => $photoId,
                 ]

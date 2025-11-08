@@ -6,8 +6,8 @@
                 {% for comment in comments %}
                     <div class="row">
                         <div class="col-md-12">
-                            <small class="text-start"><span class="text-primary">{{ comment.username }}</span> - {{ comment.created }}</small>
-                            <p class="text-start">{{ comment.comment|e('html_attr') }}</p>
+                            <small class="text-start"><span class="text-primary">{{ comment.username }}</span> - {{ comment.created.format('Y-m-d H:i:s') }}</small>
+                            <p class="text-start">{{ comment.comment }}</p>
                         </div>
                     </div>
                 {% endfor %}
