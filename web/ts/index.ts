@@ -3,6 +3,6 @@ import "../css/notify.css";
 import "../css/photos.css";
 
 import "./contact/contact";
-import "./framework/Notify";
-import "../ts/pictures/photos";
-import "./user/login";
+import "./framework/Notification";
+import "./pictures/photos";
+import "../js/user/login";

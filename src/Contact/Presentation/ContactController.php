@@ -93,10 +93,15 @@ final class ContactController extends BaseController
             );
         }
 
+        $icons = $this->captcha->getIcons(self::CAPTCHA_ICONS_QUANTITY);
+        $this->session->set('contactIcons', $icons->toArray());
+
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: [
-                    'captcha' => $this->captcha
+                    'icons' => $icons,
+                    'captcha1' => $this->captcha->getSelectedIcon(),
+                    'captcha2' => $this->captcha->getEncryptedIcon()
                 ],
                 translationKey: 'contact.email_success'
             )

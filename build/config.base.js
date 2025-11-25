@@ -7,7 +7,7 @@ module.exports = {
     // We'll place webpack configuration for all environments here
 
     entry: {
-        scripts: path.resolve(SRC, 'js', 'index.ts'),
+        scripts: path.resolve(SRC, 'ts', 'index.ts'),
     },
     output: {
         // Put all the bundled stuff in your dist folder

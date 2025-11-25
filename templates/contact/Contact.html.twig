@@ -5,7 +5,7 @@
 
 {% block page_content %}
     <div class="col-md-12" style="margin-top: -30px;">
-        <form id="send-email-form">
+        <form id="send-email-form" action="/contact/send" method="POST">
             <div class="col-md-8">
                 <h4 class="text-primary">Contact Me</h4>
 
@@ -14,17 +14,17 @@
                 <label for="contact-name" class="mt-3">Name:<span class="text-danger">*</span></label>
                 <input type="text" name="name" id="contact-name" class="form-control" required/>
 
-                <label for="email-address" class="mt-3">Email Address:</label>
-                <input type="email" name="email" id="email-address" class="form-control"/>
+                <label for="emailAddress" class="mt-3">Email Address:</label>
+                <input type="email" name="emailAddress" id="emailAddress" class="form-control"/>
 
                 <label for="subject" class="mt-3">Subject:<span class="text-danger">*</span></label>
                 <input type="text" name="subject" id="subject" class="form-control" required/>
 
-                <label for="contact-description" class="d-none">Description</label>
-                <input type="text" name="description" class="d-none" id="contact-description" value=""/>
+                <label for="contactDescription" class="d-none">Description</label>
+                <input type="text" name="description" class="d-none" id="contactDescription" value=""/>
 
                 <label for="message" class="mt-3">Message:<span class="text-danger">*</span></label>
-                <textarea rows="10" name="message" id="message" class="form-control" required></textarea>
+                <textarea rows="10" name="message" id="message" class="form-control"></textarea>
 
                 <div id="contact-icons" class="col-8 text-center btn-group-toggle mt-0" data-toggle="buttons">
                     {{ captcha_icons(section, 7)|raw }}
@@ -32,7 +32,7 @@
 
                 <div class="col-4 text-end">
                     <div class="mt-5">
-                        <button id="send-email-btn" class="btn btn-primary">Send Message</button>
+                        <button type="submit" id="send-email-btn" class="btn btn-primary">Send Message</button>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,11 @@ import {AlbumSelect} from "./AlbumSelect";
 import {PhotoSearch} from "./PhotoSearch";
 
 document.addEventListener("DOMContentLoaded", function () {
+    const url = new URL(window.location.href);
+    if (! url.pathname.startsWith("/photos") ) {
+        return;
+    }
+
     const searchInput = document.querySelector("#photo-search-input") as HTMLInputElement;
     const searchButton = document.querySelector("#photo-search-btn") as HTMLButtonElement;
     const clearButton = document.querySelector("#clear-search-btn") as HTMLButtonElement;
