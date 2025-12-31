@@ -48,9 +48,7 @@ final class LoginController extends BaseController
             );
         }
 
-        /** @var array<string, mixed> $requestParams */
-        $requestParams = json_decode($request->getContent(), true);
-        $requestParams = new DataSet($requestParams);
+        $requestParams = new DataSet($request->request->all());
         $this->user = $this->getUserByLoginValues($requestParams);
         if ($this->user === null) {
             return $this->requestHandler->sendResponse(

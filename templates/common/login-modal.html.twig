@@ -1,10 +1,10 @@
 <!-- Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary">
                 <h5 class="modal-title text-light" id="exampleModalLongTitle">Log In</h5>
-                <button type="button" class="close btn btn-sm btn-default" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="close btn btn-sm btn-default" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -12,26 +12,36 @@
                 <form id="login-form">
                     <div class="row">
                         <div class="col-12">
-                            <p>Registration is by invitation only.</p>
-{#                            <p>Please enter one of:</p>#}
+                            <h4 class="text-primary">Registration is by invitation only.</h4>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
                             <label for="login-email">Email Address:</label>
-                            <input type="email" name="email" id="login-email" class="form-control">
+                            <input type="email" name="email" id="login-email" class="form-control" required>
                         </div>
                     </div>
-                    <div id="phone-code-row" class="row" hidden>
+                    <div class="row" data-phone-code-row hidden>
                         <div class="col-12">
                             <label for="phone-code">Enter Code:</label>
                             <input type="text" name="phone_code" id="phone-code" class="form-control">
                         </div>
                     </div>
                 </form>
+
+                <p>Or log in using third-party authentication</p>
+                <div data-auth-selector class="auth-methods">
+                    <button data-auth-method="oauth-google" class="oauth-button btn btn-default" data-bs-toggle="tooltip" data-title="Google">
+                        <i class="bi bi-google"></i>
+                    </button>
+
+                    <button data-auth-method="oauth-github" class="oauth-button btn btn-default" data-bs-toggle="tooltip" data-title="GitHub">
+                        <i class="bi bi-github"></i>
+                    </button>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" form="login-form" onclick="this.form.reset()">Close</button>
+                <button type="button" class="btn btn-secondary" form="login-form" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary" form="login-form" id="login-submit-btn">Login</button>
             </div>
         </div>

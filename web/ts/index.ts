@@ -5,4 +5,4 @@ import "../css/photos.css";
 import "./contact/contact";
 import "./framework/Notification";
 import "./pictures/photos";
-import "../js/user/login";
+import "./user/user";

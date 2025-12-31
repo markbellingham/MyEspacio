@@ -138,17 +138,14 @@ final class LoginControllerTest extends TestCase
     {
         $expectedResponse = ['error' => 'User not found'];
 
-        $request = Request::create(
-            '/login',
-            'POST',
+        $request = new Request(
+            [],
+            ['email' => 'test@example.tld'],
+            ['language' => 'en'],
             [],
             [],
-            [],
-            [],
-            '{"email":"test@example.tld"}'
+            ['HTTP_ACCEPT' => 'application/json'],
         );
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
 
         $this->session->expects($this->once())
             ->method('get')
@@ -191,17 +188,18 @@ final class LoginControllerTest extends TestCase
     {
         $expectedResponse = ['message' => 'Please check your email for the login code'];
 
-        $request = Request::create(
-            '/login',
-            'POST',
+        $request = new Request(
+            [],
+            [
+                'email' => 'test@example.tld',
+            ],
+            [
+                'language' => 'en',
+            ],
             [],
             [],
-            [],
-            [],
-            '{"email":"test@example.tld"}'
+            ['HTTP_ACCEPT' => 'application/json'],
         );
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
 
         $this->session->expects($this->once())
             ->method('get')
@@ -267,17 +265,14 @@ final class LoginControllerTest extends TestCase
     {
         $expectedResponse = ['message' => 'Please check your phone for the login code'];
 
-        $request = Request::create(
-            '/login',
-            'POST',
+        $request = new Request(
+            [],
+            ['phone' => '01234567890'],
+            ['language' => 'en'],
             [],
             [],
-            [],
-            [],
-            '{"phone":"01234567890"}'
+            ['HTTP_ACCEPT' => 'application/json'],
         );
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
 
         $this->session->expects($this->once())
             ->method('get')
@@ -343,17 +338,14 @@ final class LoginControllerTest extends TestCase
     {
         $expectedResponse = ['error' => 'Something went wrong, please contact the website administrator'];
 
-        $request = Request::create(
-            '/login',
-            'POST',
+        $request = new Request(
+            [],
+            ['phone' => '01234567890'],
+            ['language' => 'en'],
             [],
             [],
-            [],
-            [],
-            '{"phone":"01234567890"}'
+            ['HTTP_ACCEPT' => 'application/json'],
         );
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
 
         $this->session->expects($this->once())
             ->method('get')
@@ -414,17 +406,14 @@ final class LoginControllerTest extends TestCase
     {
         $expectedResponse = ['error' => 'Something went wrong, please contact the website administrator'];
 
-        $request = Request::create(
-            '/login',
-            'POST',
+        $request = new Request(
+            [],
+            ['phone' => '01234567890'],
+            ['language' => 'en'],
             [],
             [],
-            [],
-            [],
-            '{"phone":"01234567890"}'
+            ['HTTP_ACCEPT' => 'application/json'],
         );
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
 
         $this->session->expects($this->once())
             ->method('get')
@@ -486,17 +475,14 @@ final class LoginControllerTest extends TestCase
     {
         $expectedResponse = ['error' => 'Something went wrong, please contact the website administrator'];
 
-        $request = Request::create(
-            '/login',
-            'POST',
+        $request = new Request(
+            [],
+            ['phone' => '01234567890'],
+            ['language' => 'en'],
             [],
             [],
-            [],
-            [],
-            '{"phone":"01234567890"}'
+            ['HTTP_ACCEPT' => 'application/json'],
         );
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
 
         $this->session->expects($this->once())
             ->method('get')
@@ -562,17 +548,14 @@ final class LoginControllerTest extends TestCase
     {
         $expectedResponse = ['error' => 'Could not log you in.'];
 
-        $request = Request::create(
-            '/login',
-            'POST',
+        $request = new Request(
+            [],
+            ['email' => 'test@example.tld', 'phone_code' => 'ABC123'],
+            ['language' => 'en'],
             [],
             [],
-            [],
-            [],
-            '{"email":"test@example.tld","phone_code":"ABC123"}'
+            ['HTTP_ACCEPT' => 'application/json'],
         );
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
 
         $this->session->expects($this->once())
             ->method('get')
@@ -630,17 +613,14 @@ final class LoginControllerTest extends TestCase
     {
         $expectedResponse = ['error' => 'Could not log you in.'];
 
-        $request = Request::create(
-            '/login',
-            'POST',
+        $request = new Request(
+            [],
+            ['email' => 'test@example.tld', 'phone_code' => 'XYZ321'],
+            ['language' => 'en'],
             [],
             [],
-            [],
-            [],
-            '{"email":"test@example.tld","phone_code":"XYZ321"}'
+            ['HTTP_ACCEPT' => 'application/json'],
         );
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
 
         $this->session->expects($this->once())
             ->method('get')
@@ -701,17 +681,14 @@ final class LoginControllerTest extends TestCase
             'username' => 'Mark'
         ];
 
-        $request = Request::create(
-            '/login',
-            'POST',
+        $request = new Request(
+            [],
+            ['email' => 'test@example.tld', 'phone_code' => 'ABC123'],
+            ['language' => 'en'],
             [],
             [],
-            [],
-            [],
-            '{"email":"test@example.tld","phone_code":"ABC123"}'
+            ['HTTP_ACCEPT' => 'application/json'],
         );
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
 
         $this->session->expects($this->once())
             ->method('get')
@@ -766,9 +743,14 @@ final class LoginControllerTest extends TestCase
     {
         $expectedResponse = ['message' => 'You are now logged out'];
 
-        $request = Request::create('/logout');
-        $request->attributes->set('language', 'en');
-        $request->headers->set('Accept', 'application/json');
+        $request = new Request(
+            [],
+            [],
+            ['language' => 'en'],
+            [],
+            [],
+            ['HTTP_ACCEPT' => 'application/json'],
+        );
 
         $this->session->expects($this->once())
             ->method('remove')
