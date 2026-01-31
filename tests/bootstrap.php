@@ -13,3 +13,8 @@ define('CONFIG', require ROOT_DIR . '/config/config.php');
 require ROOT_DIR . '/vendor/autoload.php';
 
 // phpcs:enable
+
+// Set Xdebug trigger for debugging
+putenv('XDEBUG_TRIGGER=1');
+$_ENV['XDEBUG_TRIGGER'] = '1';
+$_SERVER['XDEBUG_TRIGGER'] = '1';

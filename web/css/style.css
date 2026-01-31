@@ -56,10 +56,6 @@ body {
     cursor: not-allowed;
 }
 
-i.bi-heart {
-    cursor: pointer;
-}
-
 .modal {
     display: none;
 }

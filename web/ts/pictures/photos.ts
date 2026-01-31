@@ -1,9 +1,11 @@
-import {PhotoViewer} from "./PhotoViewer";
 import {httpRequest} from "../framework/HttpRequest";
 import {notify} from "../framework/Notification";
+import requestHeaders from "../framework/RequestHeaders";
 import {urlStateManager} from "../framework/UrlStateManager";
 import {AlbumSelect} from "./AlbumSelect";
+import {PhotoFave} from "./PhotoFave";
 import {PhotoSearch} from "./PhotoSearch";
+import {PhotoViewer} from "./PhotoViewer";
 
 document.addEventListener("DOMContentLoaded", function () {
     const url = new URL(window.location.href);
@@ -47,6 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
         photoViewer,
         httpRequest,
         urlStateManager,
+        notify,
+    );
+    new PhotoFave(
+        photoView,
+        httpRequest,
+        requestHeaders,
         notify,
     );
 });

@@ -11,7 +11,7 @@ final class ResponseData
 {
     /**
      * @param array<string, mixed> $data
-     * @param array<string, mixed> $translationVariables
+     * @param array<string, string> $translationVariables
      */
     public function __construct(
         private array $data = [],
@@ -46,7 +46,7 @@ final class ResponseData
         return $this->translationKey;
     }
 
-    /** @return array<string, mixed> */
+    /** @return array<string, string> */
     public function getTranslationVariables(): array
     {
         return $this->translationVariables;

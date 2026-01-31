@@ -4,11 +4,24 @@
     <img src="/resources/pictures/{{ photo.directory }}/{{ photo.filename }}" alt="{{ photo.title }}">
 </div>
 <div class="photo-details">
-    <h2 class="text-primary">{{ photo.title }}</h2>
-    <h4 class="text-dark-emphasis">{{ photo.town }}, {{ photo.country.name }}</h4>
+    <div class="row">
+        <div class="col-11">
+            <h2 class="text-primary">{{ photo.title }}</h2>
+            <h4 class="text-dark-emphasis">{{ photo.town }}, {{ photo.country.name }}</h4>
+        </div>
+        <div class="col-1 fave-wrapper">
+            <i class="bi bi-heart-fill photo-fave" data-toggle="tooltip" title="{{ trans('photos.fave_text') }}" data-uuid="{{ photo.uuid }}"></i>
+            {% if(photo.faveCount > 0) %}
+                {{ photo.faveCount }}
+            {% endif %}
+        </div>
+    </div>
+    <hr>
     {% if photo.description %}
-        <div>
-            <p>{{ photo.description|raw }}</p>
+        <div class="row">
+            <div class="col-12">
+                <p>{{ photo.description|raw }}</p>
+            </div>
         </div>
     {% endif %}
     <div class="comments-wrapper" data-section="photo">

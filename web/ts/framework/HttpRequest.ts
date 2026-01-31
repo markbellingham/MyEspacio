@@ -1,5 +1,5 @@
-import {Notification, notify} from "./Notification";
 import {HttpRequestInterface} from "../types";
+import {Notification, notify} from "./Notification";
 
 export class HttpRequest implements HttpRequestInterface {
 
@@ -39,15 +39,15 @@ export class HttpRequest implements HttpRequestInterface {
                     "message" in data
                         ? (data as { message: string }).message
                         : `Error ${status}`;
-
-                this.notify.error(`Request failed: ${errorMessage}`);
                 throw new Error(errorMessage);
             }
 
             return data;
         } catch (error: unknown) {
-            const message =
-                error instanceof Error
+            if (error instanceof Error && error.name === "AbortError") {
+                throw error;
+            }
+            const message = error instanceof Error
                     ? error.message
                     : "An unknown error occurred";
             this.notify.error(`Request failed: ${message}`);

@@ -23,6 +23,8 @@ return [
     'photos' => [
         'invalid_uuid' => 'La foto no existe.',
         'not_found' => 'La foto no existe.',
-        'fave_saved' => 'La foto se ha guardado como favorita.',
+        'fave_saved' => '%{photo_title} se ha guardado como favorita.',
+        'fave_text' => 'Haz clic para guardar esta foto como favorita',
+        'fave_removed' => '%{photo_title} se ha quitado de tus favoritos.',
     ],
 ];

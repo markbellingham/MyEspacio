@@ -94,6 +94,7 @@ final class PhotoController extends BaseController
             $data += [
                 'albumName' => $albumName,
                 'albums' => $this->albumRepository->fetchAll(),
+                'faveText' => 'photo.fave_text',
                 'photos' => $this->photoSearch->search(
                     albumName: $albumName,
                     searchTerms: $searchTerms

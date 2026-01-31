@@ -14,7 +14,7 @@ final class ResponseDataTest extends TestCase
 {
     /**
      * @param array<string, mixed> $data
-     * @param array<string, mixed> $translationVariables
+     * @param array<string, string> $translationVariables
      */
     #[DataProvider('modelDataProvider')]
     public function testModel(

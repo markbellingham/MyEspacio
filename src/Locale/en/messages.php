@@ -23,6 +23,8 @@ return [
     'photos' => [
         'invalid_uuid' => 'The photo was not found.',
         'not_found' => 'The photo was not found.',
-        'fave_saved' => 'The photo was saved as a favourite.'
+        'fave_saved' => '%{photo_title} was saved as a favourite.',
+        'fave_text' => 'Click to save this photo as a favourite',
+        'fave_removed' => '%{photo_title} was removed from your favourites.',
     ],
 ];

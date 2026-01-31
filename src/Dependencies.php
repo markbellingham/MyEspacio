@@ -43,10 +43,12 @@ use MyEspacio\Photos\Application\PhotoSearch;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
+use MyEspacio\Photos\Domain\Repository\PhotoFaveRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoTagRepositoryInterface;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoAlbumRepository;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoCommentRepository;
+use MyEspacio\Photos\Infrastructure\MySql\PhotoFaveRepository;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoRepository;
 use MyEspacio\Photos\Infrastructure\MySql\PhotoTagRepository;
 use MyEspacio\User\Application\LoginEmailMessage;
@@ -98,6 +100,7 @@ $builder->addDefinitions([
     PhotoCommentRepositoryInterface::class => DI\autowire(PhotoCommentRepository::class),
     PhotoTagRepositoryInterface::class => DI\autowire(PhotoTagRepository::class),
     PhotoSearchInterface::class => DI\autowire(PhotoSearch::class),
+    PhotoFaveRepositoryInterface::class => DI\autowire(PhotoFaveRepository::class),
 
     IconRepositoryInterface::class => DI\autowire(IconRepository::class),
     UserRepositoryInterface::class => DI\autowire(UserRepository::class),

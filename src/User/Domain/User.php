@@ -15,6 +15,7 @@ use Ramsey\Uuid\UuidInterface;
  */
 final class User extends Model
 {
+    public const int ANONYMOUSE_USER_ID = 1;
     private bool $isLoggedIn = false;
 
     public function __construct(

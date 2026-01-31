@@ -4,7 +4,7 @@
   "description": "| PHPStan Level 6 | [![pipeline status](https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | [![coverage report](https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg)](https://gitlab.com/markbellingham/myespacio/-/commits/master) | |-----------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |",
   "main": "webpack.config.js",
   "scripts": {
-    "lint": "eslint 'web/js/**/*.ts'",
+    "lint": "eslint 'web/ts/**/*.ts'",
     "test": "jest",
     "dev": "webpack --config build/config.development.js",
     "prod": "webpack --config build/config.production.js"
@@ -18,6 +18,7 @@
     "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
     "@typescript-eslint/parser": "^8.26.0",
+    "baseline-browser-mapping": "^2.9.18",
     "css-loader": "^6.7.1",
     "eslint": "^9.21.0",
     "globals": "^16.0.0",

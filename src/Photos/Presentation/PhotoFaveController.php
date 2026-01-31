@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Photos\Presentation;
 
+use Exception;
 use MyEspacio\Framework\BaseController;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Http\RequestHandlerInterface;
@@ -32,11 +33,55 @@ final class PhotoFaveController extends BaseController
     #[Route('/photos/{uuid}/fave', HttpMethod::POST)]
     public function add(Request $request, DataSet $pathParameters): Response
     {
+        return $this->handleFaveAction(
+            request: $request,
+            pathParameters: $pathParameters,
+            action: function (PhotoFave $photoFave) {
+                $success = $this->photoFaveRepository->save($photoFave);
+                return new ResponseData(
+                    statusCode: $success ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR,
+                    translationKey: $success ? 'photos.fave_saved' : 'general.server_error',
+                    translationVariables: ['photo_title' => $photoFave->getPhoto()->getTitle()]
+                );
+            }
+        );
+    }
+
+    #[Route('/photos/{uuid}/fave', HttpMethod::DELETE)]
+    public function remove(Request $request, DataSet $pathParameters): Response
+    {
+        return $this->handleFaveAction(
+            request: $request,
+            pathParameters: $pathParameters,
+            action: function (PhotoFave $photoFave) {
+                try {
+                    $this->photoFaveRepository->delete($photoFave);
+                } catch (Exception) {
+                    return new ResponseData(
+                        statusCode: Response::HTTP_INTERNAL_SERVER_ERROR,
+                        translationKey: 'general.server_error',
+                    );
+                }
+                return new ResponseData(
+                    statusCode: Response::HTTP_OK,
+                    translationKey: 'photos.fave_removed',
+                    translationVariables: ['photo_title' => $photoFave->getPhoto()->getTitle()]
+                );
+            }
+        );
+    }
+
+    private function handleFaveAction(
+        Request $request,
+        DataSet $pathParameters,
+        callable $action,
+    ): Response {
         $valid = $this->requestHandler->validate($request);
         if ($valid === false) {
             return $this->requestHandler->sendResponse(
                 new ResponseData(
                     statusCode: Response::HTTP_METHOD_NOT_ALLOWED,
+                    translationKey: 'general.method_not_allowed'
                 )
             );
         }
@@ -67,13 +112,6 @@ final class PhotoFaveController extends BaseController
         }
 
         $photoFave = new PhotoFave($photo, $user);
-        $success = $this->photoFaveRepository->save($photoFave);
-
-        return $this->requestHandler->sendResponse(
-            new ResponseData(
-                statusCode: $success ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR,
-                translationKey: $success ? 'photos.fave_saved' : 'general.server_error',
-            )
-        );
+        return $this->requestHandler->sendResponse($action($photoFave));
     }
 }

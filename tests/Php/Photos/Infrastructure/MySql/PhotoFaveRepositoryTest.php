@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Php\Php\Photos\Infrastructure\MySql;
+namespace Tests\Php\Photos\Infrastructure\MySql;
 
 use DateTimeImmutable;
 use MyEspacio\Framework\Database\Connection;
+use MyEspacio\Framework\Exceptions\PersistenceException;
 use MyEspacio\Photos\Domain\Entity\Country;
 use MyEspacio\Photos\Domain\Entity\Dimensions;
 use MyEspacio\Photos\Domain\Entity\GeoCoordinates;
@@ -16,6 +17,7 @@ use MyEspacio\Photos\Infrastructure\MySql\PhotoFaveRepository;
 use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Infrastructure\MySql\UserRepository;
+use PDOException;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -137,6 +139,117 @@ final class PhotoFaveRepositoryTest extends TestCase
         $actualResult = $repository->countForPhoto($photo);
 
         $this->assertSame($expectedFunctionResult, $actualResult);
+    }
+
+    /**
+     * @param array<string, int> $queryParameters
+     */
+    #[DataProvider('deleteDataProvider')]
+    public function testDelete(
+        string $queryString,
+        array $queryParameters,
+        PhotoFave $photoFave,
+    ): void {
+        $db = $this->createMock(Connection::class);
+        $db->expects($this->once())
+            ->method('run')
+            ->with($queryString, $queryParameters);
+
+        $repository = new PhotoFaveRepository($db);
+        $repository->delete($photoFave);
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function deleteDataProvider(): array
+    {
+        return [
+            'delete_user_fave_!' => [
+                'queryString' => 'DELETE FROM pictures.photo_faves WHERE photo_id = :photoId AND user_id = :userId',
+                'queryParameters' => [
+                    'photoId' => 2689,
+                    'userId' => 2,
+                ],
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(2689),
+                    user: self::createUser(2),
+                ),
+            ],
+            'delete_user_fave_2' => [
+                'queryString' => 'DELETE FROM pictures.photo_faves WHERE photo_id = :photoId AND user_id = :userId',
+                'queryParameters' => [
+                    'photoId' => 1234,
+                    'userId' => 7,
+                ],
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(1234),
+                    user: self::createUser(7),
+                ),
+            ],
+            'delete_anon_fave_1' => [
+                'queryString' => 'DELETE FROM pictures.anon_photo_faves 
+            WHERE photo_id = :photoId
+            LIMIT 1',
+                'queryParameters' => [
+                    'photoId' => 2689,
+                ],
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(2689),
+                    user: self::createUser(User::ANONYMOUSE_USER_ID),
+                ),
+            ],
+            'delete_anon_fave_2' => [
+                'queryString' => 'DELETE FROM pictures.anon_photo_faves 
+            WHERE photo_id = :photoId
+            LIMIT 1',
+                'queryParameters' => [
+                    'photoId' => 1234,
+                ],
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(1234),
+                    user: self::createUser(User::ANONYMOUSE_USER_ID),
+                ),
+            ],
+        ];
+    }
+
+    #[DataProvider('deleteExceptionsDataProvider')]
+    public function testDeleteExceptions(
+        PhotoFave $photoFave,
+    ): void {
+        $db = $this->createMock(Connection::class);
+        $db->expects($this->once())
+            ->method('run')
+            ->willThrowException(new PDOException('Test exception', 123));
+
+        $this->expectException(PersistenceException::class);
+        $this->expectExceptionMessage('Failed to persist data.');
+
+        $repository = new PhotoFaveRepository($db);
+
+        $repository->delete($photoFave);
+    }
+
+    /**
+     * @return array<int, array<string, PhotoFave>>
+     */
+    public static function deleteExceptionsDataProvider(): array
+    {
+        return [
+            [
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(2689),
+                    user: self::createUser(2)
+                )
+            ],
+            [
+                'photoFave' => new PhotoFave(
+                    photo: self::createPhoto(1234),
+                    user: self::createUser(User::ANONYMOUSE_USER_ID)
+                )
+            ],
+        ];
     }
 
     /** @return array<string, array<string, mixed>> */

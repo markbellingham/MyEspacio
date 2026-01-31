@@ -59,7 +59,8 @@ final class RequestHandler implements RequestHandlerInterface
                 key: 'message',
                 value: $this->languageReader->getTranslationText(
                     $this->getTranslationIdentifier('messages'),
-                    $responseData->getTranslationKey()
+                    $responseData->getTranslationKey(),
+                    $responseData->getTranslationVariables(),
                 )
             );
         }

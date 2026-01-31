@@ -1,7 +1,7 @@
-import {HttpRequestInterface} from "../types";
-import requestHeaders from "../framework/RequestHeaders";
 import {Notification} from "../framework/Notification";
+import requestHeaders from "../framework/RequestHeaders";
 import {UrlStateManager} from "../framework/UrlStateManager";
+import {HttpRequestInterface} from "../types";
 
 export class PhotoViewer {
 
@@ -45,6 +45,7 @@ export class PhotoViewer {
                     return;
                 }
                 this.openSinglePhoto(data);
+                this.alertInterestedParties();
                 this.urlStateManager.updatePath(`photos/${albumContext}` + url);
             });
     }
@@ -62,8 +63,7 @@ export class PhotoViewer {
         }
     }
 
-
-    openSinglePhoto(data: string): void
+    private openSinglePhoto(data: string): void
     {
         if(data.trimStart().toLowerCase().startsWith("<!doctype")) {
             const htmlElement = document.documentElement;
@@ -83,7 +83,12 @@ export class PhotoViewer {
         this.closeButton.scrollIntoView({behavior: "smooth"});
     }
 
-    closeSinglePhoto(): void
+    private alertInterestedParties(): void
+    {
+        this.photoView.dispatchEvent(new CustomEvent("photoLoaded"));
+    }
+
+    public closeSinglePhoto(): void
     {
         if (! this.photoViewIsOpen()) {
             return;
