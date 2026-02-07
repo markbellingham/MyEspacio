@@ -16,6 +16,7 @@ use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
+use MyEspacio\Photos\Domain\Repository\PhotoFaveRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
 use MyEspacio\Photos\Presentation\PhotoController;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -24,6 +25,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class PhotoControllerTest extends TestCase
 {
@@ -42,7 +44,6 @@ final class PhotoControllerTest extends TestCase
         string $expectedResponseData
     ): void {
         $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
-        $commentRepository = $this->createMock(PhotoCommentRepositoryInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
@@ -65,10 +66,12 @@ final class PhotoControllerTest extends TestCase
 
         $controller = new PhotoController(
             $albumRepository,
-            $commentRepository,
+            $this->createMock(PhotoCommentRepositoryInterface::class),
+            $this->createMock(PhotoFaveRepositoryInterface::class),
             $photoRepository,
             $photoSearch,
-            $requestHandler
+            $requestHandler,
+            $this->createMock(SessionInterface::class),
         );
 
         $actualResponse = $controller->photoGrid($request, $vars);
@@ -208,20 +211,22 @@ final class PhotoControllerTest extends TestCase
         string $uuid,
         ?Photo $repositoryResult,
         int $commentRepositoryInvocationCount,
-        int $fetchAlbumsInvocationCount,
-        int $photoSearchInvocationCount,
+        int $templateItemsRepositoryInvocations,
         PhotoAlbum|PhotoCollection $photoSearchResult,
+        bool $isUserFave,
         ResponseData $responseData,
         string $expectedClass,
         Response $expectedResponse,
         string $expectedResponseContent,
-        string $expectedContentType
+        string $expectedContentType,
     ): void {
         $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
         $commentRepository = $this->createMock(PhotoCommentRepositoryInterface::class);
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
+        $faveRepository = $this->createMock(PhotoFaveRepositoryInterface::class);
+        $session = $this->createMock(SessionInterface::class);
 
         $requestHandler->expects($this->once())
             ->method('validate')
@@ -231,12 +236,15 @@ final class PhotoControllerTest extends TestCase
             ->method('fetchByUuid')
             ->with($uuid)
             ->willReturn($repositoryResult);
-        $photoSearch->expects($this->exactly($photoSearchInvocationCount))
+        $photoSearch->expects($this->exactly($templateItemsRepositoryInvocations))
             ->method('search')
             ->willReturn($photoSearchResult);
-        $albumRepository->expects($this->exactly($fetchAlbumsInvocationCount))
+        $albumRepository->expects($this->exactly($templateItemsRepositoryInvocations))
             ->method('fetchAll')
             ->willReturn(new PhotoAlbumCollection([]));
+        $faveRepository->expects($this->exactly($templateItemsRepositoryInvocations))
+            ->method('isUserFave')
+            ->willReturn($isUserFave);
         $commentRepository->expects($this->exactly($commentRepositoryInvocationCount))
             ->method('fetchForPhoto')
             ->with($repositoryResult)
@@ -249,9 +257,11 @@ final class PhotoControllerTest extends TestCase
         $controller = new PhotoController(
             $albumRepository,
             $commentRepository,
+            $faveRepository,
             $photoRepository,
             $photoSearch,
-            $requestHandler
+            $requestHandler,
+            $session,
         );
         $actualResult = $controller->singlePhoto($request, $pathParams);
 
@@ -274,9 +284,9 @@ final class PhotoControllerTest extends TestCase
                 'uuid' => '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61',
                 'repositoryResult' => self::createPhoto(5689),
                 'commentRepositoryInvocationCount' => 1,
-                'fetchAlbumsInvocationCount' => 0,
-                'photoSearchInvocationCount' => 0,
+                'templateItemsRepositoryInvocations' => 0,
                 'photoSearchResult' => new PhotoCollection([]),
+                'isUserFave' => false,
                 'responseData' => new ResponseData(
                     data: [
                         'comments' => new PhotoCommentCollection([]),
@@ -298,9 +308,9 @@ final class PhotoControllerTest extends TestCase
                 'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
                 'repositoryResult' => null,
                 'commentRepositoryInvocationCount' => 0,
-                'fetchAlbumsInvocationCount' => 0,
-                'photoSearchInvocationCount' => 0,
+                'templateItemsRepositoryInvocations' => 0,
                 'photoSearchResult' => new PhotoCollection([]),
+                'isUserFave' => false,
                 'responseData' => new ResponseData(
                     data: [],
                     statusCode: 404,
@@ -320,9 +330,9 @@ final class PhotoControllerTest extends TestCase
                 'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
                 'repositoryResult' => self::createPhoto(1234),
                 'commentRepositoryInvocationCount' => 1,
-                'fetchAlbumsInvocationCount' => 0,
-                'photoSearchInvocationCount' => 0,
+                'templateItemsRepositoryInvocations' => 0,
                 'photoSearchResult' => new PhotoCollection([]),
+                'isUserFave' => false,
                 'responseData' => new ResponseData(
                     data: [
                         'comments' => new PhotoCommentCollection([]),
@@ -346,15 +356,16 @@ final class PhotoControllerTest extends TestCase
                 'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
                 'repositoryResult' => self::createPhoto(4321),
                 'commentRepositoryInvocationCount' => 1,
-                'fetchAlbumsInvocationCount' => 1,
-                'photoSearchInvocationCount' => 1,
+                'templateItemsRepositoryInvocations' => 1,
                 'photoSearchResult' => self::createPhotoAlbum(1234),
+                'isUserFave' => false,
                 'responseData' => new ResponseData(
                     data: [
                         'albumName' => 'Mexico',
                         'albums' => new PhotoAlbumCollection([]),
                         'comments' => new PhotoCommentCollection([]),
                         'faveText' => 'photo.fave_text',
+                        'isUserFave' => false,
                         'photo' => self::createPhoto(4321),
                         'photos' => self::createPhotoAlbum(1234),
                         'search' => '',
@@ -377,15 +388,16 @@ final class PhotoControllerTest extends TestCase
                 'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
                 'repositoryResult' => self::createPhoto(1122),
                 'commentRepositoryInvocationCount' => 1,
-                'fetchAlbumsInvocationCount' => 1,
-                'photoSearchInvocationCount' => 1,
+                'templateItemsRepositoryInvocations' => 1,
                 'photoSearchResult' => new PhotoCollection([]),
+                'isUserFave' => true,
                 'responseData' => new ResponseData(
                     data: [
                         'albumName' => null,
                         'albums' => new PhotoAlbumCollection([]),
                         'comments' => new PhotoCommentCollection([]),
                         'faveText' => 'photo.fave_text',
+                        'isUserFave' => true,
                         'photo' => self::createPhoto(1122),
                         'photos' => new PhotoCollection([]),
                         'search' => '',
@@ -408,15 +420,16 @@ final class PhotoControllerTest extends TestCase
                 'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
                 'repositoryResult' => self::createPhoto(1122),
                 'commentRepositoryInvocationCount' => 1,
-                'fetchAlbumsInvocationCount' => 1,
-                'photoSearchInvocationCount' => 1,
+                'templateItemsRepositoryInvocations' => 1,
                 'photoSearchResult' => new PhotoCollection([]),
+                'isUserFave' => false,
                 'responseData' => new ResponseData(
                     data: [
                         'albumName' => null,
                         'albums' => new PhotoAlbumCollection([]),
                         'comments' => new PhotoCommentCollection([]),
                         'faveText' => 'photo.fave_text',
+                        'isUserFave' => false,
                         'photo' => self::createPhoto(1122),
                         'photos' => new PhotoCollection([]),
                         'search' => 'test',
@@ -439,9 +452,9 @@ final class PhotoControllerTest extends TestCase
                 'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
                 'repositoryResult' => null,
                 'commentRepositoryInvocationCount' => 0,
-                'fetchAlbumsInvocationCount' => 0,
-                'photoSearchInvocationCount' => 0,
+                'templateItemsRepositoryInvocations' => 0,
                 'photoSearchResult' => new PhotoCollection([]),
+                'isUserFave' => false,
                 'responseData' => new ResponseData(
                     data: [],
                     statusCode: 404,
@@ -469,6 +482,8 @@ final class PhotoControllerTest extends TestCase
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
+        $faveRepository = $this->createMock(PhotoFaveRepositoryInterface::class);
+        $session = $this->createMock(SessionInterface::class);
 
         $photoRepository->expects($this->never())
             ->method('fetchByUuid');
@@ -485,12 +500,23 @@ final class PhotoControllerTest extends TestCase
             ))
             ->willReturn(new Response('Invalid UUID', Response::HTTP_BAD_REQUEST));
 
+        $photoRepository->expects($this->never())
+            ->method('fetchByUuid');
+        $commentRepository->expects($this->never())
+            ->method('fetchForPhoto');
+        $albumRepository->expects($this->never())
+            ->method('fetchAll');
+        $faveRepository->expects($this->never())
+            ->method('isUserFave');
+
         $controller = new PhotoController(
             $albumRepository,
             $commentRepository,
+            $faveRepository,
             $photoRepository,
             $photoSearch,
-            $requestHandler
+            $requestHandler,
+            $session,
         );
         $actualResult = $controller->singlePhoto(
             $request,
@@ -512,14 +538,12 @@ final class PhotoControllerTest extends TestCase
         $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
         $photoSearch = $this->createMock(PhotoSearchInterface::class);
         $requestHandler = $this->createMock(RequestHandlerInterface::class);
+        $faveRepository = $this->createMock(PhotoFaveRepositoryInterface::class);
+        $session = $this->createMock(SessionInterface::class);
 
         $photoRepository->expects($this->once())
             ->method('fetchByUuid')
             ->willReturn(null);
-        $photoSearch->expects($this->never())
-            ->method('search');
-        $albumRepository->expects($this->never())
-            ->method('fetchAll');
         $requestHandler->expects($this->once())
             ->method('validate')
             ->with($request)
@@ -539,12 +563,21 @@ final class PhotoControllerTest extends TestCase
                 ['Content-Type' => 'text/html']
             ));
 
+        $photoSearch->expects($this->never())
+            ->method('search');
+        $albumRepository->expects($this->never())
+            ->method('fetchAll');
+        $faveRepository->expects($this->never())
+            ->method('isUserFave');
+
         $controller = new PhotoController(
             $albumRepository,
             $commentRepository,
+            $faveRepository,
             $photoRepository,
             $photoSearch,
-            $requestHandler
+            $requestHandler,
+            $session,
         );
         $actualResult = $controller->singlePhoto(
             $request,
