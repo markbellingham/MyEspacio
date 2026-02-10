@@ -10,7 +10,7 @@
             <h4 class="text-dark-emphasis">{{ photo.town }}, {{ photo.country.name }}</h4>
         </div>
         <div class="col-1 fave-wrapper">
-            <i class="bi bi-heart-fill photo-fave" data-toggle="tooltip" title="{{ trans('photos.fave_text') }}" data-uuid="{{ photo.uuid }}"></i>
+            <i class="bi bi-heart-fill photo-fave {% if isUserFave %}faved{% endif %}" data-toggle="tooltip" title="{{ trans('photos.fave_text') }}" data-uuid="{{ photo.uuid }}"></i>
             {% if(photo.faveCount > 0) %}
                 {{ photo.faveCount }}
             {% endif %}

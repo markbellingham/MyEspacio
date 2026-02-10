@@ -109,4 +109,21 @@ final readonly class PhotoFaveRepository implements PhotoFaveRepositoryInterface
             ]
         );
     }
+
+    public function isUserFave(Photo $photo, User $user): bool
+    {
+        $result = $this->db->fetchOne(
+            'SELECT * 
+                    FROM pictures.photo_faves 
+                    WHERE photo_id = :photoId 
+                      AND user_id = :userId 
+                    LIMIT 1',
+            [
+                'photoId' => $photo->getId(),
+                'userId' => $user->getId(),
+            ]
+        );
+
+        return $result !== null;
+    }
 }

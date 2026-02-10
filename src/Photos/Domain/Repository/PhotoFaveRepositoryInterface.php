@@ -6,6 +6,7 @@ namespace MyEspacio\Photos\Domain\Repository;
 
 use MyEspacio\Photos\Domain\Entity\Photo;
 use MyEspacio\Photos\Domain\Entity\PhotoFave;
+use MyEspacio\User\Domain\User;
 
 interface PhotoFaveRepositoryInterface
 {
@@ -18,4 +19,6 @@ interface PhotoFaveRepositoryInterface
     public function countForPhoto(Photo $photo): int;
 
     public function delete(PhotoFave $fave): void;
+
+    public function isUserFave(Photo $photo, User $user): bool;
 }

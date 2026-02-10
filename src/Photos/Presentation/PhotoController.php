@@ -15,18 +15,24 @@ use MyEspacio\Photos\Domain\Collection\PhotoCollection;
 use MyEspacio\Photos\Domain\Entity\PhotoAlbum;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoCommentRepositoryInterface;
+use MyEspacio\Photos\Domain\Repository\PhotoFaveRepositoryInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoRepositoryInterface;
+use MyEspacio\User\Domain\User;
+use MyEspacio\User\Infrastructure\MySql\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class PhotoController extends BaseController
 {
     public function __construct(
         private readonly PhotoAlbumRepositoryInterface $albumRepository,
         private readonly PhotoCommentRepositoryInterface $commentRepository,
+        private readonly PhotoFaveRepositoryInterface $photoFaveRepository,
         private readonly PhotoRepositoryInterface $photoRepository,
         private readonly PhotoSearchInterface $photoSearch,
-        private readonly RequestHandlerInterface $requestHandler
+        private readonly RequestHandlerInterface $requestHandler,
+        private readonly SessionInterface $session,
     ) {
     }
 
@@ -90,11 +96,17 @@ final class PhotoController extends BaseController
         }
         $data['comments'] = $this->commentRepository->fetchForPhoto($data['photo']);
 
+        $user = $this->session->get('user');
+        if ($user instanceof User === false) {
+            $user = UserRepository::getAnonymousUser();
+        }
+
         if ($valid === false) {
             $data += [
                 'albumName' => $albumName,
                 'albums' => $this->albumRepository->fetchAll(),
                 'faveText' => 'photo.fave_text',
+                'isUserFave' => $this->photoFaveRepository->isUserFave($data['photo'], $user),
                 'photos' => $this->photoSearch->search(
                     albumName: $albumName,
                     searchTerms: $searchTerms

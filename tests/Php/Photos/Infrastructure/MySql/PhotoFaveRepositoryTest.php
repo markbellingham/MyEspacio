@@ -289,6 +289,64 @@ final class PhotoFaveRepositoryTest extends TestCase
         ];
     }
 
+    /** @param array<string, string>|null $databaseResult */
+    #[DataProvider('isUserFaveDataProvider')]
+    public function testIsUserFave(
+        int $photoId,
+        int $userId,
+        Photo $photo,
+        User $user,
+        ?array $databaseResult,
+        bool $expectedFunctionResult,
+    ): void {
+        $db = $this->createMock(Connection::class);
+        $db->expects($this->once())
+            ->method('fetchOne')
+            ->with(
+                'SELECT * 
+                    FROM pictures.photo_faves 
+                    WHERE photo_id = :photoId 
+                      AND user_id = :userId 
+                    LIMIT 1',
+                [
+                    'photoId' => $photo->getId(),
+                    'userId' => $user->getId(),
+                ]
+            )
+            ->willReturn($databaseResult);
+
+        $repository = new PhotoFaveRepository($db);
+        $actualResult = $repository->isUserFave($photo, $user);
+
+        $this->assertSame($expectedFunctionResult, $actualResult);
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    public static function isUserFaveDataProvider(): array
+    {
+        return [
+            'test_1' => [
+                'photoId' => 2869,
+                'userId' => 2,
+                'photo' => self::createPhoto(2869),
+                'user' => self::createUser(2),
+                'databaseResult' => [
+                    'photo_id' => 2869,
+                    'user_id' => 2,
+                ],
+                'expectedFunctionResult' => true,
+            ],
+            'test_2' => [
+                'photoId' => 1234,
+                'userId' => 7,
+                'photo' => self::createPhoto(1234),
+                'user' => self::createUser(7),
+                'databaseResult' => null,
+                'expectedFunctionResult' => false,
+            ],
+        ];
+    }
+
     private static function createPhoto(int $photoId): Photo
     {
         return new Photo(
