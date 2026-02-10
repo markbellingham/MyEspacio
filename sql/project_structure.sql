@@ -1,4 +1,4 @@
-CREATE DATABASE project;
+CREATE DATABASE IF NOT EXISTS project;
 
 USE project;
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS users(
     uuid BINARY(16) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE DATABASE pictures;
+CREATE DATABASE IF NOT EXISTS pictures;
 USE pictures;
 
 CREATE TABLE IF NOT EXISTS countries (
@@ -49,15 +49,6 @@ CREATE TABLE IF NOT EXISTS albums (
     description TEXT,
     uuid BINARY(16) NOT NULL UNIQUE,
     CONSTRAINT fk_albums_countryid FOREIGN KEY (country_id) REFERENCES countries (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS geo (
-    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    photo_id INT UNSIGNED NOT NULL,
-    latitude INT NOT NULL,
-    longitude INT NOT NULL,
-    accuracy INT NOT NULL,
-    CONSTRAINT fk_geo_photoid FOREIGN KEY (photo_id) REFERENCES photos (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS photos (
@@ -119,3 +110,16 @@ CREATE TABLE IF NOT EXISTS photo_tags (
     CONSTRAINT fk_phototags_photoid FOREIGN KEY (photo_id) REFERENCES photos (id),
     CONSTRAINT fk_phototags_tagid FOREIGN KEY (tag_id) REFERENCES project.tags (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS geo (
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    photo_id INT UNSIGNED NOT NULL,
+    latitude INT NOT NULL,
+    longitude INT NOT NULL,
+    accuracy INT NOT NULL,
+    CONSTRAINT fk_geo_photoid FOREIGN KEY (photo_id) REFERENCES photos (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON project.* TO 'webserver'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pictures.* TO 'webserver'@'%';
+FLUSH PRIVILEGES;

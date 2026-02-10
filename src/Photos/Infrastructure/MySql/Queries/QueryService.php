@@ -32,7 +32,7 @@ final class QueryService
             FROM pictures.photo_faves 
             WHERE photo_faves.photo_id = photos.id) AS fave_count
     FROM pictures.photos
-    LEFT JOIN pictures.countries ON countries.Id = photos.country
+    LEFT JOIN pictures.countries ON countries.Id = photos.country_id
     LEFT JOIN pictures.geo ON photos.id = geo.photo_id
     LEFT JOIN pictures.photo_comments ON photos.id = photo_comments.photo_id
     LEFT JOIN pictures.photo_faves ON photos.id = photo_faves.photo_id
@@ -63,7 +63,7 @@ final class QueryService
         MATCH(countries.name) AGAINST(:searchTerms IN BOOLEAN MODE) AS cscore
     FROM pictures.photos
     LEFT JOIN pictures.photo_album ON photos.id = photo_album.photo_id
-    LEFT JOIN pictures.countries ON countries.id = photos.country
+    LEFT JOIN pictures.countries ON countries.id = photos.country_id
     LEFT JOIN pictures.geo ON photos.id = geo.photo_id
     LEFT JOIN (
         SELECT photo_id, COUNT(photo_id) AS cmt_count

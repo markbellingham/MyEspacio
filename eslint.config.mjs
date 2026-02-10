@@ -45,7 +45,11 @@ export default [
             },
         },
         rules: {
-            "no-unused-vars": "warn",
+            "no-unused-vars": ["warn", {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_",
+                "ignoreRestSiblings": true
+            }],
             semi: ["error", "always"],
             quotes: ["error", "double"],
         },

@@ -1,8 +1,8 @@
 export interface NotifyInterface {
-    success(message: string, timeout?: number): void;
-    error(message: string, timeout?: number): void;
-    warning(message: string, timeout?: number): void;
-    info(message: string, timeout?: number): void;
+    success(_message: string, _timeout?: number): void;
+    error(_message: string, _timeout?: number): void;
+    warning(_message: string, _timeout?: number): void;
+    info(_message: string, _timeout?: number): void;
 }
 
 export class Notification implements NotifyInterface {
