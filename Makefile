@@ -12,6 +12,11 @@ endif
         db-shell db-import db-structure db-data db-pictures db-truncate \
         test pre-commit
 
+build:
+	$(COMPOSE) build
+
+rebuild: down build up
+
 up:
 	$(COMPOSE) up -d
 
@@ -62,5 +67,5 @@ test:
 	$(COMPOSE) exec -T php vendor/bin/phpunit
 
 pre-commit:
-	composer run-script pre-commit
-	npm run test
+	$(COMPOSE) exec -T php composer run-script pre-commit
+	$(COMPOSE) run --rm node npm run test

@@ -6,3 +6,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql exif mbstring zip
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+RUN git config --global --add safe.directory /var/www/html
+
+COPY php.ini /usr/local/etc/php/conf.d/custom.ini
