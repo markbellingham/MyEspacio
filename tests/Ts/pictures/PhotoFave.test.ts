@@ -1,13 +1,18 @@
 import {NotifyInterface} from "../../../web/ts/framework/Notification";
 import {PhotoFave} from "../../../web/ts/pictures/PhotoFave";
 import {HttpRequestInterface, RequestHeadersInterface} from "../../../web/ts/types";
+import {LoginView} from "../../../web/ts/user/LoginView";
 
 describe("PhotoFave", () => {
     let photoContainer: HTMLDivElement;
     let mockHttpRequest: jest.Mocked<HttpRequestInterface>;
     let mockRequestHeaders: jest.Mocked<RequestHeadersInterface>;
     let mockNotify: jest.Mocked<NotifyInterface>;
-    // let photoFave: PhotoFave;
+
+    let loginButton: HTMLButtonElement;
+    let loginModal: HTMLDivElement;
+    let loginForm: HTMLFormElement;
+    let loginView = new LoginView(loginButton, loginModal, loginForm);
 
     beforeEach(() => {
         photoContainer = document.createElement("div");
@@ -26,13 +31,19 @@ describe("PhotoFave", () => {
             info: jest.fn(),
         } as jest.Mocked<NotifyInterface>;
 
+        loginButton = document.createElement("button");
+        loginModal = document.createElement("div");
+        loginForm = document.createElement("form");
+        loginView
+
         jest.useFakeTimers();
 
         new PhotoFave(
             photoContainer,
             mockHttpRequest,
             mockRequestHeaders,
-            mockNotify
+            mockNotify,
+            loginView,
         );
     });
 
@@ -52,6 +63,7 @@ describe("PhotoFave", () => {
                 mockHttpRequest,
                 mockRequestHeaders,
                 mockNotify,
+                loginView,
             );
 
             expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
@@ -309,6 +321,7 @@ describe("PhotoFave", () => {
                     mockHttpRequest,
                     mockRequestHeaders,
                     mockNotify,
+                    loginView,
                 );
             }).not.toThrow();
         });

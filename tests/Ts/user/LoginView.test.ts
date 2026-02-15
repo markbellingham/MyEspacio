@@ -130,6 +130,14 @@ describe("Login View", () =>{
             loginButton.removeAttribute("data-task");
             expect(loginView.getTask()).toBe("");
         });
+
+        it("should return the logged in boolean state", () => {
+            loginButton.dataset.task = "login";
+            expect(loginView.isShownAsLoggedIn()).toBe(false);
+
+            loginButton.dataset.task = "logout";
+            expect(loginView.isShownAsLoggedIn()).toBe(true);
+        });
     });
 
     describe("phone code row visibility", () => {

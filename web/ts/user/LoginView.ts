@@ -112,4 +112,9 @@ export class LoginView {
     {
         return Array.from(this.oauthButtons.keys());
     }
+
+    isShownAsLoggedIn(): boolean
+    {
+        return this.getTask() === "logout";
+    }
 }
