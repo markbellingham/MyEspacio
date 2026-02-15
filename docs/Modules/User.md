@@ -1,4 +1,4 @@
-Login is currently by invitation only. It is also only supported by the web interface. API requests may only `GET` data, they cannot run any `POST` or `PUT` commands.
+Registration is currently by invitation only. It is also only supported by the web interface. API requests may only `GET` data, they cannot run any `POST` or `PUT` commands.
 
 ## Login
 Click the Login button at the top right. A modal appears where you can enter your email address. Submit the form and a message will be sent to your email with:

@@ -1,0 +1,4 @@
+This application comes with docker setup files, to ease initial setup and so that all developers can use the same development environment.
+The main setup files (webserver config, PHP config, and docker compose) are located in the top level directory `/docker`. There is also a `Makefile` in the project root with some common commands to make it easier to start the docker containers and to create the database structure.
+
+If you are using a Linux operating system (or WSL), there is [another project on my GitLab](https://gitlab.com/markbellingham/projects) that you can use to call the docker commands from wherever you are in Terminal, you don't need to reference the actual path of the project.
