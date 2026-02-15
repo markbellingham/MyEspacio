@@ -27,3 +27,13 @@ The `sendResponse`  function requires a `MyEspacio\Framework\Http\ResponseData` 
 * translation variables - Some of the translation values contain a variable, such as the user's name. This is where you provide it.
 
 All the properties have default values, so if your use case doesn't need all of them you can use named arguments to provide only the ones you require.
+
+## Route
+The application uses a Route attribute to enable HTTP routing. The attribute should be placed above the method that the particular route will execute.
+The Route attribute takes 3 arguments:
+* The URL itself, which uses `[nikic/FastRoute](https://github.com/nikic/FastRoute)` to parse.
+* The HTTP method, which uses the HttpMethod enum
+* A priority integer in the event that two or more routes clash.
+```php
+#[Route('/photos[/[{album:.+}]]', HttpMethod::GET, priority: 2)]
+```
