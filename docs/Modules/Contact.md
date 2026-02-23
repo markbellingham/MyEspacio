@@ -1,0 +1,1 @@
+The contact me page is where the user can send a message to the website author, and view some information about them, such as social media links

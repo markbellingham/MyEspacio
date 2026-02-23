@@ -6,6 +6,7 @@ The following data types are supported
 * float
 * boolean - handles type conversion, so 'true', '1', etc will return `true`, and falsy values will return `false
 * DateTimeImmutable - attempts to create an instance of DateTimeImmutable, returning `null` on failure
+* UUID - returns a UUID instance from the Ramsey UUID library
 * value - simply returns the value exactly as provided
 
 The most common use case will be to provide a single-level array, with string keys and values.
@@ -24,8 +25,9 @@ $dataSet = new DataSet($data);
 $dataSet->string('name') // returns 'Joe Bloggs'
 $dataSet->bool('isRegistered') // returns true
 $dataSet->int('loginAttempts') // returns 1
-$dataSet->dateTimeNull('loginDate') // returns new DateTimeImmutable('2024-12-16 19:33:00')
 $dataSet->float('someFloat') // returns 1.23
+$dataSet->utcDateTime('loginDate') // returns new DateTimeImmutable('2024-12-16 19:33:00')
+$dataset->uuid('someUuid') // returns 06233a5a-4fd0-4a76-abc3-ee25070b17e6
 $dataSet->value('name') // returns 'Joe Bloggs  '
 ```
 

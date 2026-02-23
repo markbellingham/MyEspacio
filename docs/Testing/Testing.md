@@ -1,3 +1,4 @@
+Tests are located inside `/tests`. This directory is further split into `Php`  and `Ts` for PHP and TypeScript tests respectively. Inside of these, the directory structure should mirror `/src` and `/web/ts` respectively.
 ## PHP
 There are 3 PHP test suites provided. CodeSniffer, PHPStan (level 9), and PHPUnit, which can be run from the following composer commands:
 * `phpcs` - CodeSniffer to ensure that the code is formatted to PSR12 standards.

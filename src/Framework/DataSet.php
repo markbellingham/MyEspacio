@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MyEspacio\Framework;
 
+use DateMalformedStringException;
 use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
@@ -132,9 +133,9 @@ final readonly class DataSet
     }
 
     /**
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
-    public function utcDatetime(string $key): DateTimeImmutable
+    public function utcDateTime(string $key): DateTimeImmutable
     {
         $value = $this->data[$key] ?? null;
         if (
