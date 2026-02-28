@@ -2,6 +2,7 @@ import {httpRequest} from "../framework/HttpRequest";
 import {notify} from "../framework/Notification";
 import requestHeaders from "../framework/RequestHeaders";
 import {urlStateManager} from "../framework/UrlStateManager";
+import {LoginView} from "../user/LoginView";
 import {AlbumSelect} from "./AlbumSelect";
 import {PhotoFave} from "./PhotoFave";
 import {PhotoSearch} from "./PhotoSearch";
@@ -20,6 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const photoGrid = document.querySelector("#photos") as HTMLDivElement | null;
     const photoView = document.querySelector("#photo-view") as HTMLDivElement | null;
     const closeBtn = document.querySelector(".close-btn") as HTMLButtonElement | null;
+
+    const loginButton = document.querySelector("#login-btn") as HTMLButtonElement;
+    const loginModal = document.querySelector("#login-modal") as HTMLDivElement;
+    const loginForm = document.querySelector("#login-form") as HTMLFormElement;
 
     if (!photoGrid || !photoView || !closeBtn || !albumSelect || !searchInput || !searchButton) {
         console.error({photoGrid, photoView, closeBtn, albumSelect, searchInput, searchButton});
@@ -56,5 +61,10 @@ document.addEventListener("DOMContentLoaded", function () {
         httpRequest,
         requestHeaders,
         notify,
+        new LoginView(
+            loginButton,
+            loginModal,
+            loginForm
+        ),
     );
 });

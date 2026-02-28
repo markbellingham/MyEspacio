@@ -1,5 +1,6 @@
 import {NotifyInterface} from "../framework/Notification";
 import {HttpRequestInterface, RequestHeadersInterface} from "../types";
+import {LoginView} from "../user/LoginView";
 
 export class PhotoFave
 {
@@ -12,6 +13,7 @@ export class PhotoFave
         private httpRequest: HttpRequestInterface,
         private requestHeaders: RequestHeadersInterface,
         private notify: NotifyInterface,
+        private loginView: LoginView,
     ) {
         this.events();
     }
