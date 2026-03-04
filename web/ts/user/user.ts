@@ -1,6 +1,7 @@
 import {httpRequest} from "../framework/HttpRequest";
 import {notify} from "../framework/Notification";
 import requestHeaders from "../framework/RequestHeaders";
+import AuthState from "./AuthState";
 import AuthStrategyFactory from "./AuthStrategyFactory";
 import LoginController from "./LoginController";
 import {LoginView} from "./LoginView";
@@ -31,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         httpRequest,
         requestHeaders,
         notify,
-        strategyFactory
+        strategyFactory,
+        new AuthState(loginButton),
     );
 });

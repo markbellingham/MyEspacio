@@ -1,5 +1,6 @@
 import {NotifyInterface} from "../../../web/ts/framework/Notification";
 import {HttpRequestInterface, RequestHeadersInterface} from "../../../web/ts/types";
+import AuthState from "../../../web/ts/user/AuthState";
 import AuthStrategyFactory from "../../../web/ts/user/AuthStrategyFactory";
 import LoginController, {AuthStrategy} from "../../../web/ts/user/LoginController";
 import {LoginView} from "../../../web/ts/user/LoginView";
@@ -12,6 +13,7 @@ describe("Login Controller", () => {
     let mockStrategyFactory: jest.Mocked<AuthStrategyFactory>;
     let mockEmailStrategy: jest.Mocked<AuthStrategy>;
     let mockOAuthStrategy: jest.Mocked<AuthStrategy>;
+    let authState: AuthState;
 
     let loginButtonHandler: () => void;
     let formSubmitHandler: (event: SubmitEvent) => void;
@@ -86,12 +88,17 @@ describe("Login Controller", () => {
             notify: mockNotify,
         } as unknown as jest.Mocked<AuthStrategyFactory>;
 
+        const loginButton = document.createElement("button");
+        loginButton.dataset.task = "login";
+        authState = new AuthState(loginButton);
+
         new LoginController(
             mockView,
             mockHttpRequest,
             mockRequestHeaders,
             mockNotify,
             mockStrategyFactory,
+            authState,
         );
     });
 
@@ -138,6 +145,7 @@ describe("Login Controller", () => {
             expect(mockView.hideModal).toHaveBeenCalled();
             expect(mockNotify.success).toHaveBeenCalledWith("OAuth login successful");
             expect(mockView.setLoggedInState).toHaveBeenCalledWith("oauth_user");
+            expect(authState.isLoggedIn()).toBe(true);
         });
     });
 
@@ -195,6 +203,7 @@ describe("Login Controller", () => {
             expect(mockEmailStrategy.authenticate).toHaveBeenCalled();
             expect(mockView.hideModal).toHaveBeenCalled();
             expect(mockNotify.success).toHaveBeenCalledWith("Login successful");
+            expect(authState.isLoggedIn()).toBe(true);
         });
     });
 
@@ -219,6 +228,8 @@ describe("Login Controller", () => {
         });
 
         it("should show success notification and update view on successful logout", async () => {
+            authState.setLoggedIn("someone");
+
             (mockView.getTask as jest.Mock).mockReturnValue("logout");
             (mockHttpRequest.query as jest.Mock).mockResolvedValue({
                 message: "Logged out successfully"
@@ -233,6 +244,7 @@ describe("Login Controller", () => {
 
             expect(mockNotify.success).toHaveBeenCalledWith("Logged out successfully");
             expect(mockView.setLoggedOutState).toHaveBeenCalled();
+            expect(authState.isLoggedIn()).toBe(false);
         });
 
         it("should not update view if logout response is invalid", async () => {
@@ -277,7 +289,7 @@ describe("Login Controller", () => {
             (mockOAuthStrategy.authenticate as jest.Mock).mockResolvedValue(null);
 
             const googleHandler = oAuthHandlers.get("google");
-            await googleHandler!();
+            googleHandler!();
             await new Promise(resolve => setTimeout(resolve, 0));
 
             expect(mockView.hideModal).not.toHaveBeenCalled();

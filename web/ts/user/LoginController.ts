@@ -1,5 +1,6 @@
 import {NotifyInterface} from "../framework/Notification";
 import {HttpRequestInterface, RequestHeadersInterface} from "../types";
+import AuthState from "./AuthState";
 import AuthStrategyFactory from "./AuthStrategyFactory";
 import {LoginView} from "./LoginView";
 
@@ -28,6 +29,7 @@ export default class LoginController {
         private requestHeaders: RequestHeadersInterface,
         private notify: NotifyInterface,
         private strategyFactory: AuthStrategyFactory,
+        private authState: AuthState,
     ) {
         this.events();
     }
@@ -78,6 +80,7 @@ export default class LoginController {
             this.view.hideModal();
             this.notify.success(response.message);
             this.view.setLoggedInState(response.username);
+            this.authState.setLoggedIn(response.username);
          } catch (error) {
             console.error(error);
          }
@@ -96,6 +99,7 @@ export default class LoginController {
 
                 this.notify.success(response.message);
                 this.view.setLoggedOutState();
+                this.authState.setLoggedOut();
             });
     }
 

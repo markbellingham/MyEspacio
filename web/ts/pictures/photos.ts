@@ -2,7 +2,6 @@ import {httpRequest} from "../framework/HttpRequest";
 import {notify} from "../framework/Notification";
 import requestHeaders from "../framework/RequestHeaders";
 import {urlStateManager} from "../framework/UrlStateManager";
-import {LoginView} from "../user/LoginView";
 import {AlbumSelect} from "./AlbumSelect";
 import {PhotoFave} from "./PhotoFave";
 import {PhotoSearch} from "./PhotoSearch";
@@ -22,12 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const photoView = document.querySelector("#photo-view") as HTMLDivElement | null;
     const closeBtn = document.querySelector(".close-btn") as HTMLButtonElement | null;
 
-    const loginButton = document.querySelector("#login-btn") as HTMLButtonElement;
-    const loginModal = document.querySelector("#login-modal") as HTMLDivElement;
-    const loginForm = document.querySelector("#login-form") as HTMLFormElement;
+    // const loginButton = document.querySelector("#login-btn") as HTMLButtonElement;
 
     if (!photoGrid || !photoView || !closeBtn || !albumSelect || !searchInput || !searchButton) {
-        console.error({photoGrid, photoView, closeBtn, albumSelect, searchInput, searchButton});
+        console.log({photoGrid, photoView, closeBtn, albumSelect, searchInput, searchButton});
         console.error("PhotoViewer: Required elements not found in DOM.");
         return;
     }
@@ -61,10 +58,5 @@ document.addEventListener("DOMContentLoaded", function () {
         httpRequest,
         requestHeaders,
         notify,
-        new LoginView(
-            loginButton,
-            loginModal,
-            loginForm
-        ),
     );
 });
