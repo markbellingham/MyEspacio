@@ -2,8 +2,10 @@ import {httpRequest} from "../framework/HttpRequest";
 import {notify} from "../framework/Notification";
 import requestHeaders from "../framework/RequestHeaders";
 import {urlStateManager} from "../framework/UrlStateManager";
+import AuthState from "../user/AuthState";
 import {AlbumSelect} from "./AlbumSelect";
 import {PhotoFave} from "./PhotoFave";
+import {PhotoFavePersistence} from "./PhotoFavePersistence";
 import {PhotoSearch} from "./PhotoSearch";
 import {PhotoViewer} from "./PhotoViewer";
 
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const photoView = document.querySelector("#photo-view") as HTMLDivElement | null;
     const closeBtn = document.querySelector(".close-btn") as HTMLButtonElement | null;
 
-    // const loginButton = document.querySelector("#login-btn") as HTMLButtonElement;
+    const loginButton = document.querySelector("#login-btn") as HTMLButtonElement;
 
     if (!photoGrid || !photoView || !closeBtn || !albumSelect || !searchInput || !searchButton) {
         console.log({photoGrid, photoView, closeBtn, albumSelect, searchInput, searchButton});
@@ -55,8 +57,11 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     new PhotoFave(
         photoView,
-        httpRequest,
-        requestHeaders,
-        notify,
+        new PhotoFavePersistence(
+            httpRequest,
+            requestHeaders,
+            notify,
+            new AuthState(loginButton),
+        )
     );
 });

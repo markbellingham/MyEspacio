@@ -1,6 +1,5 @@
 {% if user.isLoggedIn %}
-    <span>Welcome {{ user.name }}</span>
-    <button class="btn btn-primary btn-sm" id="login-btn" data-task="logout">Log Out</button>
+    <button class="btn btn-primary btn-sm" id="login-btn" data-task="logout">Log Out {{ user.name }}</button>
 {% else %}
     <button class="btn btn-primary btn-sm" id="login-btn" data-task="login">Log In</button>
 {% endif %}

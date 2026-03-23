@@ -1,44 +1,24 @@
-import {NotifyInterface} from "../../../web/ts/framework/Notification";
 import {PhotoFave} from "../../../web/ts/pictures/PhotoFave";
-import {HttpRequestInterface, RequestHeadersInterface} from "../../../web/ts/types";
+import {PhotoFavePersistence} from "../../../web/ts/pictures/PhotoFavePersistence";
 
 describe("PhotoFave", () => {
     let photoContainer: HTMLDivElement;
-    let mockHttpRequest: jest.Mocked<HttpRequestInterface>;
-    let mockRequestHeaders: jest.Mocked<RequestHeadersInterface>;
-    let mockNotify: jest.Mocked<NotifyInterface>;
+    let mockPersistence: jest.Mocked<PhotoFavePersistence>;
 
     beforeEach(() => {
         photoContainer = document.createElement("div");
-        mockHttpRequest = {
-            query: jest.fn().mockResolvedValue({message: "Success!"}),
-        } as jest.Mocked<HttpRequestInterface>;
-        mockRequestHeaders = {
-            json: jest.fn(),
-            html: jest.fn(),
-            jsonWithToken: jest.fn().mockReturnValue({"Content-Type":"application/json"}),
-        } as jest.Mocked<RequestHeadersInterface>;
-        mockNotify = {
-            success: jest.fn(),
-            error: jest.fn(),
-            warning: jest.fn(),
-            info: jest.fn(),
-        } as jest.Mocked<NotifyInterface>;
+        mockPersistence = {
+            save: jest.fn().mockResolvedValue(undefined)
+        } as unknown as jest.Mocked<PhotoFavePersistence>;
 
         jest.useFakeTimers();
-
-        new PhotoFave(
-            photoContainer,
-            mockHttpRequest,
-            mockRequestHeaders,
-            mockNotify,
-        );
     });
 
     afterEach(() => {
         document.body.innerHTML = "";
         jest.clearAllTimers();
         jest.clearAllMocks();
+        jest.restoreAllMocks();
         jest.useRealTimers();
     });
 
@@ -46,12 +26,7 @@ describe("PhotoFave", () => {
         it("should initialise with event listeners added", () => {
             const addEventListenerSpy = jest.spyOn(photoContainer, "addEventListener");
 
-            new PhotoFave(
-                photoContainer,
-                mockHttpRequest,
-                mockRequestHeaders,
-                mockNotify,
-            );
+            new PhotoFave(photoContainer, mockPersistence);
 
             expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
             expect(addEventListenerSpy).toHaveBeenCalledWith("click", expect.any(Function));
@@ -66,6 +41,8 @@ describe("PhotoFave", () => {
             heartButton.dataset.uuid = "test-uuid-123";
             photoContainer.appendChild(heartButton);
 
+            new PhotoFave(photoContainer, mockPersistence);
+
             const event = new CustomEvent("photoLoaded", {
                 bubbles: true,
                 detail: {},
@@ -73,11 +50,16 @@ describe("PhotoFave", () => {
             Object.defineProperty(event, "target", {value: heartButton, enumerable: true});
 
             photoContainer.dispatchEvent(event);
-
             heartButton.click();
-            jest.advanceTimersByTime(500);
 
-            expect(mockHttpRequest.query).toHaveBeenCalled();
+            expect(heartButton.classList.contains("faved")).toBe(true);
+        });
+
+        it("should not throw when photoLoaded target is invalid", () => {
+            const event = new CustomEvent("photoLoaded", {bubbles: true});
+            Object.defineProperty(event, "target", {value: document.createElement("div")});
+
+            expect(() => photoContainer.dispatchEvent(event)).not.toThrow();
         });
     });
 
@@ -89,6 +71,8 @@ describe("PhotoFave", () => {
             heartButton.className = "photo-fave";
             heartButton.dataset.uuid = "test-uuid-123";
             photoContainer.appendChild(heartButton);
+
+            new PhotoFave(photoContainer, mockPersistence);
         });
 
         it("should toggle the fave class when clicked", () => {
@@ -97,6 +81,17 @@ describe("PhotoFave", () => {
             heartButton.click();
 
             expect(heartButton.classList.contains("faved")).toBe(true);
+        });
+
+        it("should send save requests through persistence after debounce", () => {
+            heartButton.click();
+            jest.advanceTimersByTime(500);
+
+            expect(mockPersistence.save).toHaveBeenCalledWith(
+                "test-uuid-123",
+                true,
+                expect.any(AbortSignal)
+            );
         });
 
         it("should toggle from faved to unfaved", () => {
@@ -114,6 +109,7 @@ describe("PhotoFave", () => {
             otherButton.click();
 
             expect(heartButton.classList.contains("faved")).toBe(false);
+            expect(mockPersistence.save).not.toHaveBeenCalled();
         });
 
         it("should work with nested elements using event delegation", () => {
@@ -123,6 +119,44 @@ describe("PhotoFave", () => {
             icon.click();
 
             expect(heartButton.classList.contains("faved")).toBe(true);
+        });
+
+        it("should revert UI when save fails", async () => {
+            mockPersistence.save.mockRejectedValue(new Error("Network error"));
+
+            heartButton.click();
+            jest.advanceTimersByTime(500);
+            await Promise.resolve();
+
+            expect(heartButton.classList.contains("faved")).toBe(false);
+        });
+
+        it("should not revert UI on AbortError", async () => {
+            const abortError = new Error("Abort");
+            abortError.name = "AbortError";
+            mockPersistence.save.mockRejectedValue(abortError);
+
+            heartButton.click();
+            jest.advanceTimersByTime(500);
+            await Promise.resolve();
+
+            expect(heartButton.classList.contains("faved")).toBe(true);
+        });
+
+        it("should abort the previous pending request when clicked again", async () => {
+            const abortSpy = jest.fn();
+            const abortControllerMock = {
+                abort: abortSpy,
+                signal: {} as AbortSignal,
+            };
+
+            jest.spyOn(global, "AbortController").mockImplementation(() => abortControllerMock as AbortController);
+
+            heartButton.click();
+            jest.advanceTimersByTime(500);
+            heartButton.click();
+
+            expect(abortSpy).toHaveBeenCalled();
         });
     });
 
@@ -146,6 +180,8 @@ describe("PhotoFave", () => {
             heartButton.className = "photo-fave";
             heartButton.dataset.uuid = "test-uuid-123";
             photoContainer.appendChild(heartButton);
+
+            new PhotoFave(photoContainer, mockPersistence);
         });
 
         it("should debounce multiple clicks within 500ms", () => {
@@ -155,7 +191,7 @@ describe("PhotoFave", () => {
 
             jest.advanceTimersByTime(500);
 
-            expect(mockHttpRequest.query).toHaveBeenCalledTimes(1);
+            expect(mockPersistence.save).toHaveBeenCalledTimes(1);
         });
 
         it("should send only the final state after rapid clicks (1)", () => {
@@ -167,9 +203,11 @@ describe("PhotoFave", () => {
 
             jest.advanceTimersByTime(500);
 
-            expect(mockHttpRequest.query).toHaveBeenCalledWith(
-                "/photos/test-uuid-123/fave",
-                expect.objectContaining({method: "POST"})
+            expect(mockPersistence.save).toHaveBeenCalledTimes(1);
+            expect(mockPersistence.save).toHaveBeenCalledWith(
+                "test-uuid-123",
+                true,
+                expect.any(AbortSignal)
             );
         });
 
@@ -181,84 +219,12 @@ describe("PhotoFave", () => {
 
             jest.advanceTimersByTime(500);
 
-            expect(mockHttpRequest.query).toHaveBeenCalledWith(
-                "/photos/test-uuid-123/fave",
-                expect.objectContaining({method: "DELETE"})
+            expect(mockPersistence.save).toHaveBeenCalledTimes(1);
+            expect(mockPersistence.save).toHaveBeenCalledWith(
+                "test-uuid-123",
+                false,
+                expect.any(AbortSignal)
             );
-        });
-    });
-
-    describe("HTTP request", () => {
-        let heartButton: HTMLElement;
-
-        beforeEach(() => {
-            heartButton = document.createElement("i");
-            heartButton.className = "photo-fave";
-            heartButton.dataset.uuid = "test-uuid-456";
-            photoContainer.appendChild(heartButton);
-        });
-
-        it("should send POST request with correct parameters when favouriting", () => {
-            heartButton.click();
-            jest.advanceTimersByTime(500);
-
-            expect(mockHttpRequest.query).toHaveBeenCalledWith(
-                "/photos/test-uuid-456/fave",
-                {
-                    method: "POST",
-                    headers: {"Content-Type":"application/json"},
-                    signal: expect.any(AbortSignal),
-                }
-            );
-        });
-
-        it("should send DELETE request with 'faved' false when unfavouriting", () => {
-            heartButton.classList.add("faved");
-            heartButton.click();
-            jest.advanceTimersByTime(500);
-
-            expect(mockHttpRequest.query).toHaveBeenCalledWith(
-                "/photos/test-uuid-456/fave",
-                {
-                    method: "DELETE",
-                    headers: {"Content-Type":"application/json"},
-                    signal: expect.any(AbortSignal),
-                }
-            );
-        });
-
-        it("should show success notification on successful request", async () => {
-            heartButton.click();
-            jest.advanceTimersByTime(500);
-
-            await Promise.resolve();
-
-            expect(mockNotify.success).toHaveBeenCalledWith("Success!");
-        });
-
-        it("should revert state if request fails", async () => {
-            mockHttpRequest.query.mockRejectedValueOnce(new Error("Network error"));
-
-            heartButton.click();
-            expect(heartButton.classList.contains("faved")).toBe(true);
-
-            jest.advanceTimersByTime(500);
-            await Promise.resolve();
-            await Promise.resolve();
-
-            expect(heartButton.classList.contains("faved")).toBe(false);
-        });
-
-        it("should revert state if the response does not contain message", async () => {
-            mockHttpRequest.query.mockResolvedValueOnce({});
-
-            heartButton.click();
-            expect(heartButton.classList.contains("faved")).toBe(true);
-
-            jest.advanceTimersByTime(500);
-            await Promise.resolve();
-
-            expect(heartButton.classList.contains("faved")).toBe(false);
         });
     });
 
@@ -270,30 +236,30 @@ describe("PhotoFave", () => {
             heartButton.className = "photo-fave";
             heartButton.dataset.uuid = "test-uuid-789";
             photoContainer.appendChild(heartButton);
+
+            new PhotoFave(photoContainer, mockPersistence);
         });
 
         it("should abort pending request if the button is clicked again", () => {
             const abortSpy = jest.fn();
-            global.AbortController = jest.fn().mockImplementation(() => ({
+            const abortControllerMock = {
                 abort: abortSpy,
-                signal: {},
-            })) as never;
+                signal: {} as AbortSignal,
+            };
+
+            const abortController = jest.spyOn(global, "AbortController").mockImplementation(() => abortControllerMock as AbortController);
 
             heartButton.click();
             jest.advanceTimersByTime(250);
             heartButton.click();
 
             expect(abortSpy).toHaveBeenCalled();
+            abortController.mockRestore();
         });
 
         it("should not revert state on 'AbortError'", async () => {
-            const abortError = new Error("Abort");
-            abortError.name = "AbortError";
-            mockHttpRequest.query.mockRejectedValueOnce(abortError);
-
             heartButton.click();
             jest.advanceTimersByTime(500);
-            await Promise.resolve();
             await Promise.resolve();
 
             expect(heartButton.classList.contains("faved")).toBe(true);
@@ -303,12 +269,7 @@ describe("PhotoFave", () => {
     describe("Edge cases", () => {
         it("should handle null photoContainer gracefully", () => {
             expect(() => {
-                new PhotoFave(
-                    null,
-                    mockHttpRequest,
-                    mockRequestHeaders,
-                    mockNotify,
-                );
+                new PhotoFave(null, mockPersistence);
             }).not.toThrow();
         });
     });
