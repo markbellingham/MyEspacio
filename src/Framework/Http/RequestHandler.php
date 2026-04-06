@@ -17,6 +17,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class RequestHandler implements RequestHandlerInterface
 {
+    private const string RESPONSE_CSV = 'text/csv';
+    private const string RESPONSE_JSON = 'application/json';
+    private const string RESPONSE_XML = 'application/xml';
+
     private string $language = 'en';
     private ?string $responseType = null;
     private TemplateRenderer $templateRenderer;
@@ -40,7 +44,7 @@ final class RequestHandler implements RequestHandlerInterface
          */
         $this->responseType = $request->headers->get('Accept');
         $this->language = $request->attributes->getString('language') ?: 'en';
-        if ($this->responseType === 'application/json') {
+        if ($this->responseType === self::RESPONSE_JSON) {
             return true;
         }
 
@@ -65,19 +69,19 @@ final class RequestHandler implements RequestHandlerInterface
             );
         }
         switch ($this->responseType) {
-            case 'text/csv':
+            case self::RESPONSE_CSV:
                 return new Response(
                     content: $this->formatToCsv($responseData->getData()),
                     status: $responseData->getStatusCode(),
-                    headers: ['Content-Type' => 'text/csv']
+                    headers: ['Content-Type' => self::RESPONSE_CSV]
                 );
-            case 'application/xml':
+            case self::RESPONSE_XML:
                 return new Response(
                     content: $this->formatToXml($responseData->getData()),
                     status: $responseData->getStatusCode(),
-                    headers: ['Content-Type' => 'application/xml']
+                    headers: ['Content-Type' => self::RESPONSE_XML]
                 );
-            case 'application/json':
+            case self::RESPONSE_JSON:
                 return new JsonResponse($responseData->getData(), $responseData->getStatusCode());
         }
         if ($responseData->getTemplate()) {
