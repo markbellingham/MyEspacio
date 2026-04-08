@@ -34,17 +34,21 @@ final class ContactController extends BaseController
     public function show(Request $request): Response
     {
         $valid = $this->requestHandler->validate($request);
+        $data = [];
 
-        $icons = $this->captcha->getIcons(self::CAPTCHA_ICONS_QUANTITY);
-        $this->session->set('contactIcons', $icons->toArray());
-
+        if ($valid === false) {
+            $icons = $this->captcha->getIcons(self::CAPTCHA_ICONS_QUANTITY);
+            $this->session->set('contactIcons', $icons->toArray());
+            $data = [
+                'icons' => $icons,
+                'captcha1' => $this->captcha->getSelectedIcon(),
+                'captcha2' => $this->captcha->getEncryptedIcon(),
+                'user' => $this->session->get('user'),
+            ];
+        }
         return $this->requestHandler->sendResponse(
             new ResponseData(
-                data: [
-                    'icons' => $icons,
-                    'captcha1' => $this->captcha->getSelectedIcon(),
-                    'captcha2' => $this->captcha->getEncryptedIcon()
-                ],
+                data: $data,
                 template: 'contact/Contact.html.twig',
             )
         );

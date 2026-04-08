@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Php\Php\Contact\Presentation;
+namespace Tests\Php\Contact\Presentation;
 
 use MyEspacio\Common\Application\CaptchaInterface;
 use MyEspacio\Common\Domain\Collection\CaptchaIconCollection;
@@ -26,52 +26,26 @@ final class ContactControllerTest extends TestCase
         $email = $this->createMock(EmailInterface::class);
         $captcha = $this->createMock(CaptchaInterface::class);
 
-        $captchaIcons = new CaptchaIconCollection([
-            [
-                'icon_id' => '1',
-                'icon' => '<i class="bi bi-phone-vibrate"></i>',
-                'name' => 'Mobile'
-            ],
-            [
-                'icon_id' => '2',
-                'icon' => '<i class="bi bi-keyboard"></i>',
-                'name' => 'Keyboard'
-            ]
-        ]);
-        $expectedResponse = 'Rendered HTML Content';
+        $expectedResponse = '{}';
 
-        $selectedIcon = new CaptchaIcon(
-            iconId: 1,
-            icon: '<i class="bi bi-phone-vibrate"></i>',
-            name: 'Mobile',
-            colour: 'btn-warning'
-        );
         $requestHandler->expects($this->once())
             ->method('validate')
             ->willReturn(true);
-        $captcha->expects($this->once())
-            ->method('getIcons')
-            ->with(ContactController::CAPTCHA_ICONS_QUANTITY)
-            ->willReturn($captchaIcons);
-        $captcha->expects($this->once())
-            ->method('getSelectedIcon')
-            ->willReturn($selectedIcon);
-        $captcha->expects($this->once())
-            ->method('getEncryptedIcon')
-            ->willReturn('');
-        $session->expects($this->once())
-            ->method('set')
-            ->with('contactIcons', $captchaIcons->toArray());
+        $captcha->expects($this->never())
+            ->method('getIcons');
+        $captcha->expects($this->never())
+            ->method('getSelectedIcon');
+        $captcha->expects($this->never())
+            ->method('getEncryptedIcon');
+        $session->expects($this->never())
+            ->method('set');
+        $session->expects($this->never())
+            ->method('get');
         $requestHandler->expects($this->once())
             ->method('sendResponse')
             ->with(new ResponseData(
-                [
-                        'icons' => $captchaIcons,
-                        'captcha1' => $selectedIcon,
-                        'captcha2' => ''
-                    ],
-                Response::HTTP_OK,
-                'contact/Contact.html.twig'
+                statusCode: Response::HTTP_OK,
+                template: 'contact/Contact.html.twig'
             ))
             ->willReturn(new Response($expectedResponse));
 
@@ -124,6 +98,10 @@ final class ContactControllerTest extends TestCase
         $requestHandler->expects($this->once())
             ->method('validate')
             ->willReturn(false);
+        $session->expects($this->once())
+            ->method('get')
+            ->with('user')
+            ->willreturn(null);
         $requestHandler->expects($this->once())
             ->method('sendResponse')
             ->with(new ResponseData(
@@ -131,6 +109,7 @@ final class ContactControllerTest extends TestCase
                     'icons' => $captchaIcons,
                     'captcha1' => $selectedIcon,
                     'captcha2' => '',
+                    'user' => null,
                 ],
                 template: 'contact/Contact.html.twig',
             ))
