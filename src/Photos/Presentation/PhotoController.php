@@ -47,19 +47,24 @@ final class PhotoController extends BaseController
             albumName: $albumName,
             searchTerms: $searchTerms
         );
-        $albums = $this->albumRepository->fetchAll();
 
-        $template = $this->determineAlbumTemplate($valid, $photos);
+        $data = [
+            'albumName' => $albumName,
+            'photos' => $photos,
+            'search' => $searchTerms,
+        ];
+
+        if ($valid === false) {
+            $data += [
+                'albums' => $this->albumRepository->fetchAll(),
+                'user' => $this->session->get('user'),
+            ];
+        }
 
         return $this->requestHandler->sendResponse(
             new ResponseData(
-                data: [
-                    'albumName' => $albumName,
-                    'albums' => $albums,
-                    'photos' => $photos,
-                    'search' => $searchTerms,
-                ],
-                template: $template
+                data: $data,
+                template: $this->determineAlbumTemplate($valid, $photos)
             )
         );
     }
@@ -76,19 +81,20 @@ final class PhotoController extends BaseController
         if ($uuid === null) {
             return $this->requestHandler->sendResponse(
                 new ResponseData(
-                    data: [],
                     statusCode: Response::HTTP_BAD_REQUEST,
                     translationKey: 'photos.invalid_uuid'
                 )
             );
         }
 
-        $data = [];
-        $data['photo'] = $this->photoRepository->fetchByUuid($uuid);
+        $data = [
+            'albumName' => $albumName,
+            'photo' => $this->photoRepository->fetchByUuid($uuid),
+        ];
         if ($data['photo'] === null) {
             return $this->requestHandler->sendResponse(
                 new ResponseData(
-                    data: [],
+                    data: $data,
                     statusCode: Response::HTTP_NOT_FOUND,
                     translationKey: 'photos.not_found'
                 )
@@ -96,14 +102,9 @@ final class PhotoController extends BaseController
         }
         $data['comments'] = $this->commentRepository->fetchForPhoto($data['photo']);
 
-        $user = $this->session->get('user');
-        if ($user instanceof User === false) {
-            $user = UserRepository::getAnonymousUser();
-        }
-
         if ($valid === false) {
+            $user = $this->getSessionUser();
             $data += [
-                'albumName' => $albumName,
                 'albums' => $this->albumRepository->fetchAll(),
                 'faveText' => 'photo.fave_text',
                 'isUserFave' => $this->photoFaveRepository->isUserFave($data['photo'], $user),
@@ -112,15 +113,14 @@ final class PhotoController extends BaseController
                     searchTerms: $searchTerms
                 ),
                 'search' => $searchTerms,
+                'user' => $user,
             ];
         }
-
-        $template = $this->determinePhotoTemplate($valid, $data['photos'] ?? null);
 
         return $this->requestHandler->sendResponse(
             new ResponseData(
                 data: $data,
-                template: $template
+                template: $this->determinePhotoTemplate($valid, $data['photos'] ?? null)
             )
         );
     }
@@ -148,5 +148,14 @@ final class PhotoController extends BaseController
             return 'photos/photo-album.html.twig';
         }
         return 'photos/photos.html.twig';
+    }
+
+    private function getSessionUser(): User
+    {
+        $user = $this->session->get('user');
+        if ($user instanceof User === false) {
+            $user = UserRepository::getAnonymousUser();
+        }
+        return $user;
     }
 }
