@@ -36,7 +36,13 @@ export default class LoginController {
 
     private events(): void
     {
-        this.view.bindLoginButtonClickHandler(() => this.view.showModal());
+        this.view.bindLoginButtonClickHandler(() => {
+            if (this.view.isShownAsLoggedIn()) {
+                this.handleLogout();
+                return;
+            }
+            this.view.showModal();
+        });
 
         const providers = this.view.getAvailableAuthProviders();
         providers.forEach(provider => {
@@ -100,6 +106,7 @@ export default class LoginController {
                 this.notify.success(response.message);
                 this.view.setLoggedOutState();
                 this.authState.setLoggedOut();
+                this.view.hideModal();
             });
     }
 

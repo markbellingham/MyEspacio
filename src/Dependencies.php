@@ -9,6 +9,8 @@ use MyEspacio\Common\Domain\Repository\IconRepositoryInterface;
 use MyEspacio\Common\Domain\Repository\TagRepositoryInterface;
 use MyEspacio\Common\Infrastructure\MySql\IconRepository;
 use MyEspacio\Common\Infrastructure\MySql\TagRepository;
+use MyEspacio\Contact\Application\ContactMeBuilder;
+use MyEspacio\Contact\Application\ContactMeBuilderInterface;
 use MyEspacio\Framework\Csrf\StoredTokenReader;
 use MyEspacio\Framework\Csrf\StoredTokenReaderInterface;
 use MyEspacio\Framework\Csrf\StoredTokenValidator;
@@ -39,6 +41,9 @@ use MyEspacio\Framework\Rendering\TemplateRendererFactoryInterface;
 use MyEspacio\Framework\Rendering\TranslatorFactory;
 use MyEspacio\Framework\Rendering\TranslatorFactoryInterface;
 use MyEspacio\Framework\Rendering\TwigTemplateRendererFactory;
+use MyEspacio\Framework\Sanitization\SafeHtmlSanitizer;
+use MyEspacio\Framework\Sanitization\SafeHtmlSanitizerFactory;
+use MyEspacio\Framework\Sanitization\SafeHtmlSanitizerInterface;
 use MyEspacio\Photos\Application\PhotoSearch;
 use MyEspacio\Photos\Application\PhotoSearchInterface;
 use MyEspacio\Photos\Domain\Repository\PhotoAlbumRepositoryInterface;
@@ -57,6 +62,7 @@ use MyEspacio\User\Application\SendLoginCode;
 use MyEspacio\User\Application\SendLoginCodeInterface;
 use MyEspacio\User\Domain\UserRepositoryInterface;
 use MyEspacio\User\Infrastructure\MySql\UserRepository;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -68,7 +74,7 @@ $builder = new ContainerBuilder();
 // $builder->enableCompilation(ROOT_DIR . '/var/cache/php-di');
 
 $builder->addDefinitions([
-    // Core framework
+
     TemplateRendererFactoryInterface::class => DI\autowire(TwigTemplateRendererFactory::class),
     TranslatorFactoryInterface::class => DI\autowire(TranslatorFactory::class),
     TemplateDirectoryInterface::class => DI\create(TemplateDirectory::class)
@@ -110,6 +116,22 @@ $builder->addDefinitions([
     Connection::class => DI\factory(function (PdoConnectionFactory $factory) {
         return $factory->create();
     }),
+
+    SafeHtmlSanitizerFactory::class => DI\autowire(),
+    'sanitizer.contact' => DI\Factory(function (SafeHtmlSanitizerFactory $factory): HtmlSanitizer {
+        return $factory->createContactMeSanitizer();
+    }),
+    'sanitizer.comment' => DI\factory(function (SafeHtmlSanitizerFactory $factory): HtmlSanitizer {
+        return $factory->createCommentSanitizer();
+    }),
+    SafeHtmlSanitizerInterface::class => DI\factory(function ($c) {
+        return new SafeHtmlSanitizer(
+            $c->get('sanitizer.contact'),
+            $c->get('sanitizer.comment')
+        );
+    }),
+
+    ContactMeBuilderInterface::class => DI\autowire(ContactMeBuilder::class),
 ]);
 
 $container = $builder->build();

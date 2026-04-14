@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MyEspacio\Contact\Presentation;
 
 use MyEspacio\Common\Application\CaptchaInterface;
-use MyEspacio\Contact\Domain\ContactMeMessage;
+use MyEspacio\Contact\Application\ContactMeBuilderInterface;
 use MyEspacio\Framework\BaseController;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\Framework\Exceptions\InvalidEmailException;
@@ -26,7 +26,8 @@ final class ContactController extends BaseController
         private readonly RequestHandlerInterface $requestHandler,
         private readonly SessionInterface $session,
         private readonly EmailInterface $email,
-        private readonly CaptchaInterface $captcha
+        private readonly CaptchaInterface $captcha,
+        private readonly ContactMeBuilderInterface $contactMeBuilder,
     ) {
     }
 
@@ -58,7 +59,6 @@ final class ContactController extends BaseController
     public function sendMessage(Request $request): Response
     {
         $vars = new DataSet($request->request->all());
-
         $valid = $this->requestHandler->validate($request);
 
         if ($this->captcha->validate($vars->intNull('captcha1'), $vars->stringNull('captcha2')) === false) {
@@ -71,14 +71,7 @@ final class ContactController extends BaseController
         }
 
         try {
-            $emailMessage = new ContactMeMessage(
-                emailAddress: $vars->string('emailAddress'),
-                name: $vars->string('name'),
-                subject: $vars->string('subject'),
-                message: $vars->string('message'),
-                captchaIconId: $vars->intNull('captcha1'),
-                description: $vars->string('description')
-            );
+            $emailMessage = $this->contactMeBuilder->build($vars);
         } catch (InvalidEmailException $e) {
             return $this->requestHandler->sendResponse(
                 new ResponseData(

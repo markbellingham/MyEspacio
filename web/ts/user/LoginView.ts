@@ -78,7 +78,7 @@ export class LoginView {
 
     hidePhoneCodeRow()
     {
-        this.phoneCodeInput().closest("div")?.setAttribute("hidden", "");
+        this.phoneCodeInput().closest("[data-phone-code-row]")?.setAttribute("hidden", "");
     }
 
     bindLoginButtonClickHandler(handler: () => void)
