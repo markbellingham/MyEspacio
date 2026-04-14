@@ -37,6 +37,7 @@ describe("Login Controller", () => {
             hideModal: jest.fn(),
             getAvailableAuthProviders: jest.fn().mockReturnValue(["google", "github"]),
             getTask: jest.fn(),
+            isShownAsLoggedIn: jest.fn().mockReturnValue(false),
             showPhoneCodeRow: jest.fn(),
             hidePhoneCodeRow: jest.fn(),
             setLoggedInState: jest.fn(),
@@ -123,6 +124,27 @@ describe("Login Controller", () => {
         it("should show the modal when the login button is clicked", () => {
             loginButtonHandler();
             expect(mockView.showModal).toHaveBeenCalledTimes(1);
+            expect(mockHttpRequest.query).not.toHaveBeenCalled();
+        });
+
+        it("should logout when the login button is clicked and the user is logged in", async () => {
+            (mockView.isShownAsLoggedIn as jest.Mock).mockReturnValue(true);
+            (mockHttpRequest.query as jest.Mock).mockResolvedValue({
+                message: "Logged out successfully.",
+            });
+
+            loginButtonHandler();
+            await new Promise(resolve => setTimeout(resolve, 0));
+
+            expect(mockView.showModal).not.toHaveBeenCalled();
+            expect(mockHttpRequest.query).toHaveBeenCalledWith("/logout", {
+                method: "POST",
+                headers: {"Authorisation": "Bearer token"},
+            });
+            expect(mockNotify.success).toHaveBeenCalledWith("Logged out successfully.");
+            expect(mockView.setLoggedOutState).toHaveBeenCalled();
+            expect(authState.isLoggedIn()).toBe(false);
+            expect(mockView.hideModal).toHaveBeenCalled();
         });
     });
 

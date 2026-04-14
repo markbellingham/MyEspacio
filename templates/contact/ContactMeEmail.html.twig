@@ -1,0 +1,40 @@
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0; padding:0; width:100%; background-color:#f4f6f8;">
+    <tr>
+        <td align="center" style="padding:24px 12px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:720px; width:100%; background-color:#ffffff; border-collapse:collapse; border:1px solid #e5e7eb;">
+                <tr>
+                    <td style="padding:32px 24px; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:24px; color:#1f2937;">
+                        <h2 style="margin:0 0 16px 0; font-size:22px; line-height:28px;">New MyEspacio message</h2>
+
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 24px 0; border-collapse:collapse;">
+                            <tr>
+                                <td style="padding:6px 0; font-weight:bold; width:110px; vertical-align:top;">Name:</td>
+                                <td style="padding:6px 0; vertical-align:top;">{{ name|e }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:6px 0; font-weight:bold; width:110px; vertical-align:top;">Email:</td>
+                                <td style="padding:6px 0; vertical-align:top;">
+                                    <a href="mailto:{{ emailAddress|e('html_attr') }}" style="color:#2563eb; text-decoration:underline;">
+                                        {{ emailAddress|e }}
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:6px 0; font-weight:bold; width:110px; vertical-align:top;">Subject:</td>
+                                <td style="padding:6px 0; vertical-align:top;">{{ subject|e }}</td>
+                            </tr>
+                        </table>
+
+                        <div style="padding:16px; background-color:#f9fafb; border:1px solid #e5e7eb; border-radius:6px;">
+                            {{ message|raw }}
+                        </div>
+
+                        <p style="margin:24px 0 0 0; font-size:13px; line-height:20px; color:#6b7280;">
+                            Sent from the contact form on MyEspacio.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
