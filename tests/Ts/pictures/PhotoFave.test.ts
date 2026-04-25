@@ -34,6 +34,43 @@ describe("PhotoFave", () => {
             expect(addEventListenerSpy).toHaveBeenCalledWith("click", expect.any(Function));
             expect(addEventListenerSpy).toHaveBeenCalledWith("photoLoaded", expect.any(Function));
         });
+
+        it("should mark the loaded photo as faved on page load when logged out and locally faved", () => {
+            const heartButton = document.createElement("i");
+            heartButton.className = "photo-fave";
+            heartButton.dataset.uuid = "test-uuid-126";
+            photoContainer.appendChild(heartButton);
+
+            mockPersistence.isLoggedIn.mockReturnValue(false);
+            mockPersistence.isFaved.mockReturnValue(true);
+
+            new PhotoFave(photoContainer, mockPersistence);
+
+            expect(mockPersistence.isFaved).toHaveBeenCalledWith("test-uuid-126");
+            expect(heartButton.classList.contains("faved")).toBe(true);
+        });
+
+        it("should not mark the loaded photo on page load when logged in", () => {
+            const heartButton = document.createElement("i");
+            heartButton.className = "photo-fave";
+            heartButton.dataset.uuid = "test-uuid-127";
+            photoContainer.appendChild(heartButton);
+
+            mockPersistence.isLoggedIn.mockReturnValue(true);
+            mockPersistence.isFaved.mockReturnValue(true);
+
+            new PhotoFave(photoContainer, mockPersistence);
+
+            expect(mockPersistence.isFaved).not.toHaveBeenCalled();
+            expect(heartButton.classList.contains("faved")).toBe(false);
+        });
+
+        it("should not throw on page load when no heart button exists", () => {
+            mockPersistence.isLoggedIn.mockReturnValue(false);
+
+            expect(() => new PhotoFave(photoContainer, mockPersistence)).not.toThrow();
+            expect(mockPersistence.isFaved).not.toHaveBeenCalled();
+        });
     });
 
     describe("photo loaded event", () => {
@@ -139,7 +176,6 @@ describe("PhotoFave", () => {
             Object.defineProperty(event, "target", {value: document.createElement("div")});
 
             expect(() => photoContainer.dispatchEvent(event)).not.toThrow();
-            expect(mockPersistence.isLoggedIn).not.toHaveBeenCalled();
             expect(mockPersistence.isFaved).not.toHaveBeenCalled();
         });
     });

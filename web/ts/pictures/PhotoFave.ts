@@ -11,6 +11,7 @@ export class PhotoFave
         private persistence: PhotoFavePersistence
     ) {
         this.events();
+        this.applyPersistedFaveState();
     }
 
     private events(): void
@@ -19,9 +20,9 @@ export class PhotoFave
         this.photoContainer?.addEventListener("click", this.photoFaveClickHandler.bind(this));
     }
 
-    private handlePhotoLoaded(event: Event): void
+    private handlePhotoLoaded(): void
     {
-        this.heartButton = this.getHearButtonFromLoadedPhoto(event);
+        this.heartButton = this.getHearButtonFromLoadedPhoto();
         if (this.heartButton === null) {
             return;
         }
@@ -29,6 +30,19 @@ export class PhotoFave
         if (! this.persistence.isLoggedIn()) {
             this.toggleFaved(this.persistence.isFaved(this.heartButton.dataset.uuid || ""));
         }
+    }
+
+    private applyPersistedFaveState(): void
+    {
+        if (this.persistence.isLoggedIn()) {
+            return;
+        }
+        this.heartButton = this.getHearButtonFromLoadedPhoto();
+
+        if (this.heartButton == null) {
+            return;
+        }
+        this.toggleFaved(this.persistence.isFaved(this.heartButton.dataset.uuid || ""));
     }
 
     private photoFaveClickHandler(event: Event): void
@@ -75,9 +89,9 @@ export class PhotoFave
         return heart as HTMLElement;
     }
 
-    private getHearButtonFromLoadedPhoto(event: Event): HTMLElement | null
+    private getHearButtonFromLoadedPhoto(): HTMLElement | null
     {
-        const heart = (event.target as HTMLElement)?.querySelector(".photo-fave");
+        const heart = this.photoContainer?.querySelector(".photo-fave");
         if (!heart) {
             return null;
         }
