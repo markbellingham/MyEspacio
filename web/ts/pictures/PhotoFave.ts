@@ -21,12 +21,19 @@ export class PhotoFave
 
     private handlePhotoLoaded(event: Event): void
     {
-        this.heartButton = this.getHeartButtonFromDom(event);
+        this.heartButton = this.getHearButtonFromLoadedPhoto(event);
+        if (this.heartButton === null) {
+            return;
+        }
+
+        if (! this.persistence.isLoggedIn()) {
+            this.toggleFaved(this.persistence.isFaved(this.heartButton.dataset.uuid || ""));
+        }
     }
 
     private photoFaveClickHandler(event: Event): void
     {
-        this.heartButton = this.getHeartButtonFromDom(event);
+        this.heartButton = this.getHeartButtonFromClick(event);
         if (this.heartButton === null) {
             return;
         }
@@ -59,9 +66,18 @@ export class PhotoFave
         }, 500);
     }
 
-    private getHeartButtonFromDom(event: Event): HTMLElement | null
+    private getHeartButtonFromClick(event: Event): HTMLElement | null
     {
         const heart = (event.target as HTMLElement)?.closest(".photo-fave");
+        if (!heart) {
+            return null;
+        }
+        return heart as HTMLElement;
+    }
+
+    private getHearButtonFromLoadedPhoto(event: Event): HTMLElement | null
+    {
+        const heart = (event.target as HTMLElement)?.querySelector(".photo-fave");
         if (!heart) {
             return null;
         }
