@@ -3,6 +3,8 @@
 # Dependency directories
 node_modules/
 vendor
+coverage
+public/resources/
 
 # PHPStorm directory
 .idea

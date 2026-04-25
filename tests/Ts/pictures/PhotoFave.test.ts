@@ -8,7 +8,9 @@ describe("PhotoFave", () => {
     beforeEach(() => {
         photoContainer = document.createElement("div");
         mockPersistence = {
-            save: jest.fn().mockResolvedValue(undefined)
+            save: jest.fn().mockResolvedValue(undefined),
+            isLoggedIn: jest.fn().mockReturnValue(true),
+            isFaved: jest.fn().mockReturnValue(false),
         } as unknown as jest.Mocked<PhotoFavePersistence>;
 
         jest.useFakeTimers();
@@ -55,22 +57,104 @@ describe("PhotoFave", () => {
             expect(heartButton.classList.contains("faved")).toBe(true);
         });
 
+        it("should apply local fave state when the user is logged out", () => {
+            const photoElement = document.createElement("div");
+            const heartButton = document.createElement("i");
+            heartButton.className = "photo-fave";
+            heartButton.dataset.uuid = "test-uuid-123";
+            photoElement.appendChild(heartButton);
+            photoContainer.appendChild(photoElement);
+
+            mockPersistence.isLoggedIn.mockReturnValue(false);
+            mockPersistence.isFaved.mockReturnValue(true);
+
+            new PhotoFave(photoContainer, mockPersistence);
+
+            const event = new CustomEvent("photoLoaded", {
+                bubbles: true,
+                detail: {},
+            });
+            Object.defineProperty(event, "target", {value: photoElement, enumerable: true});
+
+            photoContainer.dispatchEvent(event);
+
+            expect(mockPersistence.isFaved).toHaveBeenCalledWith("test-uuid-123");
+            expect(heartButton.classList.contains("faved")).toBe(true);
+        });
+
+        it("should not apply local fave state when the user is logged in", () => {
+            const photoElement = document.createElement("div");
+            const heartButton = document.createElement("i");
+            heartButton.className = "photo-fave";
+            heartButton.dataset.uuid = "test-uuid-124";
+            photoElement.appendChild(heartButton);
+            photoContainer.appendChild(photoElement);
+
+            mockPersistence.isLoggedIn.mockReturnValue(true);
+            mockPersistence.isFaved.mockReturnValue(true);
+
+            new PhotoFave(photoContainer, mockPersistence);
+
+            const event = new CustomEvent("photoLoaded", {
+                bubbles: true,
+                detail: {},
+            });
+            Object.defineProperty(event, "target", {value: photoElement, enumerable: true});
+
+            photoContainer.dispatchEvent(event);
+
+            expect(mockPersistence.isFaved).not.toHaveBeenCalledWith("test-uuid-124");
+            expect(heartButton.classList.contains("faved")).toBe(false);
+        });
+
+        it("should remove faved class from loaded photo when logged out and local state is not faved", () => {
+            const photoElement = document.createElement("div");
+            const heartButton = document.createElement("i");
+            heartButton.className = "photo-fave faved";
+            heartButton.dataset.uuid = "test-uuid-125";
+            photoElement.appendChild(heartButton);
+            photoContainer.appendChild(photoElement);
+
+            mockPersistence.isLoggedIn.mockReturnValue(false);
+            mockPersistence.isFaved.mockReturnValue(false);
+
+            new PhotoFave(photoContainer, mockPersistence);
+
+            const event = new CustomEvent("photoLoaded", {
+                bubbles: true,
+                detail: {},
+            });
+            Object.defineProperty(event, "target", {value: photoElement, enumerable: true});
+
+            photoContainer.dispatchEvent(event);
+
+            expect(mockPersistence.isFaved).toHaveBeenCalledWith("test-uuid-125");
+            expect(heartButton.classList.contains("faved")).toBe(false);
+        });
+
         it("should not throw when photoLoaded target is invalid", () => {
+            new PhotoFave(photoContainer, mockPersistence);
+
             const event = new CustomEvent("photoLoaded", {bubbles: true});
             Object.defineProperty(event, "target", {value: document.createElement("div")});
 
             expect(() => photoContainer.dispatchEvent(event)).not.toThrow();
+            expect(mockPersistence.isLoggedIn).not.toHaveBeenCalled();
+            expect(mockPersistence.isFaved).not.toHaveBeenCalled();
         });
     });
 
     describe("click handling", () => {
+        let photoElement: HTMLElement;
         let heartButton: HTMLElement;
 
         beforeEach(() => {
+            photoElement = document.createElement("div");
             heartButton = document.createElement("i");
             heartButton.className = "photo-fave";
             heartButton.dataset.uuid = "test-uuid-123";
             photoContainer.appendChild(heartButton);
+            photoContainer.appendChild(photoElement);
 
             new PhotoFave(photoContainer, mockPersistence);
         });

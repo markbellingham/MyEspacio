@@ -51,10 +51,14 @@ export class PhotoFavePersistence implements PhotoFavePersistenceInterface
         }
 
         return this.saveRemote(photoUuid, faved, signal);
-
     }
 
-    private saveLocal(faves: Set<string>)
+    isLoggedIn(): boolean
+    {
+        return this.authState.isLoggedIn();
+    }
+
+    private saveLocal(faves: Set<string>): void
     {
         window.localStorage.setItem(this.STORAGE_KEY, JSON.stringify(Array.from(faves)));
     }

@@ -97,6 +97,14 @@ describe("PhotoFavePersistence", () => {
         expect(mockHttpRequest.query).not.toHaveBeenCalled();
     });
 
+    it("should return logged in status from auth state", async () => {
+        (authState.isLoggedIn as jest.Mock).mockReturnValue(true);
+        expect(persistence.isLoggedIn()).toBe(true);
+
+        (authState.isLoggedIn as jest.Mock).mockReturnValue(false);
+        expect(persistence.isLoggedIn()).toBe(false);
+    });
+
     it("should ignore AbortError from remote request", async () => {
         const abortError = new Error("Abort");
         abortError.name = "AbortError";
