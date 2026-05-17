@@ -40,7 +40,7 @@
 #photo-view {
     flex: 0;
     display: none;
-    padding: 10px;
+    padding-top: 10px;
     flex-direction: column;
     box-sizing: border-box;
 }
@@ -117,4 +117,29 @@ i.bi-heart-fill {
 }
 .faved {
     color: red;
+}
+
+/* Large-photo: ensure portrait images are fully visible and centered */
+#large-photo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;          /* prevent overflow if any rounding / borders */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* img behaviour:
+   - never exceed container width
+   - never exceed viewport height (adjust the offset if you have a very large header)
+   - keep aspect ratio and show whole image (contain)
+*/
+#large-photo img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(100vh - 60px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
 }

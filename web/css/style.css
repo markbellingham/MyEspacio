@@ -1,8 +1,12 @@
+/* -------------------------
+   Layout helpers
+   ------------------------- */
 [class*="col-"] {
     float: left;
     padding: 15px;
 }
 
+/* small btn helper (kept for compatibility) */
 .btn-group-xs > .btn, .btn-xs {
     padding: .25rem .4rem;
     font-size: .875rem;
@@ -10,30 +14,13 @@
     border-radius: .2rem;
 }
 
+/* -------------------------
+   Base / global
+   ------------------------- */
 html {
     font-family: "Lucida Sans", sans-serif;
     max-width: 100%;
     overflow-x: hidden;
-}
-
-/*--------------------------
-Sidebar navigation styles
- --------------------------*/
-
-.nav {
-    background-color: #DAE0E5;
-    padding: 5px 0 5px 0;
-    height: 100%;
-}
-
-.nav-link {
-    padding: 15px;
-    font-size: 1.8em;
-}
-
-.nav-link.active {
-    background-color: white;
-    margin-left: 10px;
 }
 
 body {
@@ -41,6 +28,9 @@ body {
     font-family: Arial, sans-serif;
 }
 
+/* -------------------------
+   Utility / components
+   ------------------------- */
 .tab-pane {
     height: 90vh;
     overflow-y: auto;
@@ -48,21 +38,219 @@ body {
     overflow-x: hidden;
 }
 
-.ck-editor__editable_inline {
-    min-height: 300px;
-}
+.ck-editor__editable_inline { min-height: 300px; }
 
-.disabled {
-    cursor: not-allowed;
-}
+.disabled { cursor: not-allowed; }
 
-.modal {
-    display: none;
-}
+.modal { display: none; }
 .modal.active {
     display: block;
     z-index: 10000;
 }
-.oauth-button {
-    font-size: 1.5em;
+
+/* -------------------------
+   Centered wrapper and page layout
+   ------------------------- */
+:root {
+    --site-max-width: 1440px; /* adjust to taste */
+    --side-padding: 24px;
+    --nav-gap: 18px;
+    --menu-font-size: 1.8em;  /* "vertical" menu look */
+}
+
+.centered-wrapper {
+    max-width: var(--site-max-width);
+    margin: 20px auto;
+    padding: 0 var(--side-padding) 28px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+/* -------------------------
+   Horizontal nav layout
+   ------------------------- */
+.nav {
+    background-color: #DAE0E5;
+    padding: 5px 0;
+}
+
+.nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 0;
+}
+
+/* main nav list (horizontal) */
+#main-nav {
+    display: flex;
+    gap: var(--nav-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    align-items: center;
+}
+
+/* menu link baseline appearance (restores vertical-menu look) */
+#main-nav .nav-link,
+.login-link {
+    display: inline-block;
+    font-size: var(--menu-font-size);
+    padding: 15px;
+    line-height: 1;
+    font-weight: 400;
+    color: #222;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+/* mouse / keyboard affordances for nav links */
+#main-nav .nav-link:hover,
+#main-nav .nav-link:focus {
+    background-color: rgba(0,0,0,0.04);
+    color: #000;
+}
+
+/* active state - keeps the margin-left offset motif similar to original vertical menu */
+#main-nav .nav-link.active {
+    background-color: #fff;
+    margin-left: 10px;
+    color: #000;
+}
+
+/* small icon spacing inside nav links */
+#main-nav .nav-link i.bi,
+.login-link i.bi {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* -------------------------
+   Login control visually matching menu size but filled blue
+   ------------------------- */
+.login-link {
+    /* defaults set above; override color/background to blue filled */
+    color: #ffffff;
+    background-color: #0d6efd; /* Bootstrap primary blue */
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    box-shadow: none;
+    transition: background-color .12s ease, box-shadow .12s ease, transform .06s ease;
+}
+
+/* Hover / active / focus for login */
+.login-link:hover,
+.login-link:active {
+    background-color: #0a58ca;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.login-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+}
+
+/* If the login control remains rendered as a Bootstrap .btn, ensure visuals are overridden */
+.nav-right .btn.login-link,
+.nav-right button.login-link {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 15px !important;
+    font-size: var(--menu-font-size) !important;
+    border-radius: 6px !important;
+}
+
+/* keep the nav-right compact and aligned */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* -------------------------
+   Page content area inside the wrapper
+   ------------------------- */
+#content-area {
+    margin-top: 14px;
+    padding-bottom: 8px;
+}
+
+/* -------------------------
+   Responsive behaviour
+   ------------------------- */
+@media (max-width: 992px) {
+    :root { --site-max-width: 860px; }
+}
+
+@media (max-width: 768px) {
+    /* reduce padding so wrapper fits narrower screens */
+    .centered-wrapper { padding-left: 12px; padding-right: 12px; }
+
+    /* stack nav row vertically */
+    .nav-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    #main-nav {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* reduce menu text size a bit for mobile */
+    #main-nav .nav-link,
+    .login-link {
+        font-size: 1.2em;
+        padding: 10px 12px;
+        text-align: center;
+    }
+
+    /* avoid large margin-left shift on active link in small viewports */
+    #main-nav .nav-link.active { margin-left: 6px; }
+}
+
+/* Fix: keep all elements inside .centered-wrapper aligned to its edges */
+
+/* Neutralise Bootstrap .row negative gutters inside the centered wrapper */
+.centered-wrapper .row {
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+}
+
+/* Ensure the photo search row doesn't extend past the wrapper */
+.centered-wrapper #photo-search-bar {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Make column padding inside the wrapper consistent (smaller than global col padding) */
+.centered-wrapper [class*="col-"] {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+/* Photos container / grid safety: prevent horizontal overflow */
+.centered-wrapper .photos-container,
+.centered-wrapper #photo-grid {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Ensure individual images cannot cause overflow */
+.centered-wrapper img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
 }
