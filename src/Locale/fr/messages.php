@@ -24,7 +24,8 @@ return [
         'invalid_uuid' => "La photo n'existe pas.",
         'not_found' => "La photo n'existe pas.",
         'fave_saved' => '%{photo_title} a été enregistrée comme favori.',
-        'fave_text' => 'Cliquez pour enregistrer cette photo comme favori',
+        'fave_text' => 'Ajouter aux favoris',
         'fave_removed' => '%{photo_title} a été retirée de vos favoris.',
+        'share_text' => 'Partager cette photo'
     ],
 ];

@@ -89,6 +89,8 @@ final class PhotoController extends BaseController
 
         $data = [
             'albumName' => $albumName,
+            'contextUrl' => $request->getSchemeAndHttpHost() . $request->getRequestUri(),
+            'directUrl' => $request->getSchemeAndHttpHost() . '/photo/' . $uuid,
             'photo' => $this->photoRepository->fetchByUuid($uuid),
         ];
         if ($data['photo'] === null) {

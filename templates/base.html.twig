@@ -2,28 +2,38 @@
 <body>
 <ul class="notifications"></ul>
 <div id="container" class="row">
-    <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8"></div>
-        <div class="col-md-2" id="user-login-controls">
-            {{ include('common/login-button.html.twig', [user]) }}
-            {{ include('common/login-modal.html.twig') }}
-        </div>
-    </div>
+
+    {{ include('common/login-modal.html.twig') }}
 
     <div id="main-page" class="row">
         <input type="hidden" name="layout" id="layout-token" value="{{ get_token('layout') }}">
-        <div class="col-md-2">
-            <ul class="nav flex-column" id="main-nav">
-                <li class="nav-item"><a href="/home" class="nav-link"><i class="bi bi-house"></i> Home</a></li>
-                <li class="nav-item"><a href="/photos" class="nav-link"><i class="bi bi-camera"></i> Photos</a></li>
-                <li class="nav-item"><a href="/contact" class="nav-link"><i class="bi bi-chat-text"></i> Contact</a></li>
-            </ul>
+
+        <div class="col-12">
+            <div class="centered-wrapper">
+
+                <nav id="main-nav-wrapper" aria-label="Main navigation">
+                    <div class="nav-row">
+
+                        <ul class="nav nav-left" id="main-nav">
+                            <li class="nav-item"><a href="/home" class="nav-link"><i class="bi bi-house"></i> Home</a></li>
+                            <li class="nav-item"><a href="/photos" class="nav-link"><i class="bi bi-camera"></i> Photos</a></li>
+                            <li class="nav-item"><a href="/contact" class="nav-link"><i class="bi bi-chat-text"></i> Contact</a></li>
+                        </ul>
+
+                        <div class="nav-right">
+                            {{ include('common/login-button.html.twig', [user]) }}
+                        </div>
+
+                    </div>
+                </nav>
+
+                <div id="content-area">
+                    {% block page_content %}{% endblock %}
+                </div>
+
+            </div>
         </div>
 
-        <div class="col-md-10">
-            {% block page_content %}{% endblock %}
-        </div>
     </div>
 </div>
 
