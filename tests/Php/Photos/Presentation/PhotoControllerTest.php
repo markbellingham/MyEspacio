@@ -33,11 +33,11 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class PhotoControllerTest extends TestCase
 {
-//    private const array SERVER = [
-//        'HTTP_HOST' => 'localhost.tld',
-//        'HTTPS' => 'on',
-//        'SERVER_PORT' => 443,
-//    ];
+    private const array SERVER = [
+        'HTTP_HOST' => 'localhost.tld',
+        'HTTPS' => 'on',
+        'SERVER_PORT' => 443,
+    ];
     private const array JSON_SERVER = [
         'HTTP_HOST' => 'localhost.tld',
         'HTTPS' => 'on',
@@ -606,10 +606,7 @@ final class PhotoControllerTest extends TestCase
                 'searchResults' => new PhotoCollection([]),
                 'request' => Request::create(
                     uri: 'https://localhost.tld/photos/all/photo/d0bc8050-7f58-4825-b079-87a14aa5e633',
-                    server: [
-                        'HTTP_HOST' => 'localhost.tld',
-                        'REQUEST_SCHEME' => 'https',
-                    ],
+                    server: self::SERVER,
                 ),
                 'pathParams' => new DataSet([
                     'album' => null,
@@ -638,10 +635,7 @@ final class PhotoControllerTest extends TestCase
                 'searchResults' => new PhotoCollection([]),
                 'request' => Request::create(
                     uri: 'https://localhost.tld/photos/all/photo/921b69d5-5e51-4030-9452-07fbd7dcffeb',
-                    server: [
-                        'HTTP_HOST' => 'localhost.tld',
-                        'REQUEST_SCHEME' => 'https',
-                    ],
+                    server: self::SERVER,
                 ),
                 'pathParams' => new DataSet([
                     'album' => null,
@@ -676,10 +670,7 @@ final class PhotoControllerTest extends TestCase
                 'searchResults' => self::createPhotoAlbum(id: 1),
                 'request' => Request::create(
                     uri: 'https://localhost.tld/photos/all/photo/cf59497a-f8f6-4407-b80d-f3421ca7a420',
-                    server: [
-                        'HTTP_HOST' => 'localhost.tld',
-                        'REQUEST_SCHEME' => 'https',
-                    ],
+                    server: self::SERVER,
                 ),
                 'pathParams' => new DataSet([
                     'album' => 'tulum',
@@ -754,7 +745,7 @@ final class PhotoControllerTest extends TestCase
             'invalid_uuid_json' => [
                 'request' => Request::create(
                     uri: '',
-                    server: ['HTTP_ACCEPT' => 'application/json']
+                    server: self::JSON_SERVER
                 ),
                 'pathParams' => new DataSet(['uuid' => 'bad_uuid']),
                 'responseData' => new ResponseData(
@@ -777,11 +768,7 @@ final class PhotoControllerTest extends TestCase
             'photo_not_found_json' => [
                 'request' => Request::create(
                     uri: 'https://localhost.tld/photos/all/photo/f613bc97-543f-442d-b87f-55c39abcba9d',
-                    server: [
-                        'HTTP_ACCEPT' => 'application/json',
-                        'HTTP_HOST' => 'localhost.tld',
-                        'REQUEST_SCHEME' => 'https',
-                    ],
+                    server: self::JSON_SERVER,
                 ),
                 'pathParams' => new DataSet(['uuid' => 'f613bc97-543f-442d-b87f-55c39abcba9d']),
                 'responseData' => new ResponseData(
@@ -800,10 +787,7 @@ final class PhotoControllerTest extends TestCase
             'photo_not_found_html' => [
                 'request' => Request::create(
                     uri: 'https://localhost.tld/photos/all/photo/f613bc97-543f-442d-b87f-55c39abcba9d',
-                    server: [
-                        'HTTP_HOST' => 'localhost.tld',
-                        'REQUEST_SCHEME' => 'https',
-                    ],
+                    server: self::SERVER,
                 ),
                 'pathParams' => new DataSet(['uuid' => 'f613bc97-543f-442d-b87f-55c39abcba9d']),
                 'responseData' => new ResponseData(
