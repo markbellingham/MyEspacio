@@ -5,12 +5,38 @@
 </div>
 <div class="photo-details">
     <div class="row">
-        <div class="col-11">
+        <div class="col-10">
             <h2 class="text-primary">{{ photo.title }}</h2>
             <h4 class="text-dark-emphasis">{{ photo.town }}, {{ photo.country.name }}</h4>
         </div>
-        <div class="col-1 fave-wrapper">
-            <i class="bi bi-heart-fill photo-fave {% if isUserFave %}faved{% endif %}" data-toggle="tooltip" title="{{ trans('photos.fave_text') }}" data-uuid="{{ photo.uuid }}"></i>
+        <div class="col-2 text-end">
+            <div class="photo-share-wrapper d-inline-block position-relative">
+                    <i class="bi bi-link-45deg photo-action-button photo-share-toggle"
+                       aria-haspopup="true"
+                       aria-expanded="false"
+                       title="{{ trans('photos.share_text') }}"></i>
+
+                <div class="photo-share-popup text-start" role="menu" aria-hidden="true">
+                    <label for="photo-direct-link">Direct link</label>
+                    <div class="input-group input-group-sm">
+                        <input id="photo-direct-link" type="text" value="{{ directUrl }}" readonly class="form-control">
+                        <button class="btn btn-outline-secondary photo-share-copy-button" title="Copy">
+                            <i class="bi bi-copy"></i>
+                        </button>
+                    </div>
+                    <label for="photo-context-link">Context link</label>
+                    <div class="input-group input-group-sm">
+                        <input id="photo-context-link" type="text" value="{{ contextUrl }}" readonly class="form-control">
+                        <button class="btn btn-outline-secondary photo-share-copy-button" title="Copy">
+                            <i class="bi bi-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <i class="bi bi-heart-fill photo-action-button photo-fave {% if isUserFave %}faved{% endif %}"
+               data-toggle="tooltip"
+               title="{{ trans('photos.fave_text') }}"
+               data-uuid="{{ photo.uuid }}"></i>
             {% if(photo.faveCount > 0) %}
                 {{ photo.faveCount }}
             {% endif %}

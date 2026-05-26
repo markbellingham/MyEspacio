@@ -1,4 +1,3 @@
-/* Large Photo */
 #large-photo {
     width: 100%;
     overflow: hidden;
@@ -19,14 +18,12 @@
     word-wrap: break-word;
 }
 
-/* Photo Container */
 #photo-container {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-/* Photo Grid */
 #photo-grid {
     flex: 1;
     column-gap: 10px;
@@ -36,7 +33,6 @@
     width: 100%;
 }
 
-/* Photo View */
 #photo-view {
     flex: 0;
     display: none;
@@ -56,13 +52,11 @@
     display: block;
 }
 
-/* Photos Container */
 .photos-container {
     display: flex;
     width: 100%;
 }
 
-/* Grid Items */
 .grid-item {
     break-inside: avoid;
     margin-bottom: 10px;
@@ -86,7 +80,6 @@
     opacity: 1;
 }
 
-/* Image Overlay */
 .img-overlay {
     background-color: rgba(0, 0, 0, 0.4);
     border-radius: 0 0 5px 5px;
@@ -102,38 +95,30 @@
     z-index: 1;
 }
 
-/* Photo View Header */
 .photo-view-header {
     margin-bottom: 10px;
     width: 100%;
 }
 
-.fave-wrapper {
+.photo-action-button {
     font-size: 2.5em;
+    cursor: pointer;
+    position: relative;
 }
 
-i.bi-heart-fill {
-    cursor: pointer;
-}
 .faved {
     color: red;
 }
 
-/* Large-photo: ensure portrait images are fully visible and centered */
 #large-photo {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;          /* prevent overflow if any rounding / borders */
+    overflow: hidden;
     width: 100%;
     box-sizing: border-box;
 }
 
-/* img behaviour:
-   - never exceed container width
-   - never exceed viewport height (adjust the offset if you have a very large header)
-   - keep aspect ratio and show whole image (contain)
-*/
 #large-photo img {
     display: block;
     max-width: 100%;
@@ -143,3 +128,20 @@ i.bi-heart-fill {
     object-fit: contain;
     margin: 0 auto;
 }
+
+.photo-share-wrapper { display: inline-block; }
+.photo-share-popup {
+    display: none;
+    position: absolute;
+    top: -30%;
+    right: 50px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.08);
+    box-shadow: 0 6px 12px rgba(0,0,0,.08);
+    border-radius: .25rem;
+    padding: .5rem;
+    min-width: 450px;
+    z-index: 10000;
+}
+.photo-share-popup button { text-align: left; }
+.photo-share-popup.visible { display: block; }

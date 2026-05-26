@@ -33,6 +33,18 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class PhotoControllerTest extends TestCase
 {
+//    private const array SERVER = [
+//        'HTTP_HOST' => 'localhost.tld',
+//        'HTTPS' => 'on',
+//        'SERVER_PORT' => 443,
+//    ];
+    private const array JSON_SERVER = [
+        'HTTP_HOST' => 'localhost.tld',
+        'HTTPS' => 'on',
+        'SERVER_PORT' => 443,
+        'HTTP_ACCEPT' => 'application/json',
+    ];
+
     #[DataProvider('photoGridDataOnlyDataProvider')]
     public function testPhotoGridDataOnly(
         ?string $albumName,
@@ -460,19 +472,17 @@ final class PhotoControllerTest extends TestCase
             'photo_only' => [
                 'uuid' => 'd24024ea-bce2-4d3a-bfa1-3959d5d9d5ce',
                 'photo' => self::createPhoto(id: 1),
-                'request' => new Request(
-                    [],
-                    [],
-                    [],
-                    [],
-                    [],
-                    ['HTTP_ACCEPT' => 'application/json'],
+                'request' => Request::create(
+                    uri: 'https://localhost.tld/photos/all/photo/d24024ea-bce2-4d3a-bfa1-3959d5d9d5ce',
+                    server: self::JSON_SERVER,
                 ),
                 'pathParams' => new DataSet(['uuid' => 'd24024ea-bce2-4d3a-bfa1-3959d5d9d5ce']),
                 'responseData' => new ResponseData(
                     data: [
                         'albumName' => null,
                         'comments' => new PhotoCommentCollection([]),
+                        'contextUrl' => 'https://localhost.tld/photos/all/photo/d24024ea-bce2-4d3a-bfa1-3959d5d9d5ce',
+                        'directUrl' => 'https://localhost.tld/photo/d24024ea-bce2-4d3a-bfa1-3959d5d9d5ce',
                         'photo' => self::createPhoto(id: 1),
                     ],
                     template: 'photos/partials/single-photo.html.twig',
@@ -481,13 +491,9 @@ final class PhotoControllerTest extends TestCase
             'album_context' => [
                 'uuid' => 'd24024ea-bce2-4d3a-bfa1-3959d5d9d5ce',
                 'photo' => self::createPhoto(id: 1),
-                'request' => new Request(
-                    [],
-                    [],
-                    [],
-                    [],
-                    [],
-                    ['HTTP_ACCEPT' => 'application/json'],
+                'request' => Request::create(
+                    uri: 'https://localhost.tld/photos/all/photo/d24024ea-bce2-4d3a-bfa1-3959d5d9d5ce',
+                    server: self::JSON_SERVER,
                 ),
                 'pathParams' => new DataSet([
                     'album' => 'tulum',
@@ -497,6 +503,8 @@ final class PhotoControllerTest extends TestCase
                     data: [
                         'albumName' => 'tulum',
                         'comments' => new PhotoCommentCollection([]),
+                        'contextUrl' => 'https://localhost.tld/photos/all/photo/d24024ea-bce2-4d3a-bfa1-3959d5d9d5ce',
+                        'directUrl' => 'https://localhost.tld/photo/d24024ea-bce2-4d3a-bfa1-3959d5d9d5ce',
                         'photo' => self::createPhoto(id: 1),
                     ],
                     template: 'photos/partials/single-photo.html.twig',
@@ -596,7 +604,13 @@ final class PhotoControllerTest extends TestCase
                 'user' => self::createUser(),
                 'isUserFave' => true,
                 'searchResults' => new PhotoCollection([]),
-                'request' => new Request(),
+                'request' => Request::create(
+                    uri: 'https://localhost.tld/photos/all/photo/d0bc8050-7f58-4825-b079-87a14aa5e633',
+                    server: [
+                        'HTTP_HOST' => 'localhost.tld',
+                        'REQUEST_SCHEME' => 'https',
+                    ],
+                ),
                 'pathParams' => new DataSet([
                     'album' => null,
                     'uuid' => 'd0bc8050-7f58-4825-b079-87a14aa5e633',
@@ -605,6 +619,8 @@ final class PhotoControllerTest extends TestCase
                     data: [
                         'albumName' => null,
                         'comments' => new PhotoCommentCollection([]),
+                        'contextUrl' => 'https://localhost.tld/photos/all/photo/d0bc8050-7f58-4825-b079-87a14aa5e633',
+                        'directUrl' => 'https://localhost.tld/photo/d0bc8050-7f58-4825-b079-87a14aa5e633',
                         'photo' => self::createPhoto(id: 1),
                     ],
                     template: 'photos/partials/single-photo.html.twig',
@@ -620,7 +636,13 @@ final class PhotoControllerTest extends TestCase
                 'user' => self::createUser(),
                 'isUserFave' => true,
                 'searchResults' => new PhotoCollection([]),
-                'request' => new Request(),
+                'request' => Request::create(
+                    uri: 'https://localhost.tld/photos/all/photo/921b69d5-5e51-4030-9452-07fbd7dcffeb',
+                    server: [
+                        'HTTP_HOST' => 'localhost.tld',
+                        'REQUEST_SCHEME' => 'https',
+                    ],
+                ),
                 'pathParams' => new DataSet([
                     'album' => null,
                     'uuid' => '921b69d5-5e51-4030-9452-07fbd7dcffeb',
@@ -630,6 +652,8 @@ final class PhotoControllerTest extends TestCase
                         'albums' => new PhotoAlbumCollection([]),
                         'albumName' => null,
                         'comments' => new PhotoCommentCollection([]),
+                        'contextUrl' => 'https://localhost.tld/photos/all/photo/921b69d5-5e51-4030-9452-07fbd7dcffeb',
+                        'directUrl' => 'https://localhost.tld/photo/921b69d5-5e51-4030-9452-07fbd7dcffeb',
                         'faveText' => 'photo.fave_text',
                         'isUserFave' => true,
                         'photo' => self::createPhoto(id: 1),
@@ -650,7 +674,13 @@ final class PhotoControllerTest extends TestCase
                 'user' => UserRepository::getAnonymousUser(),
                 'isUserFave' => false,
                 'searchResults' => self::createPhotoAlbum(id: 1),
-                'request' => new Request(),
+                'request' => Request::create(
+                    uri: 'https://localhost.tld/photos/all/photo/cf59497a-f8f6-4407-b80d-f3421ca7a420',
+                    server: [
+                        'HTTP_HOST' => 'localhost.tld',
+                        'REQUEST_SCHEME' => 'https',
+                    ],
+                ),
                 'pathParams' => new DataSet([
                     'album' => 'tulum',
                     'uuid' => 'cf59497a-f8f6-4407-b80d-f3421ca7a420',
@@ -660,6 +690,8 @@ final class PhotoControllerTest extends TestCase
                         'albums' => new PhotoAlbumCollection([]),
                         'albumName' => 'tulum',
                         'comments' => new PhotoCommentCollection([]),
+                        'contextUrl' => 'https://localhost.tld/photos/all/photo/cf59497a-f8f6-4407-b80d-f3421ca7a420',
+                        'directUrl' => 'https://localhost.tld/photo/cf59497a-f8f6-4407-b80d-f3421ca7a420',
                         'faveText' => 'photo.fave_text',
                         'isUserFave' => false,
                         'photo' => self::createPhoto(id: 1),
@@ -720,7 +752,10 @@ final class PhotoControllerTest extends TestCase
     {
         return [
             'invalid_uuid_json' => [
-                'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
+                'request' => Request::create(
+                    uri: '',
+                    server: ['HTTP_ACCEPT' => 'application/json']
+                ),
                 'pathParams' => new DataSet(['uuid' => 'bad_uuid']),
                 'responseData' => new ResponseData(
                     statusCode: Response::HTTP_BAD_REQUEST,
@@ -730,7 +765,7 @@ final class PhotoControllerTest extends TestCase
                 'valid' => true,
             ],
             'invalid_uuid_html' => [
-                'request' => new Request(),
+                'request' => Request::create(''),
                 'pathParams' => new DataSet(['uuid' => 'bad_uuid']),
                 'responseData' => new ResponseData(
                     statusCode: Response::HTTP_BAD_REQUEST,
@@ -740,11 +775,20 @@ final class PhotoControllerTest extends TestCase
                 'valid' => false,
             ],
             'photo_not_found_json' => [
-                'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
+                'request' => Request::create(
+                    uri: 'https://localhost.tld/photos/all/photo/f613bc97-543f-442d-b87f-55c39abcba9d',
+                    server: [
+                        'HTTP_ACCEPT' => 'application/json',
+                        'HTTP_HOST' => 'localhost.tld',
+                        'REQUEST_SCHEME' => 'https',
+                    ],
+                ),
                 'pathParams' => new DataSet(['uuid' => 'f613bc97-543f-442d-b87f-55c39abcba9d']),
                 'responseData' => new ResponseData(
                     data: [
                         'albumName' => null,
+                        'contextUrl' => 'https://localhost.tld/photos/all/photo/f613bc97-543f-442d-b87f-55c39abcba9d',
+                        'directUrl' => 'https://localhost.tld/photo/f613bc97-543f-442d-b87f-55c39abcba9d',
                         'photo' => null,
                     ],
                     statusCode: Response::HTTP_NOT_FOUND,
@@ -754,11 +798,19 @@ final class PhotoControllerTest extends TestCase
                 'valid' => true,
             ],
             'photo_not_found_html' => [
-                'request' => new Request(),
+                'request' => Request::create(
+                    uri: 'https://localhost.tld/photos/all/photo/f613bc97-543f-442d-b87f-55c39abcba9d',
+                    server: [
+                        'HTTP_HOST' => 'localhost.tld',
+                        'REQUEST_SCHEME' => 'https',
+                    ],
+                ),
                 'pathParams' => new DataSet(['uuid' => 'f613bc97-543f-442d-b87f-55c39abcba9d']),
                 'responseData' => new ResponseData(
                     data: [
                         'albumName' => null,
+                        'contextUrl' => 'https://localhost.tld/photos/all/photo/f613bc97-543f-442d-b87f-55c39abcba9d',
+                        'directUrl' => 'https://localhost.tld/photo/f613bc97-543f-442d-b87f-55c39abcba9d',
                         'photo' => null,
                     ],
                     statusCode: Response::HTTP_NOT_FOUND,
@@ -769,397 +821,6 @@ final class PhotoControllerTest extends TestCase
             ],
         ];
     }
-
-//    /** @param class-string $expectedClass */
-//    #[DataProvider('singlePhotoDataProvider')]
-//    public function testSinglePhoto(
-//        bool $validRequest,
-//        Request $request,
-//        DataSet $pathParams,
-//        string $uuid,
-//        ?Photo $repositoryResult,
-//        int $commentRepositoryInvocationCount,
-//        int $templateItemsRepositoryInvocations,
-//        PhotoAlbum|PhotoCollection $photoSearchResult,
-//        bool $isUserFave,
-//        ResponseData $responseData,
-//        string $expectedClass,
-//        Response $expectedResponse,
-//        string $expectedResponseContent,
-//        string $expectedContentType,
-//    ): void {
-//        $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
-//        $commentRepository = $this->createMock(PhotoCommentRepositoryInterface::class);
-//        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
-//        $photoSearch = $this->createMock(PhotoSearchInterface::class);
-//        $requestHandler = $this->createMock(RequestHandlerInterface::class);
-//        $faveRepository = $this->createMock(PhotoFaveRepositoryInterface::class);
-//        $session = $this->createMock(SessionInterface::class);
-//
-//        $requestHandler->expects($this->once())
-//            ->method('validate')
-//            ->with($request)
-//            ->willReturn($validRequest);
-//        $photoRepository->expects($this->once())
-//            ->method('fetchByUuid')
-//            ->with($uuid)
-//            ->willReturn($repositoryResult);
-//        $photoSearch->expects($this->exactly($templateItemsRepositoryInvocations))
-//            ->method('search')
-//            ->willReturn($photoSearchResult);
-//        $albumRepository->expects($this->exactly($templateItemsRepositoryInvocations))
-//            ->method('fetchAll')
-//            ->willReturn(new PhotoAlbumCollection([]));
-//        $faveRepository->expects($this->exactly($templateItemsRepositoryInvocations))
-//            ->method('isUserFave')
-//            ->willReturn($isUserFave);
-//        $commentRepository->expects($this->exactly($commentRepositoryInvocationCount))
-//            ->method('fetchForPhoto')
-//            ->with($repositoryResult)
-//            ->willReturn(new PhotoCommentCollection([]));
-//        $session->expects($this->once())
-//            ->method('get')
-//            ->with('user')
-//            ->willReturn(self::createUser());
-//        $requestHandler->expects($this->once())
-//            ->method('sendResponse')
-//            ->with($responseData)
-//            ->willReturn($expectedResponse);
-//
-//        $controller = new PhotoController(
-//            $albumRepository,
-//            $commentRepository,
-//            $faveRepository,
-//            $photoRepository,
-//            $photoSearch,
-//            $requestHandler,
-//            $session,
-//        );
-//        $actualResult = $controller->singlePhoto($request, $pathParams);
-//
-//        $this->assertInstanceOf($expectedClass, $actualResult);
-//        $this->assertEquals($expectedResponseContent, $actualResult->getContent());
-//        $this->assertStringContainsString(
-//            $expectedContentType,
-//            (string) $actualResult->headers->get('Content-Type')
-//        );
-//    }
-//
-//    /** @return array<string, array<string, mixed>> */
-//    public static function singlePhotoDataProvider(): array
-//    {
-//        return [
-//            'json_found' => [
-//                'validRequest' => true,
-//                'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
-//                'pathParams' => new DataSet(['uuid' => '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61']),
-//                'uuid' => '38a0a218-9a5c-4bb9-ab30-aae6ca3ffc61',
-//                'repositoryResult' => self::createPhoto(5689),
-//                'commentRepositoryInvocationCount' => 1,
-//                'templateItemsRepositoryInvocations' => 0,
-//                'photoSearchResult' => new PhotoCollection([]),
-//                'isUserFave' => false,
-//                'responseData' => new ResponseData(
-//                    data: [
-//                        'comments' => new PhotoCommentCollection([]),
-//                        'photo' => self::createPhoto(5689),
-//                    ],
-//                    template: 'photos/partials/single-photo.html.twig'
-//                ),
-//                'expectedClass' => JsonResponse::class,
-//                'expectedResponse' => new JsonResponse([
-//                    'photo' => null
-//                ]),
-//                'expectedResponseContent' => '{"photo":null}',
-//                'expectedContentType' => 'application/json',
-//            ],
-//            'json_not_found' => [
-//                'validRequest' => true,
-//                'request' => new Request([], [], [], [], [], ['HTTP_ACCEPT' => 'application/json']),
-//                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
-//                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
-//                'repositoryResult' => null,
-//                'commentRepositoryInvocationCount' => 0,
-//                'templateItemsRepositoryInvocations' => 0,
-//                'photoSearchResult' => new PhotoCollection([]),
-//                'isUserFave' => false,
-//                'responseData' => new ResponseData(
-//                    data: [],
-//                    statusCode: 404,
-//                    template: null,
-//                    translationKey: 'photos.not_found',
-//                    translationVariables: [],
-//                ),
-//                'expectedClass' => JsonResponse::class,
-//                'expectedResponse' => new JsonResponse(['photo' => null]),
-//                'expectedResponseContent' => '{"photo":null}',
-//                'expectedContentType' => 'application/json',
-//            ],
-//            'html_photo_found' => [
-//                'validRequest' => true,
-//                'request' => new Request(),
-//                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
-//                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
-//                'repositoryResult' => self::createPhoto(1234),
-//                'commentRepositoryInvocationCount' => 1,
-//                'templateItemsRepositoryInvocations' => 0,
-//                'photoSearchResult' => new PhotoCollection([]),
-//                'isUserFave' => false,
-//                'responseData' => new ResponseData(
-//                    data: [
-//                        'comments' => new PhotoCommentCollection([]),
-//                        'photo' => self::createPhoto(1234),
-//                    ],
-//                    template: 'photos/partials/single-photo.html.twig'
-//                ),
-//                'expectedClass' => Response::class,
-//                'expectedResponse' => new Response(
-//                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                    Response::HTTP_OK,
-//                    ['Content-Type' => 'text/html']
-//                ),
-//                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                'expectedContentType' => 'text/html',
-//            ],
-//            'html_full_page_with_album' => [
-//                'validRequest' => false,
-//                'request' => new Request(),
-//                'pathParams' => new DataSet(['album' => 'Mexico', 'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
-//                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
-//                'repositoryResult' => self::createPhoto(4321),
-//                'commentRepositoryInvocationCount' => 1,
-//                'templateItemsRepositoryInvocations' => 1,
-//                'photoSearchResult' => self::createPhotoAlbum(1234),
-//                'isUserFave' => false,
-//                'responseData' => new ResponseData(
-//                    data: [
-//                        'albumName' => 'Mexico',
-//                        'albums' => new PhotoAlbumCollection([]),
-//                        'comments' => new PhotoCommentCollection([]),
-//                        'faveText' => 'photo.fave_text',
-//                        'isUserFave' => false,
-//                        'photo' => self::createPhoto(4321),
-//                        'photos' => self::createPhotoAlbum(1234),
-//                        'search' => '',
-//                    ],
-//                    template: 'photos/photo-album.html.twig'
-//                ),
-//                'expectedClass' => Response::class,
-//                'expectedResponse' => new Response(
-//                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                    Response::HTTP_OK,
-//                    ['Content-Type' => 'text/html']
-//                ),
-//                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                'expectedContentType' => 'text/html',
-//            ],
-//            'html_full_page_no_album' => [
-//                'validRequest' => false,
-//                'request' => new Request(),
-//                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
-//                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
-//                'repositoryResult' => self::createPhoto(1122),
-//                'commentRepositoryInvocationCount' => 1,
-//                'templateItemsRepositoryInvocations' => 1,
-//                'photoSearchResult' => new PhotoCollection([]),
-//                'isUserFave' => true,
-//                'responseData' => new ResponseData(
-//                    data: [
-//                        'albumName' => null,
-//                        'albums' => new PhotoAlbumCollection([]),
-//                        'comments' => new PhotoCommentCollection([]),
-//                        'faveText' => 'photo.fave_text',
-//                        'isUserFave' => true,
-//                        'photo' => self::createPhoto(1122),
-//                        'photos' => new PhotoCollection([]),
-//                        'search' => '',
-//                    ],
-//                    template: 'photos/photos.html.twig'
-//                ),
-//                'expectedClass' => Response::class,
-//                'expectedResponse' => new Response(
-//                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                    Response::HTTP_OK,
-//                    ['Content-Type' => 'text/html']
-//                ),
-//                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                'expectedContentType' => 'text/html',
-//            ],
-//            'html_full_page_with_search' => [
-//                'validRequest' => false,
-//                'request' => new Request(['search' => 'test']),
-//                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
-//                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
-//                'repositoryResult' => self::createPhoto(1122),
-//                'commentRepositoryInvocationCount' => 1,
-//                'templateItemsRepositoryInvocations' => 1,
-//                'photoSearchResult' => new PhotoCollection([]),
-//                'isUserFave' => false,
-//                'responseData' => new ResponseData(
-//                    data: [
-//                        'albumName' => null,
-//                        'albums' => new PhotoAlbumCollection([]),
-//                        'comments' => new PhotoCommentCollection([]),
-//                        'faveText' => 'photo.fave_text',
-//                        'isUserFave' => false,
-//                        'photo' => self::createPhoto(1122),
-//                        'photos' => new PhotoCollection([]),
-//                        'search' => 'test',
-//                    ],
-//                    template: 'photos/photos.html.twig'
-//                ),
-//                'expectedClass' => Response::class,
-//                'expectedResponse' => new Response(
-//                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                    Response::HTTP_OK,
-//                    ['Content-Type' => 'text/html']
-//                ),
-//                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                'expectedContentType' => 'text/html',
-//            ],
-//            'html_not_found' => [
-//                'validRequest' => true,
-//                'request' => new Request(),
-//                'pathParams' => new DataSet(['uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44']),
-//                'uuid' => 'ac3fcbc7-2c69-4181-8f87-b6de6f6aeb44',
-//                'repositoryResult' => null,
-//                'commentRepositoryInvocationCount' => 0,
-//                'templateItemsRepositoryInvocations' => 0,
-//                'photoSearchResult' => new PhotoCollection([]),
-//                'isUserFave' => false,
-//                'responseData' => new ResponseData(
-//                    data: [],
-//                    statusCode: 404,
-//                    template: null,
-//                    translationKey: 'photos.not_found',
-//                    translationVariables: [],
-//                ),
-//                'expectedClass' => Response::class,
-//                'expectedResponse' => new Response(
-//                    '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                    Response::HTTP_OK,
-//                    ['Content-Type' => 'text/html']
-//                ),
-//                'expectedResponseContent' => '<!DOCTYPE html><html lang="en-GB"><body><div>Hello World</div></body></html>',
-//                'expectedContentType' => 'text/html',
-//            ],
-//        ];
-//    }
-//
-//    public function testSinglePhotoBadUuid(): void
-//    {
-//        $request = new Request();
-//        $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
-//        $commentRepository = $this->createMock(PhotoCommentRepositoryInterface::class);
-//        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
-//        $photoSearch = $this->createMock(PhotoSearchInterface::class);
-//        $requestHandler = $this->createMock(RequestHandlerInterface::class);
-//        $faveRepository = $this->createMock(PhotoFaveRepositoryInterface::class);
-//        $session = $this->createMock(SessionInterface::class);
-//
-//        $photoRepository->expects($this->never())
-//            ->method('fetchByUuid');
-//        $requestHandler->expects($this->once())
-//            ->method('validate')
-//            ->with($request)
-//            ->willReturn(true);
-//        $requestHandler->expects($this->once())
-//            ->method('sendResponse')
-//            ->with(new ResponseData(
-//                data: [],
-//                statusCode: Response::HTTP_BAD_REQUEST,
-//                translationKey: 'photos.invalid_uuid'
-//            ))
-//            ->willReturn(new Response('Invalid UUID', Response::HTTP_BAD_REQUEST));
-//
-//        $photoRepository->expects($this->never())
-//            ->method('fetchByUuid');
-//        $commentRepository->expects($this->never())
-//            ->method('fetchForPhoto');
-//        $albumRepository->expects($this->never())
-//            ->method('fetchAll');
-//        $faveRepository->expects($this->never())
-//            ->method('isUserFave');
-//
-//        $controller = new PhotoController(
-//            $albumRepository,
-//            $commentRepository,
-//            $faveRepository,
-//            $photoRepository,
-//            $photoSearch,
-//            $requestHandler,
-//            $session,
-//        );
-//        $actualResult = $controller->singlePhoto(
-//            $request,
-//            new DataSet(['uuid' => ['bad' => 'data']])
-//        );
-//
-//        $this->assertSame(Response::class, get_class($actualResult));
-//        $this->assertEquals('Invalid UUID', $actualResult->getContent());
-//        $this->assertSame(400, $actualResult->getStatusCode());
-//    }
-//
-//    public function testSinglePhotoHtmlNoToken(): void
-//    {
-//        $request = new Request(['uuid' => 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d']);
-//        $expectedResult = '<html lang="en"><body>Some content</body></html>';
-//
-//        $albumRepository = $this->createMock(PhotoAlbumRepositoryInterface::class);
-//        $commentRepository = $this->createMock(PhotoCommentRepositoryInterface::class);
-//        $photoRepository = $this->createMock(PhotoRepositoryInterface::class);
-//        $photoSearch = $this->createMock(PhotoSearchInterface::class);
-//        $requestHandler = $this->createMock(RequestHandlerInterface::class);
-//        $faveRepository = $this->createMock(PhotoFaveRepositoryInterface::class);
-//        $session = $this->createMock(SessionInterface::class);
-//
-//        $photoRepository->expects($this->once())
-//            ->method('fetchByUuid')
-//            ->willReturn(null);
-//        $requestHandler->expects($this->once())
-//            ->method('validate')
-//            ->with($request)
-//            ->willReturn(false);
-//        $requestHandler->expects($this->once())
-//            ->method('sendResponse')
-//            ->with(new ResponseData(
-//                data: [],
-//                statusCode: 404,
-//                template: null,
-//                translationKey: 'photos.not_found',
-//                translationVariables: [],
-//            ))
-//            ->willReturn(new Response(
-//                $expectedResult,
-//                Response::HTTP_OK,
-//                ['Content-Type' => 'text/html']
-//            ));
-//
-//        $photoSearch->expects($this->never())
-//            ->method('search');
-//        $albumRepository->expects($this->never())
-//            ->method('fetchAll');
-//        $faveRepository->expects($this->never())
-//            ->method('isUserFave');
-//
-//        $controller = new PhotoController(
-//            $albumRepository,
-//            $commentRepository,
-//            $faveRepository,
-//            $photoRepository,
-//            $photoSearch,
-//            $requestHandler,
-//            $session,
-//        );
-//        $actualResult = $controller->singlePhoto(
-//            $request,
-//            new DataSet(['uuid' => 'b8cf4379-62f4-4f98-a57e-9811d1a7d07d'])
-//        );
-//
-//        $this->assertInstanceOf(Response::class, $actualResult);
-//        $this->assertEquals($expectedResult, $actualResult->getContent());
-//        $this->assertStringContainsString('text/html', (string) $actualResult->headers->get('Content-Type'));
-//    }
 
     private static function createPhoto(?int $id = null): Photo
     {

@@ -7,6 +7,7 @@ import {AlbumSelect} from "./AlbumSelect";
 import {PhotoFave} from "./PhotoFave";
 import {PhotoFavePersistence} from "./PhotoFavePersistence";
 import {PhotoSearch} from "./PhotoSearch";
+import {PhotoShare} from "./PhotoShare";
 import {PhotoViewer} from "./PhotoViewer";
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -63,5 +64,8 @@ document.addEventListener("DOMContentLoaded", function () {
             notify,
             new AuthState(loginButton),
         )
+    );
+    new PhotoShare(
+        photoView,
     );
 });
