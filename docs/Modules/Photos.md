@@ -22,24 +22,42 @@ Search photos within the "Mexico" album that also match with "sunset"
 
 `/photos?search=sunset trees`
 Search all photos that match with both "sunset" and "trees"
-## My favourites
+### My favourites
 `/photos/my-favourites`
 Returns my (the author's) favourite photos. This is the same as the default view.
-## Most popular
+### Most popular
 `/photos/most-popular`
 Returns photos with the most faves and comments.
 ## Single photo view
 Click on a photo to show a larger version. The photo will appear at the top of the screen with the photo grid below. Along with the photo will be a heart icon to select that photo as a favourite, comments from other users related to that photo. 
 Click the "Close" button in the top right corner or press the "Esc" key to close the single photo view and restore the grid to fill the view.
-## Faves
+### Link to photo
+Clicking the "Link" icon below the photo opens a small modal with 2 hyperlinks. 
+
+A direct link that links to this photo only. Underneath the photo will be a random selection from the "My Favourites" photo album. 
+
+A direct link looks like 
+`/photo/{uuid}`.
+
+A context link that links to the photo with the same context that you see now. So if you are viewing the photo within an album the link will open the photo in the same album. If you are viewing the photo within some search results the link will open the same search results. 
+
+An album context link looks like 
+`/photos/{album name}/photo/{uuid}`
+
+A search results context link looks like 
+`/photo/{uuid}?search={search terms}`
+
+Or you can combine both like 
+`/photos/{album name}/photo/{uuid}?search={search terms}`
+### Faves
 Anybody can click to select a photo as a "fave", you don't need to be logged in. This is only available to the website users, because the server will check the CSRF token before completing the action.
 
 If the user is logged in, the fave will be recorded against their user ID, and it will be possible to return a list of the user's favourite photos. If the user is not logged in, the fave will be recorded against the anonymous user. It will not be possible to extract this out later, although the system does also store their faves in local storage, so that users who are and aren't logged in will have a similar experience whilst their local browser data is still valid.
 
 Clicking the heart icon makes it turn red and registers the fave.
-## Comments
+### Comments
 Comments can only be added by logged in users, although all users will be able to see and read comments. This feature is only available to the website users because the system will check the CSRF token before submitting.
 
-The system will check that the comment meets certain guidelines - no profanity, no hyperlinks or HTML.
+The system will check that the comment meets certain guidelines, no hyperlinks or HTML.
 ## Entity relationship diagram
-[[pictures_erd.png]]
+![Pictures ERD](../images/pictures_erd.png)

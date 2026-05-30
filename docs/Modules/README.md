@@ -9,4 +9,6 @@ Inside the Module directory is:
 	* Repository - interfaces only
 * Infrastructure - classes that directly communicate with data stores, such as a database or API
 * Presentation - controllers
-
+## Modules in MyEspacio
+* [Contact](Modules/Contact.md)
+* [Photos](Modules/Photos.md)
