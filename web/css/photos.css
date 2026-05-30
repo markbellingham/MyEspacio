@@ -86,6 +86,7 @@
     bottom: 0;
     color: white;
     cursor: pointer;
+    pointer-events: none;
     left: 0;
     opacity: 0;
     padding: 10px;

@@ -1,40 +1,55 @@
 # Code Quality
 
-<table border="1">
+<table>
   <tr>
     <td>PHPStan Level 9</td>
-    <td><a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg" alt="pipeline status" style="vertical-align: middle;"></a></td>
-    <td>PHP <a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_php" alt="PHP coverage" style="vertical-align: middle;"></a></td>
-    <td>TypeScript <a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_typescript" alt="TypeScript coverage" style="vertical-align: middle;"></a></td>
+    <td><a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/pipeline.svg" alt="pipeline status"></a></td>
+    <td>PHP <a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_php" alt="PHP coverage"></a></td>
+    <td>TypeScript <a href="https://gitlab.com/markbellingham/myespacio/-/commits/master"><img src="https://gitlab.com/markbellingham/myespacio/badges/master/coverage.svg?job=test_typescript" alt="TypeScript coverage"></a></td>
   </tr>
 </table>
 
 # Photos
-* Displays all photos in the gallery. 
-* Can search for photos using titles, tags, descriptions, location
-* Can display most popular photos by faves and comments
-* Can display search results from the URL 
-  * If the search term matches an album then the view shows all photos from that album. E.g. [/photos/vietnam](url)
-  * If the search term does not match an album it searches all photos. E.g. [/photos/sunset](url)
-  * Multiple search terms are possible. The same rules apply, so if the first search term is an album it returns a search of the second term within that album. If no album matches then it returns results that match both terms. E.g. [/vietnam/sunset](url)
 
-![Photo Gallery](screenshots/Photos.png?raw=true "Title")
-## Single photo modal view. 
+* Displays all photos in the gallery.
+* Can search for photos using titles, tags, descriptions, location
+* Can open a large version of the photo
+* Can re-open the same view from the URL
+  * If this is a search result then the URL format will be `/photos?search={search terms}`
+  * If this is a photo album then the URL format will be `/photos/{album name}`
+  * If this is a single photo then the URL format will be `/photo/{photo uuid}`
+  * If this is a single photo with album context then the URL will be `/photos/{album name}/photo/{photo uuid}`
+  * If this is a single photo with search context then the URL will be `/photo/{photo uuid}?search={search terms}`
+
+![Photo Gallery](screenshots/Photos.png?raw=true "Photo Gallery")
+
+## Single photo view
+
 * Can show full size photo
 * Add as favourite
   * Non-logged-in users are registered as anonymous faves
+  * Anonymous faves are saved to local storage
   * Logged-in users faves are linked to their user account
-* Add comment (only if you are logged in)
+* Add comment, if you are logged in
+* View a sharable link, either as a direct link to the photo or a link that retains the current context
 
-![Single Photo](screenshots/Photo Detail.png?raw=true "Title")
+![Single Photo](screenshots/Photo%20Detail.png?raw=true "Single Photo")
 
 # Contact Me
+
 * Form to send me a message
 * Links to visit my social media profiles
 
-![Contact Page](screenshots/Contact.png?raw=true "Title")
+![Contact Page](screenshots/Contact.png?raw=true "Contact Page")
 
 # Login
+
 * Log in from your email using a magic link or a code
 
-![Login Modal](screenshots/Login.png?raw=true "Title")
+<p align="center">
+  <strong>Login modal</strong><br>
+  <img src="screenshots/Login.png?raw=true" alt="Login modal" title="Login modal">
+  <br><br>
+  <strong>Login Email</strong><br>
+  <img src="screenshots/Login%20Email.png?raw=true" alt="Login Email" title="Login Email">
+</p>

@@ -4,37 +4,33 @@
 {% set section = 'contact' %}
 
 {% block page_content %}
-    <div class="col-md-12" style="margin-top: -30px;">
-        <form id="send-email-form" action="/contact/send" method="POST">
-            <div class="col-md-8">
-                <h4 class="text-primary">Contact Me</h4>
+    <div class="row" style="margin-top: -30px;">
+        <form id="send-email-form" action="/contact/send" method="POST" class="col-md-9">
+            <h4 class="text-primary">Contact Me</h4>
 
-                <input type="hidden" name="secret" class="server-secret" value="{{ get_token('contact') }}"/>
+            <input type="hidden" name="secret" class="server-secret" value="{{ get_token('contact') }}"/>
 
-                <label for="contact-name" class="mt-3">Name:<span class="text-danger">*</span></label>
-                <input type="text" name="name" id="contact-name" class="form-control" required/>
+            <label for="contact-name" class="mt-3">Name:<span class="text-danger">*</span></label>
+            <input type="text" name="name" id="contact-name" class="form-control" required/>
 
-                <label for="emailAddress" class="mt-3">Email Address:</label>
-                <input type="email" name="emailAddress" id="emailAddress" class="form-control"/>
+            <label for="emailAddress" class="mt-3">Email Address:</label>
+            <input type="email" name="emailAddress" id="emailAddress" class="form-control"/>
 
-                <label for="subject" class="mt-3">Subject:<span class="text-danger">*</span></label>
-                <input type="text" name="subject" id="subject" class="form-control" required/>
+            <label for="subject" class="mt-3">Subject:<span class="text-danger">*</span></label>
+            <input type="text" name="subject" id="subject" class="form-control" required/>
 
-                <label for="contactDescription" class="d-none">Description</label>
-                <input type="text" name="description" class="d-none" id="contactDescription" value=""/>
+            <label for="contactDescription" class="d-none">Description</label>
+            <input type="text" name="description" class="d-none" id="contactDescription" value=""/>
 
-                <label for="message" class="mt-3">Message:<span class="text-danger">*</span></label>
-                <textarea rows="10" name="message" id="message" class="form-control"></textarea>
+            <label for="message" class="mt-3">Message:<span class="text-danger">*</span></label>
+            <textarea rows="10" name="message" id="message" class="form-control"></textarea>
 
-                <div id="contact-icons" class="col-8 text-center btn-group-toggle mt-0" data-toggle="buttons">
-                    {{ captcha_icons(section, 7)|raw }}
-                </div>
+            <div id="contact-icons" class="text-start btn-group-toggle mt-0" data-toggle="buttons">
+                {{ captcha_icons(section, 7)|raw }}
+            </div>
 
-                <div class="col-4 text-end">
-                    <div class="mt-5">
-                        <button type="submit" id="send-email-btn" class="btn btn-primary">Send Message</button>
-                    </div>
-                </div>
+            <div class="text-end mt-5">
+                <button type="submit" id="send-email-btn" class="btn btn-primary">Send Message</button>
             </div>
         </form>
         <div class="col-md-3 align-self-end">
