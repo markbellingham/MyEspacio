@@ -25,6 +25,7 @@ export class PhotoViewer {
     {
         this.photoGrid.addEventListener("click", this.handlePhotoClick.bind(this));
         this.closeButton.addEventListener("click", this.closeSinglePhoto.bind(this));
+        this.photoView.addEventListener("click", this.handlePhotoViewClick.bind(this));
         document.addEventListener("keydown", this.handleKeyDown.bind(this));
     }
 
@@ -35,6 +36,19 @@ export class PhotoViewer {
             return;
         }
         this.loadPhoto(image.dataset.uuid);
+    }
+
+    private handlePhotoViewClick(event: MouseEvent): void
+    {
+        const target = event.target as HTMLElement;
+        if (target.closest(".photo-nav-prev")) {
+            this.carouselLeft();
+            return;
+        }
+        if (target.closest(".photo-nav-next")) {
+            this.carouselRight();
+            return;
+        }
     }
 
     public updatePhotoGrid(data: string): void

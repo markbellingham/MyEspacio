@@ -15,6 +15,8 @@ describe("PhotoViewer", () => {
     let mockNotify: jest.Mocked<Notification>;
     let contentElement: HTMLDivElement;
     let mockUrlStateManager: jest.Mocked<UrlStateManager>;
+    let prevButton: HTMLButtonElement;
+    let nextButton: HTMLButtonElement;
 
     beforeEach(() => {
         document.body.innerHTML = "";
@@ -244,6 +246,14 @@ describe("PhotoViewer", () => {
         let photoViewer: PhotoViewer;
 
         beforeEach(() => {
+            prevButton = document.createElement("button");
+            prevButton.classList.add("photo-nav-prev");
+            photoView.appendChild(prevButton);
+
+            nextButton = document.createElement("button");
+            nextButton.classList.add("photo-nav-next");
+            photoView.appendChild(nextButton);
+
             photoGrid.innerHTML = "";
             ["uuid-1", "uuid-2", "uuid-3"].forEach(uuid => {
                 const item = document.createElement("div");
@@ -345,6 +355,20 @@ describe("PhotoViewer", () => {
             await new Promise(process.nextTick);
 
             expect(contentElement.innerHTML).toContain("<div>photo details</div>");
+        });
+
+        it("navigates to the next photo on click", async () => {
+            photoViewer["currentPhotoIndex"] = 0;
+
+            prevButton.click();
+            await new Promise(process.nextTick);
+
+            expect(mockHttp.query).toHaveBeenCalledWith("photo/uuid-3", expect.anything());
+
+            nextButton.click();
+            await new Promise(process.nextTick);
+
+            expect(mockHttp.query).toHaveBeenCalledWith("photo/uuid-1", expect.anything());
         });
     });
 
