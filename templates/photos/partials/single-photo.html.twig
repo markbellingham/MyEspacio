@@ -1,7 +1,9 @@
 {% set section = 'photos' %}
 
 <div id="large-photo">
-    <img src="/resources/pictures/{{ photo.directory }}/{{ photo.filename }}" alt="{{ photo.title }}">
+    <img src="/resources/pictures/{{ photo.directory }}/{{ photo.filename }}"
+         alt="{{ photo.title }}"
+         data-uuid="{{ photo.uuid }}">
 </div>
 <div class="photo-details">
     <div class="row">
