@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS users(
     login_attempts INT NOT NULL DEFAULT 0,
     login_date DATETIME,
     magiC_link VARCHAR(255),
-    phone_code VARCHAR(6)
+    phone_code VARCHAR(6),
+    role ENUM('admin', 'user') NOT NULL DEFAULT 'user'
 );
 
 INSERT INTO users (name, uuid, email, phone)

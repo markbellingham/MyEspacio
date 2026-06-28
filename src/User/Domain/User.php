@@ -28,6 +28,7 @@ final class User extends Model
         private ?string $magicLink = null,
         private ?string $phoneCode = null,
         private PasscodeRoute $passcodeRoute = PasscodeRoute::Email,
+        private readonly UserRole $role = UserRole::User,
         private ?int $id = null
     ) {
         $this->emailIsValid($email);
@@ -153,6 +154,11 @@ final class User extends Model
         $this->passcodeRoute = $passcodeRoute;
     }
 
+    public function getRole(): UserRole
+    {
+        return $this->role;
+    }
+
     private function emailIsValid(string $email): bool
     {
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
@@ -173,6 +179,7 @@ final class User extends Model
             magicLink: $data->stringNull('magic_link'),
             phoneCode: $data->stringNull('phone_code'),
             passcodeRoute: PasscodeRoute::from($data->string('passcode_route')),
+            role: UserRole::from($data->string('role')),
             id: $data->int('id')
         );
     }

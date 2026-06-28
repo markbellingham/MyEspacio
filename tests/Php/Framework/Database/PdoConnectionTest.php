@@ -143,7 +143,7 @@ final class PdoConnectionTest extends TestCase
             ->with(
                 PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,
                 User::class,
-                ['','','',null,null,null,null,null,'email',null]
+                ['','','',null,null,null,null,null,'email','user',null]
             );
 
         $stmt->expects($this->once())
@@ -208,7 +208,7 @@ final class PdoConnectionTest extends TestCase
             ->with(
                 PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE,
                 User::class,
-                ['','','',null,null,null,null,null,'email',null]
+                ['','','',null,null,null,null,null,'email','user',null]
             );
 
         $stmt->expects($this->once())
