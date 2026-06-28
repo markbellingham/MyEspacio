@@ -9,6 +9,7 @@ use MyEspacio\Framework\DataSet;
 use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
 use MyEspacio\User\Domain\UserRepositoryInterface;
+use MyEspacio\User\Domain\UserRole;
 use Ramsey\Uuid\Uuid;
 
 final readonly class UserRepository implements UserRepositoryInterface
@@ -21,7 +22,17 @@ final readonly class UserRepository implements UserRepositoryInterface
     public function getUserByEmailAddress(string $email): ?User
     {
         $result = $this->db->fetchOne(
-            'SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
+            'SELECT id, 
+                    name, 
+                    uuid, 
+                    email, 
+                    phone, 
+                    passcode_route, 
+                    login_attempts, 
+                    login_date, 
+                    magic_link, 
+                    phone_code,
+                    role
                 FROM project.users
                 WHERE email = :email',
             [
@@ -39,7 +50,18 @@ final readonly class UserRepository implements UserRepositoryInterface
     public function getUserByPhoneNumber(string $phone): ?User
     {
         $result = $this->db->fetchOne(
-            'SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
+            'SELECT 
+                    id, 
+                    name, 
+                    uuid, 
+                    email, 
+                    phone, 
+                    passcode_route, 
+                    login_attempts, 
+                    login_date, 
+                    magic_link, 
+                    phone_code,
+                    role
                 FROM project.users
                 WHERE phone = :phoneNumber',
             [
@@ -57,7 +79,18 @@ final readonly class UserRepository implements UserRepositoryInterface
     public function getUserFromMagicLink(string $magicLink): ?User
     {
         $result = $this->db->fetchOne(
-            'SELECT id, name, uuid, email, phone, passcode_route, login_attempts, login_date, magic_link, phone_code
+            'SELECT 
+                    id, 
+                    name, 
+                    uuid, 
+                    email, 
+                    phone, 
+                    passcode_route, 
+                    login_attempts, 
+                    login_date, 
+                    magic_link, 
+                    phone_code,
+                    role
                 FROM project.users
                 WHERE magic_link = :magicLink',
             [
@@ -99,6 +132,7 @@ final readonly class UserRepository implements UserRepositoryInterface
             magicLink: null,
             phoneCode: null,
             passcodeRoute: PasscodeRoute::Email,
+            role: UserRole::User,
             id: 1
         );
     }

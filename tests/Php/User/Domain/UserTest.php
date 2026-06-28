@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Php\User\Domain;
 
 use DateTimeImmutable;
-use Exception;
 use InvalidArgumentException;
 use MyEspacio\Framework\DataSet;
 use MyEspacio\User\Domain\PasscodeRoute;
 use MyEspacio\User\Domain\User;
+use MyEspacio\User\Domain\UserRole;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -29,6 +29,7 @@ final class UserTest extends TestCase
         string $magicLink,
         string $phoneCode,
         PasscodeRoute $passcodeRoute,
+        UserRole $role,
         int $id,
         array $jsonSerialized,
     ): void {
@@ -42,6 +43,7 @@ final class UserTest extends TestCase
             $magicLink,
             $phoneCode,
             $passcodeRoute,
+            $role,
             $id,
         );
 
@@ -53,6 +55,7 @@ final class UserTest extends TestCase
         $this->assertSame($magicLink, $user->getMagicLink());
         $this->assertSame($phoneCode, $user->getPhoneCode());
         $this->assertSame($passcodeRoute, $user->getPasscodeRoute());
+        $this->assertSame($role, $user->getRole());
         $this->assertSame($phone, $user->getPhone());
         $this->assertSame($id, $user->getId());
 
@@ -73,6 +76,7 @@ final class UserTest extends TestCase
                 'magicLink' => '550e8400-e29b-41d4-a716-446655440000',
                 'phoneCode' => '9bR3xZ',
                 'passcodeRoute' => PasscodeRoute::Email,
+                'role' => UserRole::User,
                 'id' => 1,
                 'jsonSerialized' => [
                     'name' => 'Mark',
@@ -89,6 +93,7 @@ final class UserTest extends TestCase
                 'magicLink' => 'c4a8f9e2-7b3d-4c1a-9f8e-2d6b5a4c3e1f',
                 'phoneCode' => '4kT7mP',
                 'passcodeRoute' => PasscodeRoute::Phone,
+                'role' => UserRole::Admin,
                 'id' => 2,
                 'jsonSerialized' => [
                     'name' => 'Sarah',
@@ -112,7 +117,8 @@ final class UserTest extends TestCase
         $this->assertNull($user->getPhoneCode());
         $this->assertNull($user->getPhone());
         $this->assertNull($user->getId());
-        $this->assertEquals(PasscodeRoute::Email, $user->getPasscodeRoute());
+        $this->assertSame(PasscodeRoute::Email, $user->getPasscodeRoute());
+        $this->assertSame(UserRole::User, $user->getRole());
         $this->assertEquals('Anonymous', $user->getName());
     }
 
@@ -239,6 +245,7 @@ final class UserTest extends TestCase
             magicLink: '550e8400-e29b-41d4-a716-446655440000',
             phoneCode: '9bR3xZ',
             passcodeRoute: PasscodeRoute::Email,
+            role: UserRole::User,
             id: 1
         );
 
@@ -289,6 +296,7 @@ final class UserTest extends TestCase
                     'magic_link' => '550e8400-e29b-41d4-a716-446655440000',
                     'phone_code' => '9bR3xZ',
                     'passcode_route' => 'email',
+                    'role' => 'user',
                     'id' => '7'
                 ]),
                 'expectedModel' => new User(
@@ -301,6 +309,7 @@ final class UserTest extends TestCase
                     magicLink: '550e8400-e29b-41d4-a716-446655440000',
                     phoneCode: '9bR3xZ',
                     passcodeRoute: PasscodeRoute::Email,
+                    role: UserRole::User,
                     id: 7
                 ),
             ],
@@ -315,6 +324,7 @@ final class UserTest extends TestCase
                     'magic_link' => '5bae1895-cbc7-4e75-8044-db476168decd',
                     'phone_code' => 'abc1234',
                     'passcode_route' => 'phone',
+                    'role' => 'admin',
                     'id' => '7'
                 ]),
                 'expectedModel' => new User(
@@ -327,6 +337,7 @@ final class UserTest extends TestCase
                     magicLink: '5bae1895-cbc7-4e75-8044-db476168decd',
                     phoneCode: 'abc1234',
                     passcodeRoute: PasscodeRoute::Phone,
+                    role: UserRole::Admin,
                     id: 7
                 ),
             ],
@@ -341,6 +352,7 @@ final class UserTest extends TestCase
                     'magic_link' => null,
                     'phone_code' => null,
                     'passcode_route' => 'phone',
+                    'role' => 'user',
                     'id' => null
                 ]),
                 'expectedModel' => new User(
@@ -353,6 +365,7 @@ final class UserTest extends TestCase
                     magicLink: null,
                     phoneCode: null,
                     passcodeRoute: PasscodeRoute::Phone,
+                    role: UserRole::User,
                     id: null
                 ),
             ],
